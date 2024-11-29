@@ -4,7 +4,11 @@
 
 @layer components {
     .sidebar-menu{
-        @apply text-lg text-center py-2 transition duration-100  hover:cursor-pointer w-4/6 ;
-        @apply flex items-center justify-start rounded-l-xl pl-6;
+        @apply text-lg font-bold text-[#608BC1] text-center py-2 transition duration-100  hover:cursor-pointer w-5/6 ;
+        @apply flex items-center justify-start rounded-l-xl pl-2;
     }
+    .activeclass{
+        @apply bg-blue-400  pl-3 text-white;
+    }
+
 }
