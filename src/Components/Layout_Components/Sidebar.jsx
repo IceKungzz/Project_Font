@@ -1,9 +1,16 @@
-import React from "react";
+import { useState } from "react";  // ลบการ import React ออก
 import { NavLink } from "react-router-dom";
+import React from "react";  // สามารถใส่บรรทัดนี้ไว้ได้
 
 export default function Sidebar() {
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className ="h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       <div className="flex items-center justify-center h-1/6 mt-3">
         <img src="img/logo.png" alt="image" width={150} />
       </div>
@@ -32,83 +39,87 @@ export default function Sidebar() {
           </div>
 
           {/* รายการเมนู */}
-
-          <NavLink
-            to="/home"
-            className={({ isActive }) =>
-              `sidebar-menu
+          {isSidebarOpen && (
+            <>
+              <NavLink
+                to="/home"
+                onClick={toggleSidebar}
+                className={({ isActive }) =>
+                  `sidebar-menu
                         ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-house-chimney w-10 mr-2"></i>
-            <span>หน้าแรก</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-house-chimney w-10 mr-2"></i>
+                <span>หน้าแรก</span>
+              </NavLink>
 
-          <NavLink
-            to="/inbound"
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/inbound"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-file w-10 mr-2"></i>
-            <span>นำเข้าสินค้า</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-file w-10 mr-2"></i>
+                <span>นำเข้าสินค้า</span>
+              </NavLink>
 
-          <NavLink
-            to="/outbound"
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/outbound"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-file-import w-10 mr-2"></i>{" "}
-            <span>ส่งออกสินค้า</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-file-import w-10 mr-2"></i>{" "}
+                <span>ส่งออกสินค้า</span>
+              </NavLink>
 
-          <NavLink
-            to="/b"   
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/b"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-list-check w-10 mr-2"></i>
-            <span>สถานะสินค้า</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-list-check w-10 mr-2"></i>
+                <span>สถานะสินค้า</span>
+              </NavLink>
 
-          <NavLink
-            to="/c"
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/c"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-recycle w-10 mr-2"></i>
-            <span>คืนสินค้า</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-recycle w-10 mr-2"></i>
+                <span>คืนสินค้า</span>
+              </NavLink>
 
-          <NavLink
-            to="/d"
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/d"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-store w-10 mr-2"></i>
-            <span>สินค้าคงคลัง</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-store w-10 mr-2"></i>
+                <span>สินค้าคงคลัง</span>
+              </NavLink>
 
-          <NavLink
-            to="/e"
-            className={({ isActive }) =>
-              `sidebar-menu
+              <NavLink
+                to="/e"
+                className={({ isActive }) =>
+                  `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
-            }
-          >
-            <i className="fa-solid fa-clipboard-list w-10 mr-2"></i>
-            <span>รายการทั้งหมด</span>
-          </NavLink>
+                }
+              >
+                <i className="fa-solid fa-clipboard-list w-10 mr-2"></i>
+                <span>รายการทั้งหมด</span>
+              </NavLink>
+            </>
+          )}
           {/* รายการเมนู */}
         </div>
 

@@ -2,25 +2,30 @@ import React from 'react';
 
 export function Home() {
     const items = [
-        { link: '/delivery', imageSrc: '/img/In.png', title: 'นำเข้าสินค้า' },
-        { link: '/shipping', imageSrc: '/img/out.png', title: 'ส่งออกสินค้า' },
-        { link: '/inventory', imageSrc: '/img/location.png', title: 'สถานะสินค้า' },
-        { link: '/inventory', imageSrc: '/img/Return.png', title: 'คืนสินค้า' },
-        { link: '/inventory', imageSrc: '/img/ItemInStor.png', title: 'สินค้าคงคลัง' },
-        { link: '/inventory', imageSrc: '/img/ItemAll.png', title: 'รายการทั้งหมด' },
+        { link: '/inbound', imageSrc: '/img/In.png', title: 'นำเข้าสินค้า', width:165 , height:116 },
+        { link: '/outbound', imageSrc: '/img/out.png', title: 'ส่งออกสินค้า', width: 143, height: 105 },
+        { link: '/inventory', imageSrc: '/img/location.png', title: 'สถานะสินค้า', width: 95, height: 126 },
+        { link: '/inventory', imageSrc: '/img/Return.png', title: 'คืนสินค้า', width:173, height: 129 },
+        { link: '/inventory', imageSrc: '/img/ItemInStor.png', title: 'สินค้าคงคลัง', width:185, height: 139 },
+        { link: '/inventory', imageSrc: '/img/ItemAll.png', title: 'รายการทั้งหมด', width: 144, height: 126 },
     ];
 
     return (
         <div className='w-full h-[90%]'>
-            <div className='flex justify-between p-5 flex-wrap gap-4'> {/* ใช้ gap-4 สำหรับการจัดระยะห่าง */}
+            <div className='flex justify-between flex-wrap gap-4'>
                 {items.map((item, index) => (
                     <div
                         key={index}
                         onClick={() => window.location.href = item.link}
-                        className="w-50 h-60 flex flex-col justify-center items-center rounded-2xl bg-slate-300 shadow-lg hover:shadow-xl hover:bg-slate-400 transition-all cursor-pointer" // เพิ่มเงา, hover และ cursor-pointer
+                        className="w-[200px] h-[227px] flex flex-col justify-between pt-8 items-center rounded-2xl bg-slate-300 shadow-lg hover:shadow-xl hover:bg-slate-400 transition-all cursor-pointer" // เพิ่มเงา, hover และ cursor-pointer
                     >
-                        <img src={item.imageSrc} alt={item.title} className="w-48 h-40 object-contain p-5" />
-                        <p className="text-2xl flex justify-center items-center font-bold text-sky-900">
+                        <img 
+                            src={item.imageSrc} 
+                            alt={item.title} 
+                            style={{ width: `${item.width}px`, height: `${item.height}px` }}
+                            className="object-contain flex flex-col justify-center items-center" // ใช้ mt-2 เพื่อให้มีระยะห่างจากข้อความ
+                        />
+                        <p className="text-xl flex justify-center items-center font-bold text-sky-900 pb-5">
                             {item.title}
                         </p>
                     </div>
