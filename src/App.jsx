@@ -21,7 +21,7 @@ function App() {
     },[])
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen font-inria">
       <div className=" h-full w-1/6">
         <Sidebar/>
       </div>

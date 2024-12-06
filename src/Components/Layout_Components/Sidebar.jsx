@@ -34,7 +34,7 @@ export default function Sidebar() {
           {/* รายการเมนู */}
 
           <NavLink
-            to="/profile"
+            to="/home"
             className={({ isActive }) =>
               `sidebar-menu
                         ${isActive ? "activeclass" : ""}`
@@ -45,7 +45,7 @@ export default function Sidebar() {
           </NavLink>
 
           <NavLink
-            to="/delivery"
+            to="/inbound"
             className={({ isActive }) =>
               `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
@@ -56,7 +56,7 @@ export default function Sidebar() {
           </NavLink>
 
           <NavLink
-            to="/a"
+            to="/outbound"
             className={({ isActive }) =>
               `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
@@ -67,7 +67,7 @@ export default function Sidebar() {
           </NavLink>
 
           <NavLink
-            to="/b"
+            to="/b"   
             className={({ isActive }) =>
               `sidebar-menu
                          ${isActive ? "activeclass" : ""}`

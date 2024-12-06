@@ -1,12 +1,10 @@
 import { createBrowserRouter } from "react-router-dom"
-import Delivery from "../Components/Delivery"
 import App from "../App"
-import { Profile } from "../Components/Profile"
 import Login from "../page/Authentication/Login"
 import PrivateRoute from "../Components/ComponentPrivateRoute/PrivateRoute"
 import Sidebar from "../Components/Layout_Components/Sidebar"
-
-
+import { Outbound } from "../page/Outbound/Outbound"
+import {Inbound} from "../page/Inbound/Inbound"
 const router = createBrowserRouter([
     {
         path:"/",
@@ -15,8 +13,8 @@ const router = createBrowserRouter([
             {
                 path:"", element: <App/>,
                 children: [
-                    {path:"profile", element: <Profile/>},
-                    {path:"delivery", element: <Delivery/>}
+                    {path:"outbound", element: <Outbound/>},
+                    {path:"inbound", element: <Inbound/>},
                 ],
             },
         ],
