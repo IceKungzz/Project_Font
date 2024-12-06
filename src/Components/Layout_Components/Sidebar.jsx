@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
   return (
-    <div className="h-screen flex flex-col">
+    <div className ="h-screen flex flex-col">
       <div className="flex items-center justify-center h-1/6 mt-3">
         <img src="img/logo.png" alt="image" width={150} />
       </div>
@@ -51,7 +51,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-file w-10 mr-2"></i>
+            <i className="fa-solid fa-file w-10 mr-2"></i>
             <span>นำเข้าสินค้า</span>
           </NavLink>
 
@@ -62,7 +62,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-file-import w-10 mr-2"></i>{" "}
+            <i className="fa-solid fa-file-import w-10 mr-2"></i>{" "}
             <span>ส่งออกสินค้า</span>
           </NavLink>
 
@@ -73,7 +73,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-list-check w-10 mr-2"></i>
+            <i className="fa-solid fa-list-check w-10 mr-2"></i>
             <span>สถานะสินค้า</span>
           </NavLink>
 
@@ -84,7 +84,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-recycle w-10 mr-2"></i>
+            <i className="fa-solid fa-recycle w-10 mr-2"></i>
             <span>คืนสินค้า</span>
           </NavLink>
 
@@ -95,7 +95,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-store w-10 mr-2"></i>
+            <i className="fa-solid fa-store w-10 mr-2"></i>
             <span>สินค้าคงคลัง</span>
           </NavLink>
 
@@ -106,7 +106,7 @@ export default function Sidebar() {
                          ${isActive ? "activeclass" : ""}`
             }
           >
-            <i class="fa-solid fa-clipboard-list w-10 mr-2"></i>
+            <i className="fa-solid fa-clipboard-list w-10 mr-2"></i>
             <span>รายการทั้งหมด</span>
           </NavLink>
           {/* รายการเมนู */}
@@ -115,7 +115,7 @@ export default function Sidebar() {
         <div className="text-xl text-[#608BC1]  h-1/6 w-full flex items-center justify-center">
           <div className="bg-[#133E87] w-3/4 p-1 text-md cursor-pointer 2xl:p-3 rounded-md 2xl:text-lg text-center">
             <span>
-              <i class="fa-solid fa-right-from-bracket mt-2 mr-2"></i> ออกจากระบบ
+              <i className="fa-solid fa-right-from-bracket mt-2 mr-2"></i> ออกจากระบบ
             </span>
           </div>
         </div>
