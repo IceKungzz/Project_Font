@@ -1,7 +1,6 @@
-import { useState } from "react";  // ลบการ import React ออก
+import { useState } from "react"; 
 import { NavLink } from "react-router-dom";
-import React from "react";  // สามารถใส่บรรทัดนี้ไว้ได้
-
+import React from "react";
 
 export default function Sidebar() {
 
