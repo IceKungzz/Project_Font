@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import Swal from 'sweetAlert2'
+import Swal from 'sweetalert2'
 
 const Login = () => {
     const [datauser, setDatauser] = useState({});
