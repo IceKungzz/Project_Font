@@ -7,7 +7,7 @@ const Login = () => {
     return (
         <>
             <Helmet>
-                <title>LOGIN</title>
+                <title>LOGINn</title>
             </Helmet>
             <div className="text-2xl font-inria">
                 LOGIN
