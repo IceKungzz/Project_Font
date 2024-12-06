@@ -5,6 +5,8 @@ import PrivateRoute from "../Components/ComponentPrivateRoute/PrivateRoute"
 import Sidebar from "../Components/Layout_Components/Sidebar"
 import { Outbound } from "../page/Outbound/Outbound"
 import {Inbound} from "../page/Inbound/Inbound"
+import { Home } from "../page/Home/Home"
+
 const router = createBrowserRouter([
     {
         path:"/",
@@ -15,6 +17,7 @@ const router = createBrowserRouter([
                 children: [
                     {path:"outbound", element: <Outbound/>},
                     {path:"inbound", element: <Inbound/>},
+                    {path:"home", element: <Home/>},
                 ],
             },
         ],
