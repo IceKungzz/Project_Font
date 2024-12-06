@@ -38,6 +38,7 @@ function App() {
     <div className="flex h-screen font-inria">
       <div className="h-full w-1/6">
         <Sidebar />
+        
       </div>
       <main className="flex-grow shadow-[-5px_0px_3px_0px_rgba(0,0,0,0.200)] mt-4 mr-4 mb-4 border rounded-xl pl-5 pr-5">
         <div className="pt-3 pb-3 border-b-4  border-[#608BC1] flex justify-between items-center text-[#608BC1] mb-5">

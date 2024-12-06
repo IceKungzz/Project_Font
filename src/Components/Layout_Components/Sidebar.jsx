@@ -2,6 +2,7 @@ import { useState } from "react";  // ลบการ import React ออก
 import { NavLink } from "react-router-dom";
 import React from "react";  // สามารถใส่บรรทัดนี้ไว้ได้
 
+
 export default function Sidebar() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
