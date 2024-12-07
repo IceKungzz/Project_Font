@@ -11,4 +11,8 @@
         @apply bg-blue-400  pl-3 text-white;
     }
 
+    .inputclass_Outbound{
+        @apply w-2/4 p-2 mr-3 rounded-sm border border-black outline-none
+    }
+
 }
