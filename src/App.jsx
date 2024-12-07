@@ -25,6 +25,7 @@ function App() {
     { title: 'ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก', route: '/home' },
     { title: 'นำเข้าสินค้า', route: '/inbound' },
     { title: 'ส่งออกสินค้า', route: '/outbound' },
+    { title: 'คืนสินค้า', route: '/returnitem' },
   ];
 
   // เปรียบเทียบและดึงข้อมูลจาก route ปัจจุบัน
