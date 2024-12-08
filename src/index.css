@@ -12,7 +12,7 @@
     }
 
     .inputclass_Outbound{
-        @apply w-2/4 p-2 mr-3 rounded-sm border border-black outline-none
+        @apply w-2/4 p-2 mr-3 rounded-md border border-black outline-none
     }
 
 }

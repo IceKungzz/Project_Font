@@ -19,7 +19,7 @@ const router = createBrowserRouter([
                 children: [
                     {path:"outbound", element: <Outbound/>},
                     {path:"inbound", element: <Inbound/>},
-                    {path:"home", element: <Home/>},
+                    {path:"", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
                 ],
             },

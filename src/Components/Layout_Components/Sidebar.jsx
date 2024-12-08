@@ -28,10 +28,10 @@ export default function Sidebar() {
               </div>
 
               <div className="text-sm text-black flex flex-col items-center">
-                <span className="hidden md:block md:text-sm text-center text-[#133E87] font-bold">
+                <span className="hidden md:block md:text-md 2xl:text-[24px]  text-center text-[#133E87] font-bold">
                   เมทนี สนธิกัน
                 </span>
-                <span className="hidden text-[#608BC1] text-lg xl:block">
+                <span className="hidden text-[#608BC1] text-[20px] xl:block mt-1">
                   user
                 </span>
               </div>
@@ -42,7 +42,7 @@ export default function Sidebar() {
           {isSidebarOpen && (
             <>
               <NavLink
-                to="/home"
+                to="/"
                 onClick={toggleSidebar}
                 className={({ isActive }) =>
                   `sidebar-menu

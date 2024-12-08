@@ -30,7 +30,7 @@ function App() {
 
   // เปรียบเทียบและดึงข้อมูลจาก route ปัจจุบัน
   const currentPage = pageData.find(page => page.route === window.location.pathname);
-
+  
   // เปลี่ยนชื่อหน้าให้เหมาะสมตาม route
   const displayTitle = currentPage ? currentPage.title : 'ไม่พบหน้า';
 
