@@ -1,4 +1,5 @@
 import React from "react";
+import {formatDate} from '../../Components/Layout_Components/Datetimeshow'
 
 export function Outbound(props) {
   return (
@@ -69,10 +70,10 @@ export function Outbound(props) {
           <div className=" w-full p-5 flex itmes-center justify-end">
             <div className="w-2/4 flex items-center justify-between mr-3 p-1">
               <button className="bg-green-500 px-3 py-2 rounded-md w-2/4 mr-2 text-white">
-                เพิ่มสินค้า
+              <i className="fa-solid fa-plus mr-2"></i>เพิ่มสินค้า
               </button>
               <button className="bg-gray-500 px-3 py-2 rounded-md w-2/4 ml-2 text-white">
-                สร้างสินค้า
+              <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
             </div>
           </div>
@@ -82,7 +83,7 @@ export function Outbound(props) {
         {/* ปุ่มด้านล่าง */}
         <div className="h-1/6 flex flex-col items-start justify-end p-4 ">
           <button className="bg-gray-400 px-3 py-2 rounded-md w-2/4">
-            จองสินค้า
+            <i className="fa-solid fa-file-pen mr-2"></i>จองสินค้า
           </button>
         </div>
 
@@ -112,7 +113,7 @@ export function Outbound(props) {
             </div>
 
             <div className="flex justify-center items-center pr-2 bg-red-700">
-              26 ธันวาคม 2567
+              {formatDate()}
             </div>
 
             {/* ส่วนรายละเอียด */}
@@ -145,8 +146,8 @@ export function Outbound(props) {
           </div>
 
           {/* ส่วน item  */}
-          <div className="overflow-auto p-2">
-            <table className="w-full table-auto text-center border-collapse">
+          <div className="overflow-auto p-2  border-b-1 border-black">
+            <table className="w-full table-auto text-center border-collapse ">
               <thead className="font-bold  border-b-2">
                 <tr>
                   <th className="px-4 py-2">ลำดับ</th>
@@ -163,17 +164,27 @@ export function Outbound(props) {
                   <td className="px-4 py-2">1</td>
                   <td className="px-4 py-2">M04 แบบเสาสี่เหลี่ยม</td>
                   <td className="px-4 py-2">100*100</td>
-                  <td className="px-4 py-2">เช่า</td>
-                  <td className="px-4 py-2">2</td>
-                  <td className="px-4 py-2">2,000.00</td>
+                  <td className="px-4 py-2">
+                    <select name="model" id="" className='px-4 py-2 text-center '>
+                      <option value="">เช่า</option>
+                      <option value="">ซื้อ</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-2"><input type='number' className="px-2 py-2 text-center "/></td>
+                  <td className="px-4 py-2 ">2,000.00</td>
                   <td className="px-4 py-2">4,000.00</td>
                 </tr>
                 <tr className="border-b">
                   <td className="px-4 py-2">2</td>
                   <td className="px-4 py-2">D10 แบบคาน</td>
                   <td className="px-4 py-2">10*100</td>
-                  <td className="px-4 py-2">ขาย</td>
-                  <td className="px-4 py-2">3</td>
+                  <td className="px-4 py-2">
+                    <select name="model" id="" className='px-4 py-2 text-center '>
+                      <option value="">เช่า</option>
+                      <option value="">ซื้อ</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-2"><input type='number' className="px-2 py-2 text-center"/></td>
                   <td className="px-4 py-2">3,000.00</td>
                   <td className="px-4 py-2">9,000.00</td>
                 </tr>
@@ -223,10 +234,10 @@ export function Outbound(props) {
 
           <div className="w-full p-2 flex justify-center items-center gap-6">
             <button className="bg-blue-500 px-3 py-2 rounded-md w-1/4">
-              บันทึกรายการ
+              <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึกรายการ
             </button>
             <button className="bg-red-500 px-3 py-2 rounded-md w-1/4">
-              ลบรายการ
+              <i className="fa-solid fa-x mr-2"></i>ลบรายการ
             </button>
           </div>
         </div>
