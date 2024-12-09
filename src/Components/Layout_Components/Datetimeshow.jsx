@@ -26,3 +26,30 @@ export const Get_DateTime = () => {
   
   return finalDateTime;
 };
+
+
+export const formatDate = () => {
+  const now = new Date();
+
+  // ชื่อเดือนภาษาไทย
+  const thaiMonths = [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
+  ];
+
+  const day = now.getDate(); // วันที่ (1-31)
+  const month = thaiMonths[now.getMonth()]; // ชื่อเดือนภาษาไทย
+  const year = now.getFullYear() + 543; // ปี พ.ศ.
+
+  return `${day} ${month} ${year}`;
+};
