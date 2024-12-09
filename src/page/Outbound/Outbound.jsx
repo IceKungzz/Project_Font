@@ -3,10 +3,10 @@ import {formatDate} from '../../Components/Layout_Components/Datetimeshow'
 
 export function Outbound(props) {
   return (
-    <div className="w-full h-[90%] flex">
-        <div className="w-full h-full grid grid-cols-5">
+    <div className="w-full h-[90%] flex overflow-auto">
+        <div className="w-full h-full grid grid-cols-4">
             <div className="col-span-2 w-full h-full grid grid-rows-4">
-              <div className="w-full h-full row-span-3 grid grid-rows-7">
+              <div className="w-full h-full row-span-3 grid grid-rows-7 p-3">
 
                 <div className="row-span1 w-full grid grid-cols-4 justify-center items-center gap-2 p-2">
                   <span className="col-span-2 xl:col-span-1 text-[16px] xl:text-[20px]  text-end">สาขา:</span>
@@ -57,15 +57,17 @@ export function Outbound(props) {
 
               </div>
 
-              <div className="row-span-1 flex justify-start items-end p-5">
+              <div className="row-span-1 flex justify-start items-end">
                 <button className="bg-gray-400 w-1/4 p-2 rounded-md">จองสินค้า</button>
               </div>
 
             </div>
 
 
-            <div className="bg-green-300 col-span-3">
-              right
+            <div className="col-span-2 w-full h-full">
+                <div className="border border-black w-full h-full p-2 rounded-md">
+                  2
+                </div>
             </div>
         </div>
     </div>
