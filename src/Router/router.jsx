@@ -7,6 +7,7 @@ import { Outbound } from "../page/Outbound/Outbound"
 import {Inbound} from "../page/Inbound/Inbound"
 import { ReturnItem } from "../page/Returnbound/Returnbound"
 import { Home } from "../page/Home/Home"
+import Preorder from "../page/Preorder/Preorder"
 
 
 const router = createBrowserRouter([
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
                     {path:"returnitem", element: <ReturnItem/>},
                 ],
             },
+            {path:"preorder", element: <Preorder/>},
         ],
     },
     {path:"/login", element: <Login/>},
