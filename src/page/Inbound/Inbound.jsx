@@ -10,13 +10,15 @@ export function Inbound(props) {
     ];
 
     return (
-        <div className='w-full h-[90%] '>
+        <div className='w-full h-[90%]  mt-5'>
 
-            <div className='w-full h-full grid grid-cols-5'>
+            <div className='w-full h-[100%] grid grid-cols-5  overflow-auto no-scrollbar '>
 
-                <div className=" col-span-2 bg-lime-400 grid grid-rows-6">
-                    <div className='row-span-4 bg-slate-300 grid justify-end items-center pt-2' >
-                        <div className='grid justify-end items-center grid-cols-4'>
+                <div className=" col-span-2  grid grid-rows-6 ">
+
+                    <div className='row-span-4  items-center text-base ' >
+
+                        <div className='grid justify-end items-center grid-cols-4 '>
                             <span className="col-span-1 grid justify-end pr-2">
                                 สาขา:
                             </span>
@@ -27,54 +29,57 @@ export function Inbound(props) {
                         </div>
 
                         {menu.map((item, index) => (
-                            <div key={index} className='grid justify-end items-center grid-cols-4 pt-10'>
+                            <div key={index} className='grid justify-end items-center grid-cols-4 pt-10 '>
                                 <span className="col-span-1 grid justify-end  pr-2">
                                     {item.title}
                                 </span>
                                 <input
                                     type={item.type}
-                                    className=" col-span-3 w-[80%] h-10 rounded-lg border border-gray-500"
+                                    className=" col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 "
                                 />
                             </div>
                         ))}
-                        <div className='grid justify-end items-center grid-cols-4 pt-10'>
-                            <span className="col-span-1 grid justify-end pr-2">
+
+                        <div className='grid justify-end items-center grid-cols-4 pt-10 '>
+                            <span className="col-span-1 grid justify-end pr-2 ">
                                 ระยะเวลา:
                             </span>
                             <input
                                 type="text"
-                                className=" col-span-2 h-10 rounded-lg border border-gray-500"
+                                className=" col-span-2 h-10 rounded-lg border border-gray-500 "
                             />
                             <span className=" col-span-1 pl-5">
                                 วัน
                             </span>
                         </div>
-                        <div className='grid grid-cols-6 pt-10'>
-                            <span className='col-span-2'></span>
-                            <button className="col-span-2  w-[80%] bg-[#31AB31] h-10 rounded-md">
+
+                        <div className='grid grid-cols-8 pt-10 '>
+                            <span className='col-span-2 '></span>
+                            <button className="col-span-3  w-[80%] bg-[#31AB31] h-10 rounded-md">
                                 <i className="fa-solid fa-plus mr-2"></i>เพิ่มสินค้า
                             </button>
-                            <button className="col-span-2 w-[80%] bg-[#909090] h-10 rounded-md">
+                            <button className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md">
                                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
                             </button>
                         </div>
 
                     </div>
-                    <div className='row-span-2 grid-cols-4 grid justify-start items-end'>
+
+                    <div className='row-span-2 grid-cols-4 grid justify-start items-end '>
                         <button className=" col-span-1 bg-[#909090] h-10 rounded-md">
                             <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
                         </button>
                     </div>
-                </div>
 
+                </div>
 
                 <div className=" col-span-3 grid grid-rows-6  ">
 
-                    <div className='row-span-5 grid  grid-rows-4 border border-gray-500  mt-2 rounded-lg'>
+                    <div className='row-span-5 grid grid-rows-4 border border-gray-500  rounded-lg '>
 
-                        <div className='row-span-1 grid grid-cols-3 grid-rows-6  pl-4 pr-4 pt-2'>
-                            <span className='col-span-1  grid justify-start items-center'>ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก</span>
-                            <span className='col-span-1 row-span-2  grid justify-center items-center'>รายการส่งออกสินค้า</span>
+                        <div className='row-span-1 grid grid-cols-3 grid-rows-6  pl-4 pr-4 pt-1'>
+                            <span className='col-span-1  grid justify-start items-center '>ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก</span>
+                            <span className='col-span-1 row-span-2  grid justify-center items-center text-xl'>รายการส่งออกสินค้า</span>
                             <span className='col-span-1 '></span>
                             <span className='col-span-1  grid justify-start items-center'>สาขา: ชลบุรี</span>
                             <span className='col-span-1  grid justify-end items-center'>12 ธันวาคม 2567</span>
@@ -90,7 +95,7 @@ export function Inbound(props) {
                             <span className='col-span-1  grid justify-end items-center'>ระยะเวลาเช่า: 7 วัน</span>
                         </div>
 
-                        <div className='row-span-2 bg-slate-400 grid grid-rows-3'>
+                        <div className='row-span-3  grid grid-rows-3'>
                             <div className=' row-span-3 overflow-auto  no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3'>
                                 <table className="w-full table-auto text-center border-collapse border-t-2">
                                     <thead className="font-bold  bg-white sticky top-0 border-b-2">
@@ -148,40 +153,57 @@ export function Inbound(props) {
                                     </tbody>
                                 </table>
                             </div>
-
-                            
                         </div>
 
-                        <div className='row-span-1 grid grid-cols-6 grid-rows-3 bg-teal-100'>
-                                <span className="col-span-3 row-span-3 grid grid-cols-5 bg-red-100 pt-2">
-                                    <span className='col-span-3 grid justify-end'>
-                                      รวมรายการสินค้าที่ส่งออกทั้งหมด  
-                                    </span>
-                                    <span className='col-span-1 grid justify-center'>
-                                      1 
-                                    </span>
-                                    <span className='col-span-1 grid justify-start'>
-                                      รายการ
-                                    </span>
+                        <div className='row-span-1 grid grid-cols-6 grid-rows-3  '>
+                            <span className="col-span-3 row-span-3 grid grid-cols-5  p-1">
+                                <span className='col-span-3 grid justify-end'>
+                                    รวมรายการสินค้าที่ส่งออกทั้งหมด
                                 </span>
-                                <span className='col-span-1'>ราคารวม</span>
-                                <span className='col-span-1'>120000</span>
-                                <span className='col-span-1'>บาท</span>
-                                <span className='col-span-1'>ราคารวม</span>
-                                <span className='col-span-1'>120000</span>
-                                <span className='col-span-1'>บาท</span>
-                                <span className='col-span-1'>ราคารวม</span>
-                                <span className='col-span-1'>120000</span>
-                                <span className='col-span-1'>บาท</span>
+                                <span className='col-span-1 grid justify-center'>
+                                    1
+                                </span>
+                                <span className='col-span-1 grid justify-start'>
+                                    รายการ
+                                </span>
+                            </span>
+                            <span className="col-span-3 row-span-3 grid grid-cols-4 ">
+                                <span className='col-span-1 '></span>
+                                <span className='col-span-1 grid justify-end p-1'>ราคารวม</span>
+                                <span className='col-span-1 grid justify-end p-1'>120000.00</span>
+                                <span className='col-span-1 grid justify-start p-1'>บาท</span>
+
+                                <span className='col-span-2 grid justify-end p-1'>ภาษีมูลค่าเพิ่ม (7%)</span>
+                                <span className='col-span-1 grid justify-end p-1'>1200.00</span>
+                                <span className='col-span-1 grid justify-start p-1'>บาท</span>
+                                <span className='col-span-1'></span>
+                                <span className='col-span-1 grid justify-end p-1'>ราคาสุทธิ</span>
+                                <span className="col-span-1 grid justify-end p-1 underline"> 1200.00</span>
+                                <span className='col-span-1 grid justify-start p-1'>บาท</span>
+                            </span>
                         </div>
 
                     </div>
 
-                    <div className='row-span-1  bg-slate-600'>
-
+                    <div className='row-span-1 grid grid-rows-3 '>
+                        <div className=" row-span-1   flex items-center">
+                            <input type='radio' name='vat' />  มีภาษีมูลค่าเพิ่ม
+                            <input type='radio' name='vat' className="ml-3" />  ไม่มีภาษีมูลค่าเพิ่ม
+                        </div>
+                        <span></span>
+                        <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
+                            <span className='col-span-1 flex  justify-end pr-2'>
+                            <button className=" bg-[#133E87] w-2/6 p-2 rounded-md"><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
+                            </span>
+                            <span className='col-span-1 flex  justify-start pl-2'>
+                            <button className="bg-[#A62628] w-2/6 p-2 rounded-md"><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
+                            </span>
+                            
+                        </div>
                     </div>
 
                 </div>
+
             </div>
 
         </div>
