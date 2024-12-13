@@ -93,43 +93,96 @@ export default function Quotation() {
       </div>
 
       {/* Table */}
-      <div className="bg-yellow-500 h-[300px] grid grid-rows-12 text-sm print:text-[9px]">
+      <div className="h-[230px] text-sm grid grid-cols-10 grid-rows-11 print:text-[9px]">
         {/* หัวตาราง */}
-        
+        <div className="bg-red-200 h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
+          <span className="bg-green-500 border-b-2 border-t-2 border-black">ลำดับ</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+          <span>1</span>
+        </div>
+        <div className="bg-red-300 h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">รายการ</span>
+          <span>แบบเสา</span>
+        </div>
+        <div className="bg-red-400 h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวน</span>
+          <span>16ต้น</span>
+        </div>
+        <div className="bg-red-500 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าเช่า/วัน</span>
+          <span>40.00</span>
+        </div>
+        <div className="bg-red-600 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวนวัน</span>
+          <span>3</span>
+        </div>
+        <div className="bg-red-700 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าปรับสิยค้า/ชิ้น</span>
+          <span>2000.00</span>
+        </div>
 
-          <table class="grid grid-cols-10 bg-blue-500">
-            <thead>
-              <tr>
-                <th className="">ลำดับที่</th>
-                <th className="">รายการ</th>
-                <th>จำนวน</th>
-                <th>ค่าเช่า/วัน</th>
-                <th>จำนวนวัน</th>
-                <th>ค่าปรับสินค้า/ชิ้น</th>
-                <th>จำนวนเงินรวม</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                <td>Malcolm Lockyer</td>
-                <td>1961</td>
-              </tr>
-              <tr>
-                <td>Witchy Woman</td>
-                <td>The Eagles</td>
-                <td>1972</td>
-              </tr>
-              <tr>
-                <td>Shining Star</td>
-                <td>Earth, Wind, and Fire</td>
-                <td>1975</td>
-              </tr>
-            </tbody>
-          </table>
-          
+        <div className="bg-red-800 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวนเงินรวม</span>
+          <span>1920.00</span>
+        </div>
+        {/* ข้อมูลในตาราง */}
 
       </div>
+      {/* ส่วนเงื่อนไข */}
+      <div className="bg-green-500 grid grid-cols-10 grid-rows-14 h-[350px] text-[9px]">
+          {/* เงื่อนไขซ้ายมือ */}
+          <div className="col-span-7 row-span-11 grid grid-rows-11 border-2 border-black text-[9px] print:text-[8px] p-1">
+              <span className="row-span-1">เงื่อนไขการเช่าสินค้า/โปรดอ่านเงื่อนไขก่อนทำการเช่าสินค้า</span>
+              <span className="row-span-1">1.ผู้เช่าจะต้องชำระค่าเช่า เงินประกัน และค่าใช้จ่ายอื่นๆตามที่ตกลงในใบเสนอราคา ก่อนวันรับสินค้า</span>
+              <span className="row-span-1">2.ทางร้านจะทำการจัดส่งสินค้าให้หลังจากมีการชำระเงินครบตามจำนวนที่ตกลงกันไว้</span>
+              <span className="row-span-1">3.การรับสินค้าผู้เช่าจะต้องเป็นผู้รับภาระในค่าขนส่ง ดดยคิดจากระยะทางส่งตามจริงและไม่สามารถเรียกเก็บค่าใช้จ่ายบใดๆจากผู้ให้เช่าทั้งสิ้น</span>
+              <span className="row-span-1">4.หากสินค้าเช่าเกิดความเสียหายหรือสูญหายผู้ให้เช่าจะทำการปรับเงินตามราคาสินค้าที่แจ้งไว้จากผู้เช่า</span>
+              <span className="row-span-1">5.ผู้เช่าสามารถเช่าขั้นต่ำได้ 3 วันเท่านั้น-วันส่งสินค้าทางร้านจะไม่คิดค่าเช่า และจะเริ่มคิดวันถัดไป วันรับคืนสินค้าคิดค่าเช่าตามปกติ</span>
+              <span className="row-span-1">6.หากผู้เช่าต้องการต่อสัญญา ผู้เช่าต้องแจ้งผู้ให้เช่าทราบล่วงหน้าอย่างน้อย 1-2วัน ก่อนหมดสัญญาเช่า หากไม่แจ้งล่างหน้า </span>
+              <span className="row-span-1">ผู้ให้เช่าจะทำการเก็บสินค้ากลับในวันที่ครบกำหนดทันที หากผู้เช่ายังไม่รื้้อของเช่า ผู้ให้เช่าจะทำการรื้อถอนด้วยตนเอง</span>
+              <span className="row-span-1">และจะไม่รับผิดชอบต่อความเสียหายใดๆ เพราะถือว่าผู้ให้เช่าผิดสัญญาเช่าต่อผู้ให้เช่า และทำการยึดค่ามัดจำทั้งหมด</span>
+              <span className="row-span-1">7.กรณีต่อสัญญาเช่าสินค้า ผู้เช่าต้องชำระค่าต่อสัญญาเช่าภายใน 1-2วันหลังต่อสัญญาเช่า และไม่สามารถนำมาหักเงินประกันได้</span>
+              <span className="row-span-1">8.ผู้เช่าต้องเป็นผู้กำเนินการเคลื่อนย้ายสินค้าเองทุกครั้ง หากไม่เคลื่อนย้ายสินค้าเอง ผู้เช่าจะต้องจ่ายค่าบริการเคลื่อนย้ายสินค้าให้แก่ผู้ให้เช่า</span>
+          </div>
+          {/* row7 */}
+          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
+          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
+          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
+          <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1">รวมเงิน</span>
+          <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ส่วนลด</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">-</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">รวมหลังหักส่วนลด</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ค่าขนส่งสินค้าไป-กลับ</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">1400.00</span>
+
+          <div className="bg-red-500 col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black">
+            <u>หมายเหตุ:</u> ขนส่งสินค้าโดยรถกะบะไป-กลับ 2 รอบ/หน้างานช่วยขึ้นลง
+          </div>
+          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าบริการเคลื่อนย้ายสินค้า</span>
+          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">-</span>
+          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าประกันสินค้า</span>
+          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">5000.00</span>
+
+          <div className="bg-yellow-500 col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black">
+            แปดพันสี่ร้อยเจ็ดสิบสามบาทหกสิบสตางค์
+          </div>
+          <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1">รวมยอดเงินที่ต้องชำระ</span>
+          <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-center items-center">8473.60</span>
+
+
+      </div>
+      
+
     </div>
   );
 }
