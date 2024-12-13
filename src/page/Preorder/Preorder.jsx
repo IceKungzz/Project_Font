@@ -98,6 +98,7 @@ export default function Quotation() {
         <div className="bg-red-200 h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
           <span className="bg-green-500 border-b-2 border-t-2 border-black">ลำดับ</span>
           <span>1</span>
+          {/* <span>1</span>
           <span>1</span>
           <span>1</span>
           <span>1</span>
@@ -105,8 +106,7 @@ export default function Quotation() {
           <span>1</span>
           <span>1</span>
           <span>1</span>
-          <span>1</span>
-          <span>1</span>
+          <span>1</span> */}
         </div>
         <div className="bg-red-300 h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="bg-green-500  border-b-2 border-t-2 border-black">รายการ</span>
@@ -165,7 +165,7 @@ export default function Quotation() {
           <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ค่าขนส่งสินค้าไป-กลับ</span>
           <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">1400.00</span>
 
-          <div className="bg-red-500 col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black">
+          <div className="bg-red-500 col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1">
             <u>หมายเหตุ:</u> ขนส่งสินค้าโดยรถกะบะไป-กลับ 2 รอบ/หน้างานช่วยขึ้นลง
           </div>
           <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าบริการเคลื่อนย้ายสินค้า</span>
@@ -179,6 +179,30 @@ export default function Quotation() {
           <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1">รวมยอดเงินที่ต้องชำระ</span>
           <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-center items-center">8473.60</span>
 
+      </div>
+
+      <div className="grid grid-cols-10 h-[100px] border-b-2 border-r-2 border-l-2 border-black text-[9px]">
+        <div className="bg-blue-900 col-span-5 border-r-2 border-black flex flex-col p-5 justify-around items-center">
+          <div>
+            <b>ผู้อนุมัติ:</b>
+            <span>__________________________________________</span>
+          </div>
+          <div>
+            <b>ลงวันที่:</b>
+            <span>__________________________________________</span>
+          </div>
+        </div>
+
+        <div className="bg-blue-500 col-span-5 flex flex-col p-5 justify-around items-center">
+          <div>
+              <b>ผู้เสนอ:</b>
+              <span>__________________________________________</span>
+            </div>
+            <div>
+              <b>ลงวันที่:</b>
+              <span>__________________________________________</span>
+            </div>
+        </div>
 
       </div>
       
