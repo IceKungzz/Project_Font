@@ -94,7 +94,7 @@ export function Outbound() {
 
                         <div className='row-span-1 grid grid-cols-3 grid-rows-6  pl-4 pr-4 pt-1'>
                             <span className='col-span-1  grid justify-start items-center '>ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก</span>
-                            <span className='col-span-1 row-span-2  grid justify-center items-center text-xl'>รายการส่งออกสินค้า</span>
+                            <span className='col-span-1 row-span-2  grid justify-center items-center text-xl font-bold'>รายการส่งออกสินค้า</span>
                             <span className='col-span-1 '></span>
                             <span className='col-span-1  grid justify-start items-center'>สาขา: ชลบุรี</span>
                             <span className='col-span-1  grid justify-end items-center'>12 ธันวาคม 2567</span>
