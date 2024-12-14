@@ -8,6 +8,7 @@ import { ReturnItem } from "../page/Returnbound/Returnbound"
 import { Home } from "../page/Home/Home"
 import Preorder from "../page/Preorder/Preorder"
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
+import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_oreder_SweetAlert"
 
 
 const router = createBrowserRouter([
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     },
     {path:"/login", element: <Login/>},
     {path:"/modal_outbound", element: <Modal_Outbound/>},
+    {path:"/modal_order", element: <Modal_Outbound_SweetAlert/>},
 ])
 
 export default router
