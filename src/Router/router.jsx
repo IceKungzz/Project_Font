@@ -8,7 +8,7 @@ import { ReturnItem } from "../page/Returnbound/Returnbound"
 import { Home } from "../page/Home/Home"
 import Preorder from "../page/Preorder/Preorder"
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
-import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_oreder_SweetAlert"
+import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_order_SweetAlert"
 
 
 const router = createBrowserRouter([
