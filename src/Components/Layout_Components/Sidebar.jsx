@@ -76,7 +76,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/c"
+                to="/status"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
