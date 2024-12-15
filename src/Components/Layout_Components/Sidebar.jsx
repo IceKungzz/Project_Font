@@ -76,7 +76,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/returnitem"
+                to="/c"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
@@ -87,7 +87,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/c"
+                to="/returnitem"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`

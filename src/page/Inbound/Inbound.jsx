@@ -57,7 +57,7 @@ export function Inbound(props) {
                                     />
                                     <span
                                         className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-                                        // onClick={() => handleClearInput(index)}
+                                    // onClick={() => handleClearInput(index)}
                                     >
                                         <i className="fa fa-times"></i>
                                     </span>
@@ -105,20 +105,23 @@ export function Inbound(props) {
                                             <td className="px-4 py-2">1</td>
                                             <td className="px-4 py-2">M04 แบบเสาสี่เหลี่ยม</td>
                                             <td className="px-4 py-2">100*100</td>
-                                            <td className="px-4 py-2">
+                                            <td className="px-4 py-2  ">
                                                 <input type="number" className="px-2 py-2 text-center  border w-[30%] rounded-lg border-gray-500" />
                                             </td>
-
+                                            <td className="px-6 py-2  ">
+                                                <i className="fa-solid fa-trash text-red-600 text-xl "></i>
+                                            </td>
                                         </tr>
                                         <tr className="border-b">
                                             <td className="px-4 py-2">2</td>
                                             <td className="px-4 py-2">D10 แบบคาน</td>
                                             <td className="px-4 py-2">10*100</td>
-
                                             <td className="px-4 py-2">
                                                 <input type="number" className="px-2 py-2 text-center border w-[30%] rounded-lg border-gray-500" />
                                             </td>
-
+                                            <td className="px-6 py-2  ">
+                                                <i className="fa-solid fa-trash text-red-600 text-xl "></i>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
