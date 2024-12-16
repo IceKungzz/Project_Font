@@ -26,6 +26,7 @@ function App() {
     { title: 'นำเข้าสินค้า', route: '/inbound' },
     { title: 'ส่งออกสินค้า', route: '/outbound' },
     { title: 'คืนสินค้า', route: '/returnitem' },
+    { title: 'สถานะสินค้า', route: '/status' },
   ];
 
   // เปรียบเทียบและดึงข้อมูลจาก route ปัจจุบัน

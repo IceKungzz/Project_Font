@@ -6,7 +6,7 @@ export function Home() {
     const items = [
         { link: '/inbound', imageSrc: '/img/In.png', title: 'นำเข้าสินค้า', width:165 , height:116 },
         { link: '/outbound', imageSrc: '/img/out.png', title: 'ส่งออกสินค้า', width: 143, height: 105 },
-        { link: '/inventory', imageSrc: '/img/location.png', title: 'สถานะสินค้า', width: 95, height: 126 },
+        { link: '/status', imageSrc: '/img/location.png', title: 'สถานะสินค้า', width: 95, height: 126 },
         { link: '/returnitem', imageSrc: '/img/Return.png', title: 'คืนสินค้า', width:173, height: 129 },
         { link: '/inventory', imageSrc: '/img/ItemInStor.png', title: 'สินค้าคงคลัง', width:185, height: 139 },
         { link: '/inventory', imageSrc: '/img/ItemAll.png', title: 'รายการทั้งหมด', width: 144, height: 126 },

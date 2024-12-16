@@ -10,7 +10,7 @@ export default {
         600 : '600ms'
       },
       fontFamily: {
-        inria: ['Inria Sans', 'sans-serif'], // ตั้งชื่อฟอนต์ เช่น inria
+        inria: ['kanit-thin'], 
       },
     },
   },
