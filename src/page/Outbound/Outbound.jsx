@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import axios from 'axios'
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Modal_Outbound } from "./Modal_Outbound"
 
 const MySwal = withReactContent(Swal);
 
@@ -17,9 +17,10 @@ export function Outbound() {
   const [day_length, setDay_Length] = useState('')
   //const [enddate, setEndDate] = useState('')
   //------------------------------------------------------
-  const [searchProducts, setSearchProducts] = useState(products)
-  const [selectitem , setSelectitem] = useState('')
   const [items, setItems] = useState([]);
+  const [showmodal, setShowmodal] = useState(false)
+  const [confirmitem, setConfirmitem] = useState([])
+
   const menu = [
     { title: 'นามลูกค้า/ชื่อบริษัท:', type: "text",},
     { title: 'ชื่อไซต์งาน:', type: "text" },
@@ -31,48 +32,21 @@ export function Outbound() {
   const options = { day: 'numeric', month: 'long', year: 'numeric' };
   const formattedDate = today.toLocaleDateString('th-TH', options);
   
-    const SelectItem = (amount, newItem) => {
-      if (amount <= 0) return; 
+
+
+  const handleConfirm = (items) => {
+    // เพิ่ม key 'type' ด้วยค่าเริ่มต้น 'เช่า' ถ้าไม่มีในแต่ละ item
+    const updatedItems = items.map(item => ({
+      ...item,
+      type: item.type || 'เช่า', // กำหนดค่า 'เช่า' ถ้าไม่มี type
+    }));
   
-      setItems((prevItems) => {
-        const existingIndex = prevItems.findIndex((item) => item.name === newItem);
-        if (existingIndex !== -1) {
-          const updatedItems = [...prevItems];
-          updatedItems[existingIndex].amount = amount;
-          return updatedItems;
-        } else {
-          return [...prevItems, { name: newItem, amount }];
-        }
-      });
-    };
-
-
-  useEffect(() =>{
-    const token = localStorage.getItem('token')
-    axios.get('http://192.168.195.75:5000/v1/product/outbound/product',{
-      headers: {
-            "Authorization": token, 
-            "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef", 
-          },
-    }).then((res) =>{
-      if(res.status ===200){
-        setProducts(res.data.data) 
-      }
-    })
-  },[])
-
-  useEffect(() => {
-    setSearchProducts(products); 
-  }, [products]);
-
-
-  const search = () => {
-    const filteredProducts = products.filter((product) =>
-      product.code.includes(selectitem) // กรองสินค้าจากรหัสที่ค้นหา
-    );
-    setSearchProducts(filteredProducts); // อัปเดต state
+    // อัพเดท state
+    setConfirmitem(updatedItems);
+  
+    console.log("Confirmed items: ", updatedItems);
   };
+  
 
   
   const handleDateChange = (dateValue) => {
@@ -108,192 +82,26 @@ export function Outbound() {
     return start.toLocaleDateString('th-TH', options);
   };
   
-  const handleOpenModal = () => {
-    MySwal.fire({
-      title: "เลือกสินค้า",
-      html: (
-        <div className="flex flex-col items-center">
-          {/* Search */}
-          <div className="flex items-center justify-around w-3/4">
-            <span className='text-black font-bold'>รหัสสินค้า: </span>
-            <div className="p-4 w-2/4">
-              <input
-                type="text"
-                placeholder="รหัสสินค้า"
-                className="w-full border border-gray-300 rounded-md p-2"
-                onChange={(e) => setSelectitem(e.target.value)}
-              />
-            </div>
-            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white" onClick={search}>
-              ค้นหา
-            </button>
-          </div>
-
-          {/* Table */}
-          <div className="overflow-y-auto min-h-[500px] max-h-[500px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
-            <table className="w-full text-center">
-              <thead className="sticky top-0 bg-white z-10">
-                <tr className="border-b border-blue-500 text-[#133E87] font-bold">
-                  <th className="px-4 py-2">รหัสสินค้า</th>
-                  <th className="px-4 py-2">ชื่อสินค้า</th>
-                  <th className="px-4 py-2">ขนาด</th>
-                  <th className="px-4 py-2">คงเหลือ</th>
-                  <th className="px-4 py-2">เลือก</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                searchProducts.map((item, key) => (
-                  <tr key={key} className="border-b border-blue-500">
-                    <td className="px-4 py-2">{item.code}</td>
-                    <td className="px-4 py-2">{item.name}</td>
-                    <td className="px-4 py-2">{item.size}</td>
-                    <td className="px-4 py-2 text-red-500">{item.quantity}</td>
-                    <td className="px-4 py-2">
-                      <input
-                        type="number"
-                        min={0}
-                        className="w-[100px] p-2 text-center border border-black"
-                        onChange={(e) => SelectItem(e.target.value, item.name)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-center p-4 border-t w-3/4">
-            <button
-              className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center"
-              onClick={() => {
-                console.log("Selected Items:", items);
-                MySwal.close();
-              }}
-            >
-              ยืนยัน
-            </button>
-          </div>
-        </div>
-      ),
-      showConfirmButton: false,
-      customClass: {
-        popup: "rounded-lg w-[900px] h-[800px] p-4 relative",
-        closeButton: "absolute top-2 right-2 text-2xl cursor-pointer",
-        title:'font-bold text-[#133E87]'
-      },
-      didOpen: () => {
-        const closeButton = document.createElement("span");
-        closeButton.innerHTML = "X";
-        closeButton.classList.add("absolute", "top-4", "right-6", "text-2xl", "cursor-pointer");
-        closeButton.addEventListener("click", () => {
-          MySwal.close();
-        });
-        document.querySelector(".swal2-popup").appendChild(closeButton);
-      },
-    });
-  };
+  const closeModal = () =>{
+    setShowmodal(false)
+  }
 
 
-  const handleOpenModal_Create_Product = () => {
-    MySwal.fire({
-      title: "เลือกสินค้า",
-      html: (
-        <div className="flex flex-col items-center">
-          {/* Search */}
-          <div className="flex items-center justify-around w-3/4">
-            <span className='font-bold text-black'>รหัสสินค้า: </span>
-            <div className="p-4 w-1/4">
-              <input
-                type="text"
-                placeholder="รหัสสินค้า"
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
+const handleModelChange = (index, value) => {
+  const updatedConfirmItem = [...confirmitem];
+  updatedConfirmItem[index].type = value; 
+  setConfirmitem(updatedConfirmItem); 
+};
 
-            <span className='font-bold text-black'>ชื่อสินค้า: </span>
-            <div className="p-4 w-1/4">
-              <input
-                type="text"
-                placeholder="รหัสสินค้า"
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
 
-            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white">
-              ค้นหา
-            </button>
-          </div>
-          <div className='w-3/4 text-start text-[#133E87] font-bold mb-2'>
-              เลือกสินค้าเพื่อเพิ่มรายการใหม่
-          </div>
+const handleAmountChange = (index, value) => {
+  const updatedConfirmItem = [...confirmitem];
+  updatedConfirmItem[index].amount = value; 
+  setConfirmitem(updatedConfirmItem);
+};
 
-          {/* Table */}
-          <div className="overflow-y-auto min-h-[500px] max-h-[500px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
-            <table className="w-full text-center">
-              <thead className="sticky top-0 bg-white z-10">
-                <tr className="border-b border-blue-500 text-[#133E87] font-bold">
-                  <th className="px-4 py-2">รหัสสินค้า</th>
-                  <th className="px-4 py-2">ชื่อสินค้า</th>
-                  <th className="px-4 py-2">ขนาด</th>
-                  <th className="px-4 py-2">คงเหลือ</th>
-                  <th className="px-4 py-2">จำนวน</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((item, key) => (
-                  <tr key={key} className="border-b border-blue-500">
-                    <td className="px-4 py-2">{item.code}</td>
-                    <td className="px-4 py-2">{item.name}</td>
-                    <td className="px-4 py-2">{item.size}</td>
-                    <td className="px-4 py-2 text-red-500">{item.quantity}</td>
-                    <td className="px-4 py-2">
-                      <input
-                        type="number"
-                        min={0}
-                        className="w-[100px] p-2 text-center border border-black"
-                        onChange={(e) => SelectItem(e.target.value, item.name)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-center p-4 border-t w-3/4">
-            <button
-              className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center"
-              onClick={() => {
-                console.log("Selected Items:", items);
-                MySwal.close();
-              }}
-            >
-              ยืนยัน
-            </button>
-          </div>
-        </div>
-      ),
-      showConfirmButton: false,
-      customClass: {
-        popup: "rounded-lg w-[900px] h-[800px] p-4 relative",
-        closeButton: "absolute top-2 right-2 text-2xl cursor-pointer",
-        title:'font-bold text-[#133E87]'
-      },
-      didOpen: () => {
-        const closeButton = document.createElement("span");
-        closeButton.innerHTML = "X";
-        closeButton.classList.add("absolute", "top-4", "right-6", "text-2xl", "cursor-pointer");
-        closeButton.addEventListener("click", () => {
-          MySwal.close();
-        });
-        document.querySelector(".swal2-popup").appendChild(closeButton);
-      },
-    });
-  };
-
+  console.log(confirmitem);
+  
   
 
   return (
@@ -303,6 +111,8 @@ export function Outbound() {
             <title>ส่งออกสินค้า</title>
         </Helmet>
       </HelmetProvider>
+
+      {showmodal ? <Modal_Outbound close={closeModal} confirm={handleConfirm} /> : null}
       <div className='w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar '>
 
         <div className="col-span-2 grid grid-rows-6 ">
@@ -357,12 +167,12 @@ export function Outbound() {
             <div className='grid grid-cols-8 pt-10 '>
               <span className='col-span-2 '></span>
               <button className="col-span-3 w-[80%] bg-[#31AB31] h-10 rounded-md text-white hover:bg-[#2a7e2d] transition duration-300"
-                onClick={handleOpenModal}
+                onClick={() => setShowmodal(true)}
               >
                 <i className="fa-solid fa-plus mr-2"></i>จองสินค้า
               </button>
               <button className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300" 
-              onClick={handleOpenModal_Create_Product}
+              
               >
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
@@ -407,47 +217,42 @@ export function Outbound() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b-2">
-                      <td className="px-4 py-2">1</td>
-                      <td className="px-4 py-2">M04 แบบเสาสี่เหลี่ยม</td>
-                      <td className="px-4 py-2">100*100</td>
-                      <td className="px-4 py-2">
-                        <select
-                          name="model"
-                          id=""
-                          className="px-4 py-2 text-center "
-                        >
-                          <option value="">เช่า</option>
-                          <option value="">ซื้อ</option>
-                        </select>
-                      </td>
-                      <td className="px-4 py-2">
-                        <input type="number" className="px-2 py-2 text-center " />
-                      </td>
-                      <td className="px-4 py-2 ">2,000.00</td>
-                      <td className="px-4 py-2">4,000.00</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="px-4 py-2">2</td>
-                      <td className="px-4 py-2">D10 แบบคาน</td>
-                      <td className="px-4 py-2">10*100</td>
-                      <td className="px-4 py-2">
-                        <select
-                          name="model"
-                          id=""
-                          className="px-4 py-2 text-center "
-                        >
-                          <option value="">เช่า</option>
-                          <option value="">ซื้อ</option>
-                        </select>
-                      </td>
-                      <td className="px-4 py-2">
-                        <input type="number" className="px-2 py-2 text-center" />
-                      </td>
-                      <td className="px-4 py-2">3,000.00</td>
-                      <td className="px-4 py-2">9,000.00</td>
-                    </tr>
-                  </tbody>
+  {confirmitem.length > 0 ? (
+    confirmitem.map((item, index) => (
+      <tr className="border-b-2" key={index}>
+        <td className="px-4 py-2">{index + 1}</td>
+        <td className="px-4 py-2">{item.name}</td>
+        <td className="px-4 py-2">{item.size}</td>
+        <td className="px-4 py-2">
+          <select
+            name="model"
+            className="px-4 py-2 text-center"
+            value={item.type || ''} 
+            onChange={(e) => handleModelChange(index, e.target.value)} 
+          >
+            <option value="เช่า">เช่า</option>
+            <option value="ซื้อ">ซื้อ</option>
+          </select>
+        </td>
+        <td className="px-4 py-2">
+          <input
+            type="number"
+            className="px-2 py-2 text-center"
+            value={item.amount || 0} 
+            onChange={(e) => handleAmountChange(index, e.target.value)} 
+          />
+        </td>
+        <td className="px-4 py-2">2,000.00</td>
+        <td className="px-4 py-2">4,000.00</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="7" className="px-4 py-2 text-center">ไม่มีข้อมูล</td>
+    </tr>
+  )}
+</tbody>
+
                 </table>
               </div>
             </div>
@@ -490,7 +295,7 @@ export function Outbound() {
             <span></span>
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
               <span className='col-span-1 flex  justify-end pr-2'>
-              <button className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
+              <button className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300" ><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
               </span>
               <span className='col-span-1 flex  justify-start pl-2'>
               <button className="bg-[#A62628] w-2/6 p-2 rounded-md hover:bg-[#762324] transition duration-300"><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>

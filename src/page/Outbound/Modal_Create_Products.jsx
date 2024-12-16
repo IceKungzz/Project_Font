@@ -1,7 +1,7 @@
 import React from "react";
 import {useState , useEffect} from 'react'
 import axios from 'axios'
-export function Modal_Outbound({close, confirm}) {
+export function Modal_Create_Products({close, confirm}) {
 
   const [products, setProducts] = useState([])
   const [products_search, setProducts_search] = useState([])
@@ -62,12 +62,22 @@ export function Modal_Outbound({close, confirm}) {
 
         {/* Search */}
         <div className="flex items-center justify-around w-3/4">
-          <span className="text-black font-bold">รหัสสินค้า: </span>
-          <div className="p-4 w-2/4">
+          <span className="w-[150px]">รหัสสินค้า: </span>
+          <div className="w-2/4 ">
             <input
               type="text"
               placeholder="รหัสสินค้า"
-              className="w-full  border border-gray-300 rounded-md p-2"
+              className="w-3/4  border border-gray-300 rounded-md p-2"
+              onChange={(e) => setkeysearchItem(e.target.value)}
+            />
+          </div>
+
+          <span className="w-[150px]">ชื่อสินค้า: </span>
+          <div className="p-2 w-2/4">
+            <input
+              type="text"
+              placeholder="รหัสสินค้า"
+              className="w-3/4  border border-gray-300 rounded-md p-2"
               onChange={(e) => setkeysearchItem(e.target.value)}
             />
           </div>
@@ -76,11 +86,15 @@ export function Modal_Outbound({close, confirm}) {
           </button>
         </div>
 
+        <div className="w-3/4 p-2 text-[#133E87] font-bold">
+        เลือกสินค้าเพื่อสร้างรายการใหม่
+        </div>
+
         {/* Table */}
         <div className="overflow-y-auto max-h-[550px] min-h-[550px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
           <table className="w-full text-center">
-            <thead className="sticky top-0 bg-white z-10 text-[#133E87] font-bold">
-              <tr className="border-b border-blue-500">
+            <thead className="sticky top-0 bg-white z-10">
+              <tr className="border-b border-blue-500 text-[#133E87] font-bold">
                 <th className="px-4 py-2">รหัสสินค้า</th>
                 <th className="px-4 py-2">ชื่อสินค้า</th>
                 <th className="px-4 py-2">ขนาด</th>
@@ -129,7 +143,7 @@ export function Modal_Outbound({close, confirm}) {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-center p-4 border-t w-3/4">
+        <div className="flex justify-center p-4 border-t w-3/4 mt-2">
           <button className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center" onClick={confirm_item}>
             ยืนยัน
           </button>
