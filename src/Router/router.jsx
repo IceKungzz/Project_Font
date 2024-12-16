@@ -10,10 +10,10 @@ import Preorder from "../page/Preorder/Preorder"
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
 
 import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_order_SweetAlert"
-import { Status_product } from "../page/status/status"
+import StatusProduct from "../page/status/status"
 import Inventory from "../page/Inventory/Inventory"
 // import allptc from "../page/allptc/allptc"
-
+ 
 
 const router = createBrowserRouter([
     {
@@ -27,9 +27,9 @@ const router = createBrowserRouter([
                     {path:"inbound", element: <Inbound/>},
                     {path:"", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
-                    {path:"status", element: <Status_product/>},
+                    {path:"status", element: <StatusProduct/>},
                     {path:"inventory", element: <Inventory />},
-                    // {path:"allptc", element: <allptc />}
+                    
                 ],   
             },
             {path:"preorder", element: <Preorder/>},
