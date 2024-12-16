@@ -11,7 +11,8 @@ import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
 
 import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_order_SweetAlert"
 import { Status_product } from "../page/status/status"
-
+import Inventory from "../page/Inventory/Inventory"
+// import allptc from "../page/allptc/allptc"
 
 
 const router = createBrowserRouter([
@@ -27,7 +28,9 @@ const router = createBrowserRouter([
                     {path:"", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
                     {path:"status", element: <Status_product/>},
-                ],
+                    {path:"inventory", element: <Inventory />},
+                    // {path:"allptc", element: <allptc />}
+                ],   
             },
             {path:"preorder", element: <Preorder/>},
         ],

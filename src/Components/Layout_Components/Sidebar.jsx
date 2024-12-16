@@ -98,7 +98,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/d"
+                to="/inventory"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
@@ -109,7 +109,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/e"
+                to="/allptc"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`
