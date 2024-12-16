@@ -9,8 +9,15 @@ const MySwal = withReactContent(Swal);
 
 export function Outbound() {
   const [products, setProducts] = useState([])
+  //ข้อมูลใน input 
   const [name, setName] = useState('')
-  const [searchproducts, setSearchProducts] = useState(products)
+  const [address, setAddress] = useState('')
+  const [workside,setWorkside] = useState('')
+  const [sell_date, setSell_date] = useState('')
+  const [day_length, setDay_Length] = useState('')
+  //const [enddate, setEndDate] = useState('')
+  //------------------------------------------------------
+  const [searchProducts, setSearchProducts] = useState(products)
   const [selectitem , setSelectitem] = useState('')
   const [items, setItems] = useState([]);
   const menu = [
@@ -20,7 +27,9 @@ export function Outbound() {
     { title: 'วันที่เริ่มเช่า-ขาย:', type: "date" },
   ];
 
-
+  const today = new Date();
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  const formattedDate = today.toLocaleDateString('th-TH', options);
   
     const SelectItem = (amount, newItem) => {
       if (amount <= 0) return; 
@@ -58,37 +67,47 @@ export function Outbound() {
   }, [products]);
 
 
-
-
-  const changeitem = (value) =>{
-    setSelectitem(value)
-  }
-
-  console.log(selectitem);
-  
-
   const search = () => {
-    console.log('item = ',selectitem);
-    
-    const item = products.filter((item) => item.code.includes(selectitem));
-    setSearchProducts(item);
-    console.log(item);
-    
+    const filteredProducts = products.filter((product) =>
+      product.code.includes(selectitem) // กรองสินค้าจากรหัสที่ค้นหา
+    );
+    setSearchProducts(filteredProducts); // อัปเดต state
   };
 
-  useEffect(() => {
-    if (selectitem !== '') {
-      console.log('selectitem updated:', selectitem); // จะทำงานทุกครั้งที่ selectitem เปลี่ยน
-      search();
-    } else {
-      setSearchProducts([]); // ถ้าไม่มีการกรอกอะไรเลยให้ล้างผลลัพธ์
-    }
-  }, [selectitem]);
   
+  const handleDateChange = (dateValue) => {
+    const date = new Date(dateValue); // แปลงค่าที่ได้จาก input type="date"
+    const options = { day: 'numeric', month: 'short', year: '2-digit' };
+    const formattedDate = date.toLocaleDateString('th-TH', options); // ฟอร์แมตวันที่เป็นไทย
+    setSell_date(formattedDate); // เก็บค่าที่ฟอร์แมตแล้วใน state
+  };
   
-  
-  
+  const parseThaiDate = (thaiDate) => {
+    const thaiMonths = [
+      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+    ];
 
+    const [day, month, year] = thaiDate.split(' ');
+    const monthIndex = thaiMonths.indexOf(month);
+    if (monthIndex === -1) return null;
+
+    const fullYear = parseInt(year, 10) + 2500 - 543;
+    return `${fullYear}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };
+
+  const calculateEndDate = (thaiStartDate, dayLength) => {
+    const isoStartDate = parseThaiDate(thaiStartDate);
+    if (!isoStartDate) return "วันที่ไม่ถูกต้อง";
+
+    const start = new Date(isoStartDate);
+    if (isNaN(start.getTime())) return "กรอกจำนวนวันที่เช่าก่อน";
+
+    start.setDate(start.getDate() + parseInt(dayLength, 10));
+    const options = { day: 'numeric', month: 'short', year: '2-digit' };
+    return start.toLocaleDateString('th-TH', options);
+  };
+  
   const handleOpenModal = () => {
     MySwal.fire({
       title: "เลือกสินค้า",
@@ -102,7 +121,7 @@ export function Outbound() {
                 type="text"
                 placeholder="รหัสสินค้า"
                 className="w-full border border-gray-300 rounded-md p-2"
-                onChange={(e) => changeitem(e.target.value)}
+                onChange={(e) => setSelectitem(e.target.value)}
               />
             </div>
             <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white" onClick={search}>
@@ -124,7 +143,7 @@ export function Outbound() {
               </thead>
               <tbody>
                 {
-                searchproducts.map((item, key) => (
+                searchProducts.map((item, key) => (
                   <tr key={key} className="border-b border-blue-500">
                     <td className="px-4 py-2">{item.code}</td>
                     <td className="px-4 py-2">{item.name}</td>
@@ -294,7 +313,7 @@ export function Outbound() {
               <span className="col-span-1 grid justify-end pr-2">
                 สาขา:
               </span>
-              <select name="" id="" className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500" >
+              <select name="branch" id="branch" className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500" >
                 <option>ชลบุรี</option>
               </select>
             </div>
@@ -307,7 +326,14 @@ export function Outbound() {
                 <input
                   type={item.type}
                   onChange={ item.title === 'นามลูกค้า/ชื่อบริษัท:' ? 
-                    (e) => setName(e.target.value) : null
+                    (e) => setName(e.target.value) 
+                    :  item.title === 'วันที่เริ่มเช่า-ขาย:' ?
+                    (e) => handleDateChange(e.target.value) 
+                    : item.title === 'ชื่อไซต์งาน:' ?
+                    (e) => setWorkside(e.target.value) 
+                    : item.title === 'ที่อยู่ลูกค้า:' ?
+                    (e) => setAddress(e.target.value)
+                    : null
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
@@ -321,6 +347,7 @@ export function Outbound() {
               <input
                 type="text"
                 className="col-span-2 h-10 rounded-lg border border-gray-500 p-2"
+                onChange={(e) => setDay_Length(e.target.value)}
               />
               <span className="col-span-1 pl-5">
                 วัน
@@ -353,17 +380,16 @@ export function Outbound() {
               <span className='col-span-1 row-span-2 grid justify-center items-center text-xl font-bold'>รายการส่งออกสินค้า</span>
               <span className='col-span-1 '></span>
               <span className='col-span-1 grid justify-start items-center'>สาขา: ชลบุรี</span>
-              <span className='col-span-1 grid justify-end items-center'>12 ธันวาคม 2567</span>
-              <span className='col-span-3 grid justify-start items-center'>นามลูกค้า/ชื่อบริษัท:
-                {name}</span>
-              <span className='col-span-1 grid justify-start items-center'>ชื่อไซต์งาน: โรง2</span>
-              <span className='col-span-1 grid justify-end items-center'>เริ่มเช่า: 27 พ.ย. 57</span>
-              <span className='col-span-1 grid justify-end items-center'>สิ้นสุดเช่า: 03 ธ.ค.67</span>
+              <span className='col-span-1 grid justify-end items-center'>{formattedDate}</span>
+              <span className='col-span-3 grid justify-start items-center'>นามลูกค้า/ชื่อบริษัท: {name}</span>
+              <span className='col-span-1 grid justify-start items-center'>ชื่อไซต์งาน: {workside}</span>
+              <span className='col-span-1 grid justify-end items-center'>เริ่มเช่า: {sell_date}</span>
+              <span className='col-span-1 grid justify-end items-center'>สิ้นสุดเช่า: {calculateEndDate(sell_date,day_length)}</span>
               <span className='col-span-2 row-span-2 grid grid-cols-7'>
                 <span className='col-span-1'>ที่อยู่ลูกค้า:</span>
-                <span className='col-span-6'>บริษัท 123 จำกัด เลขที่ 22/11 หมู่ 1 ถนนลาดยาว ตำบลสองเสน อำเภอศรีราชา จังหวัดชลบุรี</span>
+                <span className='col-span-6'>{address}</span>
               </span>
-              <span className='col-span-1 grid justify-end items-center'>ระยะเวลาเช่า: 7 วัน</span>
+              <span className='col-span-1 grid justify-end items-center'>ระยะเวลาเช่า: {day_length} วัน</span>
             </div>
 
             <div className='row-span-3 grid grid-rows-3'>

@@ -1,13 +1,27 @@
-import { useState } from "react"; 
-import { NavLink } from "react-router-dom";
+import Swal from 'sweetalert2'
+import { NavLink  } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import React from "react";
 
 export default function Sidebar() {
 
+  const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const logout =() =>{
+    localStorage.removeItem('token')
+    Swal.fire({
+      icon:'success',
+      text:"Logout Successfully",
+      confirmButton:'ok'
+    }).then((res) =>{
+      navigate('login')
+    })
+  }
 
   return (
     <div className="h-screen flex flex-col">
@@ -124,7 +138,7 @@ export default function Sidebar() {
         </div>
 
         <div className="text-xl text-[#608BC1]  h-1/6 w-full flex items-center justify-center">
-          <div className="bg-[#133E87] w-3/4 p-1 text-md cursor-pointer 2xl:p-3 rounded-md 2xl:text-lg text-center">
+          <div className="bg-[#133E87] w-3/4 p-1 text-md cursor-pointer 2xl:p-3 rounded-md 2xl:text-lg text-center" onClick={logout}>
             <span>
               <i className="fa-solid fa-right-from-bracket mt-2 mr-2"></i> ออกจากระบบ
             </span>
