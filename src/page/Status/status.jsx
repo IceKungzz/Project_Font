@@ -171,16 +171,16 @@ export function StatusProduct() {
         </div>
 
         {/* Row 2: ตารางแสดงข้อมูล */}
-        <div className="w-full overflow-y-scroll">
-          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
-            <thead className="bg-[#CBDCEB] h-16">
-              <tr>
-                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
+        <div className="w-full overflow-y-scroll no-scrollbar">
+          <table className="table-auto w-full border-separate border-spacing-0  text-center overflow-hidden ">
+            <thead className="h-16 ">
+              <tr className="">
+                <th className="border-b-2 border-l-2 border-t-2 border-[#133E87] rounded-tl-xl  px-4 py-2 text-[#133E87]">สาขา</th>
                 <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
                 <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
                 <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
                 <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
-                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] rounded-tr-xl py-2 text-[#133E87] w-[30px]">เพิ่มเติม</th>
               </tr>
             </thead>
             <tbody>

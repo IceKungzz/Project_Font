@@ -26,10 +26,10 @@ export function Outbound() {
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
 
   const menu = [
-    { title: "นามลูกค้า/ชื่อบริษัท:", type: "text" },
-    { title: "ชื่อไซต์งาน:", type: "text" },
-    { title: "ที่อยู่ลูกค้า:", type: "text" },
-    { title: "วันที่เริ่มเช่า-ขาย:", type: "date" },
+    { title: "นามลูกค้า/ชื่อบริษัท :", type: "text" },
+    { title: "ชื่อไซต์งาน :", type: "text" },
+    { title: "ที่อยู่ลูกค้า :", type: "text" },
+    { title: "วันที่เสนอ :", type: "date" },
   ];
 
   const today = new Date();
@@ -165,7 +165,7 @@ export function Outbound() {
         <div className="col-span-2 grid grid-rows-6 ">
           <div className="row-span-4 items-center text-base ">
             <div className="grid justify-end items-center grid-cols-4 ">
-              <span className="col-span-1 grid justify-end pr-2">สาขา:</span>
+              <span className="col-span-1 grid justify-end pr-2">สาขา : </span>
               <select
                 name="branch"
                 id="branch"
@@ -186,13 +186,13 @@ export function Outbound() {
                 <input
                   type={item.type}
                   onChange={
-                    item.title === "นามลูกค้า/ชื่อบริษัท:"
+                    item.title === "นามลูกค้า/ชื่อบริษัท :"
                       ? (e) => setName(e.target.value)
-                      : item.title === "วันที่เริ่มเช่า-ขาย:"
+                      : item.title === "วันที่เสนอ :"
                       ? (e) => handleDateChange(e.target.value)
-                      : item.title === "ชื่อไซต์งาน:"
+                      : item.title === "ชื่อไซต์งาน :"
                       ? (e) => setWorkside(e.target.value)
-                      : item.title === "ที่อยู่ลูกค้า:"
+                      : item.title === "ที่อยู่ลูกค้า :"
                       ? (e) => setAddress(e.target.value)
                       : null
                   }
@@ -203,7 +203,7 @@ export function Outbound() {
 
             <div className="grid justify-end items-center grid-cols-4 pt-10 ">
               <span className="col-span-1 grid justify-end pr-2 ">
-                ระยะเวลา:
+                ระยะเวลา : 
               </span>
               <input
                 type="text"
