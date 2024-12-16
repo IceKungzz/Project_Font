@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Modal_Outbound } from "./Modal_Outbound"
-
+import { Modal_Create_Products } from './Modal_Create_Products';
 const MySwal = withReactContent(Swal);
 
 
@@ -19,6 +19,7 @@ export function Outbound() {
   //------------------------------------------------------
   const [items, setItems] = useState([]);
   const [showmodal, setShowmodal] = useState(false)
+  const [showmodal_create_product,setShowmodal_create_product] = useState(false)
   const [confirmitem, setConfirmitem] = useState([])
 
   const menu = [
@@ -82,9 +83,8 @@ export function Outbound() {
     return start.toLocaleDateString('th-TH', options);
   };
   
-  const closeModal = () =>{
-    setShowmodal(false)
-  }
+  const closeModal = () =>{setShowmodal(false)}
+  const closeModal_Create = () => {setShowmodal_create_product(false)}
 
 
 const handleModelChange = (index, value) => {
@@ -100,8 +100,6 @@ const handleAmountChange = (index, value) => {
   setConfirmitem(updatedConfirmItem);
 };
 
-  console.log(confirmitem);
-  
   
 
   return (
@@ -113,6 +111,7 @@ const handleAmountChange = (index, value) => {
       </HelmetProvider>
 
       {showmodal ? <Modal_Outbound close={closeModal} confirm={handleConfirm} /> : null}
+      {showmodal_create_product ? <Modal_Create_Products close={closeModal_Create} /> : null}
       <div className='w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar '>
 
         <div className="col-span-2 grid grid-rows-6 ">
@@ -172,7 +171,7 @@ const handleAmountChange = (index, value) => {
                 <i className="fa-solid fa-plus mr-2"></i>จองสินค้า
               </button>
               <button className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300" 
-              
+              onClick={() => setShowmodal_create_product(true)}
               >
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
