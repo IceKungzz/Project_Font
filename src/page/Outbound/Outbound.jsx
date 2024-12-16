@@ -1,38 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import axios from 'axios'
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const MySwal = withReactContent(Swal);
 
 
 export function Outbound() {
-
+  const [products, setProducts] = useState([])
+  const [name, setName] = useState('')
+  const [searchproducts, setSearchProducts] = useState(products)
+  const [selectitem , setSelectitem] = useState('')
+  const [items, setItems] = useState([]);
   const menu = [
-    { title: 'นามลูกค้า/ชื่อบริษัท:', type: "text" },
+    { title: 'นามลูกค้า/ชื่อบริษัท:', type: "text",},
     { title: 'ชื่อไซต์งาน:', type: "text" },
     { title: 'ที่อยู่ลูกค้า:', type: "text" },
     { title: 'วันที่เริ่มเช่า-ขาย:', type: "date" },
   ];
 
-  const data = [
-    { no: 1, name: "text1", size: 10, amount: 26 },
-    { no: 2, name: "text2", size: 20, amount: 15 },
-    { no: 3, name: "text3", size: 30, amount: 50 },
-    { no: 4, name: "text4", size: 40, amount: 26 },
-    { no: 5, name: "text5", size: 50, amount: 15 },
-    { no: 6, name: "text6", size: 10, amount: 26 },
-    { no: 7, name: "text7", size: 20, amount: 15 },
-    { no: 8, name: "text8", size: 30, amount: 50 },
-    { no: 9, name: "text9", size: 40, amount: 26 },
-    { no: 10, name: "text10", size: 50, amount: 15 },
-    { no: 11, name: "text11", size: 10, amount: 26 },
-    { no: 12, name: "text12", size: 20, amount: 15 },
-    { no: 13, name: "text13", size: 30, amount: 50 },
-    { no: 14, name: "text14", size: 40, amount: 26 },
-    { no: 15, name: "text15", size: 50, amount: 15 },
-  ];
 
-  const [items, setItems] = useState([]);
   
     const SelectItem = (amount, newItem) => {
       if (amount <= 0) return; 
@@ -50,6 +38,57 @@ export function Outbound() {
     };
 
 
+  useEffect(() =>{
+    const token = localStorage.getItem('token')
+    axios.get('http://192.168.195.75:5000/v1/product/outbound/product',{
+      headers: {
+            "Authorization": token, 
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef", 
+          },
+    }).then((res) =>{
+      if(res.status ===200){
+        setProducts(res.data.data) 
+      }
+    })
+  },[])
+
+  useEffect(() => {
+    setSearchProducts(products); 
+  }, [products]);
+
+
+
+
+  const changeitem = (value) =>{
+    setSelectitem(value)
+  }
+
+  console.log(selectitem);
+  
+
+  const search = () => {
+    console.log('item = ',selectitem);
+    
+    const item = products.filter((item) => item.code.includes(selectitem));
+    setSearchProducts(item);
+    console.log(item);
+    
+  };
+
+  useEffect(() => {
+    if (selectitem !== '') {
+      console.log('selectitem updated:', selectitem); // จะทำงานทุกครั้งที่ selectitem เปลี่ยน
+      search();
+    } else {
+      setSearchProducts([]); // ถ้าไม่มีการกรอกอะไรเลยให้ล้างผลลัพธ์
+    }
+  }, [selectitem]);
+  
+  
+  
+  
+
   const handleOpenModal = () => {
     MySwal.fire({
       title: "เลือกสินค้า",
@@ -63,9 +102,10 @@ export function Outbound() {
                 type="text"
                 placeholder="รหัสสินค้า"
                 className="w-full border border-gray-300 rounded-md p-2"
+                onChange={(e) => changeitem(e.target.value)}
               />
             </div>
-            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white">
+            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white" onClick={search}>
               ค้นหา
             </button>
           </div>
@@ -83,12 +123,13 @@ export function Outbound() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, key) => (
+                {
+                searchproducts.map((item, key) => (
                   <tr key={key} className="border-b border-blue-500">
-                    <td className="px-4 py-2">{item.no}</td>
+                    <td className="px-4 py-2">{item.code}</td>
                     <td className="px-4 py-2">{item.name}</td>
                     <td className="px-4 py-2">{item.size}</td>
-                    <td className="px-4 py-2 text-red-500">{item.amount}</td>
+                    <td className="px-4 py-2 text-red-500">{item.quantity}</td>
                     <td className="px-4 py-2">
                       <input
                         type="number"
@@ -182,12 +223,12 @@ export function Outbound() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, key) => (
+                {products.map((item, key) => (
                   <tr key={key} className="border-b border-blue-500">
-                    <td className="px-4 py-2">{item.no}</td>
+                    <td className="px-4 py-2">{item.code}</td>
                     <td className="px-4 py-2">{item.name}</td>
                     <td className="px-4 py-2">{item.size}</td>
-                    <td className="px-4 py-2 text-red-500">{item.amount}</td>
+                    <td className="px-4 py-2 text-red-500">{item.quantity}</td>
                     <td className="px-4 py-2">
                       <input
                         type="number"
@@ -238,6 +279,11 @@ export function Outbound() {
 
   return (
     <div className='w-full h-[90%] mt-5'>
+      <HelmetProvider>
+          <Helmet>
+            <title>ส่งออกสินค้า</title>
+        </Helmet>
+      </HelmetProvider>
       <div className='w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar '>
 
         <div className="col-span-2 grid grid-rows-6 ">
@@ -249,8 +295,7 @@ export function Outbound() {
                 สาขา:
               </span>
               <select name="" id="" className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500" >
-                <option value="">ชลบุรี</option>
-                <option value="">ระยอง</option>
+                <option>ชลบุรี</option>
               </select>
             </div>
 
@@ -261,7 +306,10 @@ export function Outbound() {
                 </span>
                 <input
                   type={item.type}
-                  className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500"
+                  onChange={ item.title === 'นามลูกค้า/ชื่อบริษัท:' ? 
+                    (e) => setName(e.target.value) : null
+                  }
+                  className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
               </div>
             ))}
@@ -272,7 +320,7 @@ export function Outbound() {
               </span>
               <input
                 type="text"
-                className="col-span-2 h-10 rounded-lg border border-gray-500 "
+                className="col-span-2 h-10 rounded-lg border border-gray-500 p-2"
               />
               <span className="col-span-1 pl-5">
                 วัน
@@ -307,7 +355,7 @@ export function Outbound() {
               <span className='col-span-1 grid justify-start items-center'>สาขา: ชลบุรี</span>
               <span className='col-span-1 grid justify-end items-center'>12 ธันวาคม 2567</span>
               <span className='col-span-3 grid justify-start items-center'>นามลูกค้า/ชื่อบริษัท:
-                คุณพรทิพย์</span>
+                {name}</span>
               <span className='col-span-1 grid justify-start items-center'>ชื่อไซต์งาน: โรง2</span>
               <span className='col-span-1 grid justify-end items-center'>เริ่มเช่า: 27 พ.ย. 57</span>
               <span className='col-span-1 grid justify-end items-center'>สิ้นสุดเช่า: 03 ธ.ค.67</span>
@@ -410,8 +458,8 @@ export function Outbound() {
 
           <div className='row-span-1 grid grid-rows-3 '>
             <div className=" row-span-1   flex items-center">
-              <input type='radio' name='vat' />  มีภาษีมูลค่าเพิ่ม
-              <input type='radio' name='vat' className="ml-3" />  ไม่มีภาษีมูลค่าเพิ่ม
+              <input type='radio' name='vat' className='mr-2'/>  มีภาษีมูลค่าเพิ่ม
+              <input type='radio' name='vat' className="ml-3 mr-2" />  ไม่มีภาษีมูลค่าเพิ่ม
             </div>
             <span></span>
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
