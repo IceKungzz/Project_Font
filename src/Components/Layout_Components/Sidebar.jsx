@@ -1,11 +1,12 @@
 import Swal from 'sweetalert2'
-import { NavLink  } from "react-router-dom";
+import { NavLink, useLocation   } from "react-router-dom";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
 
 export default function Sidebar() {
 
+  const location = useLocation();
   const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
@@ -22,6 +23,8 @@ export default function Sidebar() {
       navigate('login')
     })
   }
+
+  const isHomePage = location.pathname === "/";
 
   return (
     <div className="h-screen flex flex-col">
@@ -53,7 +56,7 @@ export default function Sidebar() {
           </div>
 
           {/* รายการเมนู */}
-          {isSidebarOpen && (
+          {isSidebarOpen && !isHomePage && (
             <>
               <NavLink
                 to="/"

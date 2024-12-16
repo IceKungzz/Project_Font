@@ -53,7 +53,7 @@ const Login = () => {
                     confirmButtonText: 'ตกลง'
                 }).then(() => {
                     // เปลี่ยนเส้นทางไปหน้า /inventory
-                    navigate('/inventory');
+                    navigate('/');
                 });
             } else {
                 // ถ้าไม่พบ token ใน response ให้แสดง error message
