@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import Modal_Outbound_SweetAlert from "./Modal_order_SweetAlert";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 
 export function Outbound() {
-  const [modalOpen, setModalOpen] = useState(false);
 
   const menu = [
     { title: 'นามลูกค้า/ชื่อบริษัท:', type: "text" },
@@ -11,14 +14,230 @@ export function Outbound() {
     { title: 'วันที่เริ่มเช่า-ขาย:', type: "date" },
   ];
 
+  const data = [
+    { no: 1, name: "text1", size: 10, amount: 26 },
+    { no: 2, name: "text2", size: 20, amount: 15 },
+    { no: 3, name: "text3", size: 30, amount: 50 },
+    { no: 4, name: "text4", size: 40, amount: 26 },
+    { no: 5, name: "text5", size: 50, amount: 15 },
+    { no: 6, name: "text6", size: 10, amount: 26 },
+    { no: 7, name: "text7", size: 20, amount: 15 },
+    { no: 8, name: "text8", size: 30, amount: 50 },
+    { no: 9, name: "text9", size: 40, amount: 26 },
+    { no: 10, name: "text10", size: 50, amount: 15 },
+    { no: 11, name: "text11", size: 10, amount: 26 },
+    { no: 12, name: "text12", size: 20, amount: 15 },
+    { no: 13, name: "text13", size: 30, amount: 50 },
+    { no: 14, name: "text14", size: 40, amount: 26 },
+    { no: 15, name: "text15", size: 50, amount: 15 },
+  ];
+
+  const [items, setItems] = useState([]);
+  
+    const SelectItem = (amount, newItem) => {
+      if (amount <= 0) return; 
+  
+      setItems((prevItems) => {
+        const existingIndex = prevItems.findIndex((item) => item.name === newItem);
+        if (existingIndex !== -1) {
+          const updatedItems = [...prevItems];
+          updatedItems[existingIndex].amount = amount;
+          return updatedItems;
+        } else {
+          return [...prevItems, { name: newItem, amount }];
+        }
+      });
+    };
+
+
+  const handleOpenModal = () => {
+    MySwal.fire({
+      title: "เลือกสินค้า",
+      html: (
+        <div className="flex flex-col items-center">
+          {/* Search */}
+          <div className="flex items-center justify-around w-3/4">
+            <span className='text-black font-bold'>รหัสสินค้า: </span>
+            <div className="p-4 w-2/4">
+              <input
+                type="text"
+                placeholder="รหัสสินค้า"
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white">
+              ค้นหา
+            </button>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-y-auto min-h-[500px] max-h-[500px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
+            <table className="w-full text-center">
+              <thead className="sticky top-0 bg-white z-10">
+                <tr className="border-b border-blue-500 text-[#133E87] font-bold">
+                  <th className="px-4 py-2">รหัสสินค้า</th>
+                  <th className="px-4 py-2">ชื่อสินค้า</th>
+                  <th className="px-4 py-2">ขนาด</th>
+                  <th className="px-4 py-2">คงเหลือ</th>
+                  <th className="px-4 py-2">เลือก</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item, key) => (
+                  <tr key={key} className="border-b border-blue-500">
+                    <td className="px-4 py-2">{item.no}</td>
+                    <td className="px-4 py-2">{item.name}</td>
+                    <td className="px-4 py-2">{item.size}</td>
+                    <td className="px-4 py-2 text-red-500">{item.amount}</td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="number"
+                        min={0}
+                        className="w-[100px] p-2 text-center border border-black"
+                        onChange={(e) => SelectItem(e.target.value, item.name)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-center p-4 border-t w-3/4">
+            <button
+              className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center"
+              onClick={() => {
+                console.log("Selected Items:", items);
+                MySwal.close();
+              }}
+            >
+              ยืนยัน
+            </button>
+          </div>
+        </div>
+      ),
+      showConfirmButton: false,
+      customClass: {
+        popup: "rounded-lg w-[900px] h-[800px] p-4 relative",
+        closeButton: "absolute top-2 right-2 text-2xl cursor-pointer",
+        title:'font-bold text-[#133E87]'
+      },
+      didOpen: () => {
+        const closeButton = document.createElement("span");
+        closeButton.innerHTML = "X";
+        closeButton.classList.add("absolute", "top-4", "right-6", "text-2xl", "cursor-pointer");
+        closeButton.addEventListener("click", () => {
+          MySwal.close();
+        });
+        document.querySelector(".swal2-popup").appendChild(closeButton);
+      },
+    });
+  };
+
+
+  const handleOpenModal_Create_Product = () => {
+    MySwal.fire({
+      title: "เลือกสินค้า",
+      html: (
+        <div className="flex flex-col items-center">
+          {/* Search */}
+          <div className="flex items-center justify-around w-3/4">
+            <span className='font-bold text-black'>รหัสสินค้า: </span>
+            <div className="p-4 w-1/4">
+              <input
+                type="text"
+                placeholder="รหัสสินค้า"
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+
+            <span className='font-bold text-black'>ชื่อสินค้า: </span>
+            <div className="p-4 w-1/4">
+              <input
+                type="text"
+                placeholder="รหัสสินค้า"
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+
+            <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white">
+              ค้นหา
+            </button>
+          </div>
+          <div className='w-3/4 text-start text-[#133E87] font-bold mb-2'>
+              เลือกสินค้าเพื่อเพิ่มรายการใหม่
+          </div>
+
+          {/* Table */}
+          <div className="overflow-y-auto min-h-[500px] max-h-[500px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
+            <table className="w-full text-center">
+              <thead className="sticky top-0 bg-white z-10">
+                <tr className="border-b border-blue-500 text-[#133E87] font-bold">
+                  <th className="px-4 py-2">รหัสสินค้า</th>
+                  <th className="px-4 py-2">ชื่อสินค้า</th>
+                  <th className="px-4 py-2">ขนาด</th>
+                  <th className="px-4 py-2">คงเหลือ</th>
+                  <th className="px-4 py-2">จำนวน</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item, key) => (
+                  <tr key={key} className="border-b border-blue-500">
+                    <td className="px-4 py-2">{item.no}</td>
+                    <td className="px-4 py-2">{item.name}</td>
+                    <td className="px-4 py-2">{item.size}</td>
+                    <td className="px-4 py-2 text-red-500">{item.amount}</td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="number"
+                        min={0}
+                        className="w-[100px] p-2 text-center border border-black"
+                        onChange={(e) => SelectItem(e.target.value, item.name)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-center p-4 border-t w-3/4">
+            <button
+              className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center"
+              onClick={() => {
+                console.log("Selected Items:", items);
+                MySwal.close();
+              }}
+            >
+              ยืนยัน
+            </button>
+          </div>
+        </div>
+      ),
+      showConfirmButton: false,
+      customClass: {
+        popup: "rounded-lg w-[900px] h-[800px] p-4 relative",
+        closeButton: "absolute top-2 right-2 text-2xl cursor-pointer",
+        title:'font-bold text-[#133E87]'
+      },
+      didOpen: () => {
+        const closeButton = document.createElement("span");
+        closeButton.innerHTML = "X";
+        closeButton.classList.add("absolute", "top-4", "right-6", "text-2xl", "cursor-pointer");
+        closeButton.addEventListener("click", () => {
+          MySwal.close();
+        });
+        document.querySelector(".swal2-popup").appendChild(closeButton);
+      },
+    });
+  };
+
+  
+
   return (
     <div className='w-full h-[90%] mt-5'>
-      {/* ใช้ key เพื่อให้มั่นใจว่า Modal จะ re-render ทุกครั้งที่เปิด */}
-      <Modal_Outbound_SweetAlert
-        key={modalOpen ? 'open' : 'closed'} // เปลี่ยนค่า key ทุกครั้งที่เปิดเพื่อให้ React re-render modal ใหม่
-        onOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
       <div className='w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar '>
 
         <div className="col-span-2 grid grid-rows-6 ">
@@ -62,22 +281,18 @@ export function Outbound() {
 
             <div className='grid grid-cols-8 pt-10 '>
               <span className='col-span-2 '></span>
-              <button className="col-span-3 w-[80%] bg-[#31AB31] h-10 rounded-md"
-                onClick={() => setModalOpen(true)}
+              <button className="col-span-3 w-[80%] bg-[#31AB31] h-10 rounded-md text-white hover:bg-[#2a7e2d] transition duration-300"
+                onClick={handleOpenModal}
               >
-                <i className="fa-solid fa-plus mr-2"></i>เพิ่มสินค้า
+                <i className="fa-solid fa-plus mr-2"></i>จองสินค้า
               </button>
-              <button className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md">
+              <button className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300" 
+              onClick={handleOpenModal_Create_Product}
+              >
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
             </div>
 
-          </div>
-
-          <div className='row-span-2 grid-cols-4 grid justify-start items-end '>
-            <button className=" col-span-1 bg-[#909090] h-10 rounded-md">
-              <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
-            </button>
           </div>
 
         </div>
@@ -201,10 +416,10 @@ export function Outbound() {
             <span></span>
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
               <span className='col-span-1 flex  justify-end pr-2'>
-              <button className=" bg-[#133E87] w-2/6 p-2 rounded-md"><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
+              <button className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
               </span>
               <span className='col-span-1 flex  justify-start pl-2'>
-              <button className="bg-[#A62628] w-2/6 p-2 rounded-md"><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
+              <button className="bg-[#A62628] w-2/6 p-2 rounded-md hover:bg-[#762324] transition duration-300"><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
               </span>
               
             </div>
