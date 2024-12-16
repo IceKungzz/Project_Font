@@ -1,12 +1,224 @@
 import React from 'react'
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-export function Inbound(props) {
+const MySwal = withReactContent(Swal);
 
-    const menu = [
-        { title: 'รหัสสินค้า:', type: "text" },
-        { title: 'ชื่อสินค้า:', type: "text" },
-        { title: 'ขนาดสินค้า:', type: "text" },
-    ];
+
+export function Inbound() {
+    const [products, setProducts] = useState([])
+
+    useEffect(() =>{
+        const token = localStorage.getItem('token')
+        axios.get('http://192.168.195.75:5000/v1/product/inbound/show-branch',{
+          headers: {
+                "Authorization": token, 
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+              },
+        }).then((res) =>{
+          if(res.status ===200){
+            setProducts(res.data.data) 
+            console.log(res.data.data);
+          }
+          
+        })
+
+
+
+      },[])
+    const [inputValue, setInputValue] = useState('');
+
+    // ฟังก์ชันสำหรับการอัปเดตค่าใน input
+    const handleInputChange = (e) => {
+      setInputValue(e.target.value);
+    };
+  
+    // ฟังก์ชันที่ทำงานเมื่อกดปุ่ม
+    const handleButtonClick = () => {
+      console.log(inputValue); // พิมพ์ค่าที่ได้จาก input
+    };
+  
+
+
+    const handleOpenModal = () => {
+        MySwal.fire({
+            title: "นำเข้าสินค้า",
+            html: (
+                <div className="pl-5 pb-5 pr-5">
+                    <div className="pt-5 pb-5 rounded-xl border-2 border-spacing border-indigo-700">
+                        <div className="grid grid-cols-2 mr-28">
+                            <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                <span className="col-span-1 grid justify-end items-center pr-2 text-black">รหัสสินค้า:</span>
+                                <span className="col-span-2 relative">
+                                    <input
+                                        type="text"
+                                        className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                    />
+                                    <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                        <i className="fa fa-times"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                <span className="col-span-1 grid justify-end items-center pr-2 text-black">ชื่อสินค้า:</span>
+                                <span className="col-span-2 relative">
+                                    <input
+                                        type="text"
+                                        className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                        
+                                    />
+                                    <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                        <i className="fa fa-times"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                <span className="col-span-1 grid justify-end items-center pr-2 text-black">ขนาดสินค้า:</span>
+                                <span className="col-span-2 relative">
+                                    <input
+                                        type="text"
+                                        className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                        
+                                    />
+                                    <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                        <i className="fa fa-times"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            <span className="col-span-1 flex items-center">
+                                <div className="flex justify-end items-center w-[60%]">
+                                    <p className="pr-2 text-black">เมตร:</p>
+                                    <input
+                                        type="text"
+                                        className="w-[43%] h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                       
+                                    />
+                                </div>
+                                <div className="flex justify-end items-center w-[40%]">
+                                    <p className="pr-2 text-black">เซนติเมตร:</p>
+                                    <input
+                                        type="text"
+                                        className="w-[50%] h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                       
+                                    />
+                                </div>
+                            </span>
+                            
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">ราคาเช่า 3 วัน:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">ราคาเช่า 30 วัน:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                     
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">ราคาขาย:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                     
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">ราคาค่าปรับ:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                     
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">หน่วย:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                     
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span className="col-span-1 grid grid-cols-3 justify-center items-center pt-5 pb-5">
+                                    <span className="col-span-1 grid justify-end items-center pr-2 text-black">หมายเหตุ:</span>
+                                    <span className="col-span-2 relative">
+                                        <input
+                                            type="text"
+                                            className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
+                                     
+                                        />
+                                        <span className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                                            <i className="fa fa-times"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                            
+                        </div>
+                    </div>
+                    <div className="pt-10 row-span-1 col-span-2">
+                        <button
+                            className="bg-[#31AB31] text-white rounded-md px-4 py-2"
+                            onClick={() => {
+                                handleButtonClick();
+                                MySwal.close(); // ปิด modal
+                            }}
+                        >
+                            ยืนยัน
+                        </button>
+                    </div>
+                </div>
+            ),
+            showConfirmButton: false,
+            customClass: {
+                popup: "rounded-lg w-[60%] h-[100%]  relative",
+                title: 'font-bold text-[#133E87]'
+            },
+            didOpen: () => {
+                const closeButton = document.createElement("span");
+                closeButton.innerHTML = "X";
+                closeButton.classList.add("absolute", "top-4", "right-6", "text-2xl", "cursor-pointer");
+                closeButton.addEventListener("click", () => {
+                    MySwal.close();
+                });
+                document.querySelector(".swal2-popup").appendChild(closeButton);
+            },
+        });
+    };
 
     return (
         <div className='w-full h-[90%]  mt-5'>
@@ -32,7 +244,7 @@ export function Inbound(props) {
                             </span>
                             <input
                                 type="date"
-                                className=" col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 "
+                                className=" col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 pr-2 pl-2"
                             />
                         </div>
                         <div className='grid justify-end items-center grid-cols-4 pt-10 '>
@@ -42,33 +254,12 @@ export function Inbound(props) {
                             </span>
 
                         </div>
-                        {menu.map((item, index) => (
-                            <div
-                                key={index}
-                                className="grid justify-end items-center grid-cols-4 pt-10"
-                            >
-                                <span className="col-span-1 grid justify-end pr-2">{item.title}</span>
-                                <div className="relative col-span-3 w-[80%]">
-                                    <input
-                                        type={item.type}
-                                        value={item.value} // Binding with state
-                                        // onChange={(e) => handleInputChange(e, index)}
-                                        className="w-full h-10 rounded-lg border border-gray-500 pr-10 pl-3"
-                                    />
-                                    <span
-                                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-                                    // onClick={() => handleClearInput(index)}
-                                    >
-                                        <i className="fa fa-times"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+
 
                         <div className='grid grid-cols-8 pt-10 '>
                             <span className='col-span-2 '></span>
-                            <button className="col-span-3  w-[80%] bg-[#31AB31] h-10 rounded-md">
-                                <i className="fa-solid fa-plus mr-2"></i>เพิ่มสินค้า
+                            <button className="col-span-3  w-[80%] bg-[#31AB31] h-10 rounded-md text-white" onClick={handleOpenModal}>
+                                <i className="fa-solid fa-plus mr-2 "></i>เพิ่มสินค้า
                             </button>
                         </div>
 
@@ -147,7 +338,6 @@ export function Inbound(props) {
                                 <span className='col-span-1 grid justify-start p-1'> ชิ้น</span>
                             </span>
                         </div>
-
                     </div>
 
                     <div className='row-span-1 grid grid-rows-1 '>
