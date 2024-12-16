@@ -17,11 +17,13 @@ export function Outbound() {
   //const [enddate, setEndDate] = useState('')
   //------------------------------------------------------
   const [items, setItems] = useState([]);
+  const [netPrice, setNetPrice] = useState(0);
   const [showmodal, setShowmodal] = useState(false);
   const [showmodal_create_product, setShowmodal_create_product] =
     useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
   const [hasVat, setHasVat] = useState(true);
+  const [Item_sendto_database, setItem_sendto_database] = useState([]);
 
   const menu = [
     { title: "นามลูกค้า/ชื่อบริษัท:", type: "text" },
@@ -37,6 +39,17 @@ export function Outbound() {
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
   };
+
+  useEffect(() => {
+    const totalPrice = confirmitem.reduce(
+      (total, item) => total + (item.price * item.amount || 0),
+      0
+    );
+
+    const vat = hasVat ? totalPrice * 0.07 : 0;
+
+    setNetPrice(totalPrice + vat);
+  }, [confirmitem, hasVat]);
 
   const handleConfirm = (items) => {
     const updatedItems = items.map((item) => ({
@@ -118,7 +131,21 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
-  console.log(confirmitem);
+  const confirm_order = () => {
+    const newOrder = {
+      name,
+      address,
+      workside,
+      sell_date,
+      day_length,
+      items: confirmitem,
+      netPrice,
+    };
+
+    setItem_sendto_database((predata) => [...predata, newOrder]);
+  };
+
+  console.log(Item_sendto_database);
 
   return (
     <div className="w-full h-[90%] mt-5">
@@ -242,73 +269,76 @@ export function Outbound() {
             </div>
 
             <div className="row-span-3 grid grid-rows-3">
-              <div className=" row-span-3 overflow-auto no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
-                <table className="w-full table-auto text-center border-collapse border-t-2">
-                  <thead className="font-bold  bg-white sticky top-0 border-b-2">
-                    <tr>
-                      <th className="px-4 py-2">ลำดับ</th>
-                      <th className="px-4 py-2">รายการ</th>
-                      <th className="px-4 py-2">ขนาด</th>
-                      <th className="px-4 py-2">รูปแบบ</th>
-                      <th className="px-4 py-2">จำนวน</th>
-                      <th className="px-4 py-2">ราคา</th>
-                      <th className="px-4 py-2">รวม</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {confirmitem.length > 0 ? (
-                      confirmitem.map((item, index) => (
-                        <tr className="border-b-2" key={index}>
-                          <td className="px-4 py-2">{index + 1}</td>
-                          <td className="px-4 py-2">{item.name}</td>
-                          <td className="px-4 py-2">{item.size}</td>
-                          <td className="px-4 py-2">
-                            <select
-                              name="model"
-                              className="px-4 py-2 text-center"
-                              value={item.type || ""}
-                              onChange={(e) =>
-                                handleModelChange(index, e.target.value)
-                              }
-                            >
-                              <option value="เช่า">เช่า</option>
-                              <option value="ซื้อ">ซื้อ</option>
-                            </select>
-                          </td>
-                          <td className="px-4 py-2">
-                            <input
-                              type="number"
-                              className="px-2 py-2 text-center"
-                              value={item.amount || 0}
-                              onChange={(e) =>
-                                handleAmountChange(index, e.target.value)
-                              }
-                            />
-                          </td>
-                          <td className="px-4 py-2">
-                            <input
-                              type="price"
-                              className="px-2 py-2 text-center w-[100px]"
-                              required
-                              onChange={(e) =>
-                                handlePriceChange(index, e.target.value)
-                              }
-                            />
-                          </td>
-                          <td className="px-4 py-2">
-                            {item.price * item.amount || 0}
+              <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
+                <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
+                  <table className="w-full table-auto text-center border-collapse border-t-2">
+                    <thead className="font-bold bg-white sticky top-0 border-b-2">
+                      <tr>
+                        <th className="px-4 py-2">ลำดับ</th>
+                        <th className="px-4 py-2">รายการ</th>
+                        <th className="px-4 py-2">ขนาด</th>
+                        <th className="px-4 py-2">รูปแบบ</th>
+                        <th className="px-4 py-2">จำนวน</th>
+                        <th className="px-4 py-2">ราคา</th>
+                        <th className="px-4 py-2">รวม</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {confirmitem.length > 0 ? (
+                        confirmitem.map((item, index) => (
+                          <tr className="border-b-2" key={index}>
+                            <td className="px-4 py-2">{index + 1}</td>
+                            <td className="px-4 py-2">{item.name}</td>
+                            <td className="px-4 py-2">{item.size}</td>
+                            <td className="px-4 py-2">
+                              <select
+                                name="model"
+                                className="px-4 py-2 text-center"
+                                value={item.type || ""}
+                                onChange={(e) =>
+                                  handleModelChange(index, e.target.value)
+                                }
+                              >
+                                <option value="เช่า">เช่า</option>
+                                <option value="ซื้อ">ซื้อ</option>
+                              </select>
+                            </td>
+                            <td className="px-4 py-2">
+                              <input
+                                type="number"
+                                className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                value={item.amount || 0}
+                                required
+                                onChange={(e) =>
+                                  handleAmountChange(index, e.target.value)
+                                }
+                              />
+                            </td>
+                            <td className="px-4 py-2">
+                              <input
+                                type="price"
+                                className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                required
+                                onChange={(e) =>
+                                  handlePriceChange(index, e.target.value)
+                                }
+                              />
+                            </td>
+                            <td className="px-4 py-2">
+                              {item.price * item.amount || 0}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="7" className="px-4 py-2 text-center">
+                            ไม่มีข้อมูล
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="7" className="px-4 py-2 text-center">
-                          ไม่มีข้อมูล
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
@@ -353,19 +383,7 @@ export function Outbound() {
                   ราคาสุทธิ
                 </span>
                 <span className="col-span-1 grid justify-end p-1 underline">
-                  {(
-                    confirmitem.reduce(
-                      (total, item) => total + (item.price * item.amount || 0),
-                      0
-                    ) +
-                    (hasVat
-                      ? confirmitem.reduce(
-                          (total, item) =>
-                            total + (item.price * item.amount || 0),
-                          0
-                        ) * 0.07
-                      : 0)
-                  ).toFixed(2)}
+                  {netPrice.toFixed(2)}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
               </span>
@@ -377,19 +395,19 @@ export function Outbound() {
               <input
                 type="radio"
                 name="vat"
-                value="true" // เพิ่ม value
+                value="true"
                 className="mr-2"
-                checked={hasVat} // เช็คสถานะ
-                onChange={handleVatChange} // จัดการเปลี่ยนค่า
+                checked={hasVat}
+                onChange={handleVatChange}
               />
               มีภาษีมูลค่าเพิ่ม
               <input
                 type="radio"
                 name="vat"
-                value="false" // เพิ่ม value
+                value="false"
                 className="ml-3 mr-2"
-                checked={!hasVat} // เช็คสถานะ
-                onChange={handleVatChange} // จัดการเปลี่ยนค่า
+                checked={!hasVat}
+                onChange={handleVatChange}
               />
               ไม่มีภาษีมูลค่าเพิ่ม
             </div>
@@ -397,7 +415,10 @@ export function Outbound() {
             <span></span>
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
               <span className="col-span-1 flex  justify-end pr-2">
-                <button className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300">
+                <button
+                  className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"
+                  onClick={confirm_order}
+                >
                   <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก
                 </button>
               </span>
