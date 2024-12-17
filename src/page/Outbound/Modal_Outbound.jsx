@@ -20,6 +20,7 @@ export function Modal_Outbound({close, confirm}) {
     }).then((res) =>{
       if(res.status ===200){
         setProducts(res.data.data) 
+        
       }
     })
   },[])

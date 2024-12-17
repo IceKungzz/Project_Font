@@ -4,7 +4,10 @@ import withReactContent from "sweetalert2-react-content";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal_Outbound } from "./Modal_Outbound";
 import { Modal_Create_Products } from "./Modal_Create_Products";
-const MySwal = withReactContent(Swal);
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
+
 
 export function Outbound() {
   const [products, setProducts] = useState([]);
@@ -24,6 +27,8 @@ export function Outbound() {
   const [confirmitem, setConfirmitem] = useState([]);
   const [hasVat, setHasVat] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
+
+  const navigate = useNavigate()
 
   const menu = [
     { title: "นามลูกค้า/ชื่อบริษัท :", type: "text" },
@@ -132,15 +137,58 @@ export function Outbound() {
   };
 
   const confirm_order = () => {
+    const reserve = [confirmitem.reduce(
+      (acc, item) => {
+        acc.code.push(item.code);
+        acc.product_id.push(String(item.id));
+        acc.size.push(item.size);
+        acc.price.push(item.price);
+        acc.quantity.push(item.amount)
+        acc.type.push(item.type === 'เช่า' ? '0' : '1')
+        return acc;
+      },
+      { code: [], product_id: [], price: [], quantity: [], size: [], centimeter:[], meter:[], type: []}
+    )];
     const newOrder = {
-      name,
+      customer_name:name,
+      place_name:workside,
       address,
-      workside,
-      sell_date,
-      day_length,
-      items: confirmitem,
-      netPrice,
+      date:day_length,
+      reserve: reserve,
+      status_assemble:true,
+      vat:hasVat ? 'vat' : 'nvat',
+      discount:200,
+      shipping_cost:2500,
+      move_price:1000,
+      guarantee_price:0,
+      proponent_name:"bossinwza007",
+      average_price:0
     };
+    const token = localStorage.getItem('token')
+    
+    axios.post('http://192.168.195.75:5000/v1/product/outbound/reserve',newOrder,
+      {
+        headers: {
+          "Authorization": token, 
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef", 
+        }
+      }
+    ).then((res) =>{
+      if(res.status=== 201){
+        Swal.fire({
+          icon:'success',
+          text:'เพิ่มข้อมูลสำเร็จ',
+          confirmButton:'ok'
+        }).then(() =>{
+          navigate('/status')
+        })
+
+      }
+    }).catch((err) =>{
+      console.log(err);
+      
+    })
 
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
