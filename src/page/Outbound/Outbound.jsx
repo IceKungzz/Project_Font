@@ -68,10 +68,10 @@ export function Outbound() {
   };
 
   const handleDateChange = (dateValue) => {
-    const date = new Date(dateValue); 
+    const date = new Date(dateValue);
     const options = { day: "numeric", month: "short", year: "2-digit" };
-    const formattedDate = date.toLocaleDateString("th-TH", options); 
-    setSell_date(formattedDate); 
+    const formattedDate = date.toLocaleDateString("th-TH", options);
+    setSell_date(formattedDate);
   };
 
   const parseThaiDate = (thaiDate) => {
@@ -148,67 +148,67 @@ export function Outbound() {
         acc.type.push(item.type === 'เช่า' ? '0' : '1')
         return acc;
       },
-      { code: [], product_id: [], price: [], quantity: [], size: [], centimeter:[], meter:[], type: []}
+      { code: [], product_id: [], price: [], quantity: [], size: [], centimeter: [], meter: [], type: [] }
     )];
     const newOrder = {
-      customer_name:name,
-      place_name:workside,
+      customer_name: name,
+      place_name: workside,
       address,
-      date:day_length,
+      date: day_length,
       reserve: reserve,
-      status_assemble:true,
-      vat:hasVat ? 'vat' : 'nvat',
-      discount:200,
-      shipping_cost:2500,
-      move_price:1000,
-      guarantee_price:0,
-      proponent_name:"bossinwza007",
-      average_price:0
+      status_assemble: true,
+      vat: hasVat ? 'vat' : 'nvat',
+      discount: 200,
+      shipping_cost: 2500,
+      move_price: 1000,
+      guarantee_price: 0,
+      proponent_name: "bossinwza007",
+      average_price: 0
     };
     const token = localStorage.getItem('token')
-    
-    axios.post('http://192.168.195.75:5000/v1/product/outbound/reserve',newOrder,
+
+    axios.post('http://192.168.195.75:5000/v1/product/outbound/reserve', newOrder,
       {
         headers: {
-          "Authorization": token, 
+          "Authorization": token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef", 
+          "x-api-key": "1234567890abcdef",
         }
       }
-    ).then((res) =>{
-      if(res.status=== 201){
+    ).then((res) => {
+      if (res.status === 201) {
         Swal.fire({
-          icon:'success',
-          text:'เพิ่มข้อมูลสำเร็จ',
-          confirmButton:'ok'
-        }).then(() =>{
+          icon: 'success',
+          text: 'เพิ่มข้อมูลสำเร็จ',
+          confirmButton: 'ok'
+        }).then(() => {
           navigate('/status')
         })
 
       }
-    }).catch((err) =>{
+    }).catch((err) => {
       console.log(err);
-      
+
     })
 
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
 
 
-  useEffect(() =>{
+  useEffect(() => {
     const token = localStorage.getItem('token')
-    axios.get('http://192.168.195.75:5000/v1/product/outbound/profile',{
+    axios.get('http://192.168.195.75:5000/v1/product/outbound/profile', {
       headers: {
-            "Authorization": token, 
-            "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef", 
-          },
-    }).then((res) =>{
-      if(res.status ===200){
+        "Authorization": token,
+        "Content-Type": "application/json",
+        "x-api-key": "1234567890abcdef",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
         setBranch(res.data.data.branch_name)
       }
     })
-  },[])
+  }, [])
 
 
   return (
@@ -253,12 +253,12 @@ export function Outbound() {
                     item.title === "นามลูกค้า/ชื่อบริษัท :"
                       ? (e) => setName(e.target.value)
                       : item.title === "วันที่เสนอ :"
-                      ? (e) => handleDateChange(e.target.value)
-                      : item.title === "ชื่อไซต์งาน :"
-                      ? (e) => setWorkside(e.target.value)
-                      : item.title === "ที่อยู่ลูกค้า :"
-                      ? (e) => setAddress(e.target.value)
-                      : null
+                        ? (e) => handleDateChange(e.target.value)
+                        : item.title === "ชื่อไซต์งาน :"
+                          ? (e) => setWorkside(e.target.value)
+                          : item.title === "ที่อยู่ลูกค้า :"
+                            ? (e) => setAddress(e.target.value)
+                            : null
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
@@ -267,7 +267,7 @@ export function Outbound() {
 
             <div className="grid justify-end items-center grid-cols-4 pt-10 ">
               <span className="col-span-1 grid justify-end pr-2 ">
-                ระยะเวลา : 
+                ระยะเวลา :
               </span>
               <input
                 type="text"
@@ -295,9 +295,9 @@ export function Outbound() {
           </div>
         </div>
 
-        <div className="col-span-3 grid grid-rows-6">
-          <div className="row-span-5 grid grid-rows-4 border border-gray-500 rounded-lg ">
-            <div className="row-span-1 grid grid-cols-3 grid-rows-6 pl-4 pr-4 pt-1">
+        <div className="col-span-3 grid grid-rows-10">
+          <div className="row-span-9 grid grid-rows-4 border border-gray-500 rounded-lg">
+            <div className="row-span-1 grid grid-cols-3 grid-rows-6 pl-4 pr-4 pt-3 ">
               <span className="col-span-1 grid justify-start items-center ">
                 ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก
               </span>
@@ -336,7 +336,7 @@ export function Outbound() {
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
                 <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2">
-                    <thead className="font-bold bg-white sticky top-0 border-b-2">
+                    <thead className="font-bold bg-slate-200 sticky top-0 border-b-2">
                       <tr>
                         <th className="px-4 py-2">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>
@@ -433,12 +433,12 @@ export function Outbound() {
                 <span className="col-span-1 grid justify-end p-1">
                   {hasVat
                     ? (
-                        confirmitem.reduce(
-                          (total, item) =>
-                            total + (item.price * item.amount || 0),
-                          0
-                        ) * 0.07
-                      ).toFixed(2)
+                      confirmitem.reduce(
+                        (total, item) =>
+                          total + (item.price * item.amount || 0),
+                        0
+                      ) * 0.07
+                    ).toFixed(2)
                     : "0.00"}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
@@ -454,7 +454,8 @@ export function Outbound() {
             </div>
           </div>
 
-          <div className="row-span-1 grid grid-rows-3 ">
+
+          <div className="row-span-1 grid grid-rows-2 ">
             <div className="row-span-1 flex items-center">
               <input
                 type="radio"
@@ -476,9 +477,9 @@ export function Outbound() {
               ไม่มีภาษีมูลค่าเพิ่ม
             </div>
 
-            <span></span>
+
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
-              <span className="col-span-1 flex  justify-end pr-2">
+              <span className="col-span-1 flex  justify-end pr-16">
                 <button
                   className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"
                   onClick={confirm_order}
@@ -486,7 +487,7 @@ export function Outbound() {
                   <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก
                 </button>
               </span>
-              <span className="col-span-1 flex  justify-start pl-2">
+              <span className="col-span-1 flex  justify-start pl-16">
                 <button className="bg-[#A62628] w-2/6 p-2 rounded-md hover:bg-[#762324] transition duration-300">
                   <i className="fa-solid fa-x mr-2"></i>ยกเลิก
                 </button>
