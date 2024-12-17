@@ -1,7 +1,7 @@
 import React from "react";
 import {useState , useEffect} from 'react'
 import axios from 'axios'
-export function Modal_Outbound({close, confirm}) {
+export function Modal_Outbound({close, confirm, ititialData}) {
 
   const [products, setProducts] = useState([])
   const [products_search, setProducts_search] = useState([])
@@ -120,6 +120,10 @@ export function Modal_Outbound({close, confirm}) {
                           min={0}
                           className="w-[100px] p-2 text-center border border-black rounded-md"
                           onChange={(e) => select_Item(item,e.target.value)}
+                          // defaultValue={
+                          //   confirm_items.find((i) => i.code === item.code)?.amount || ''
+                          // }
+                            
                         />
                       </td>
                   </tr>

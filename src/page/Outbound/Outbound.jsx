@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export function Outbound() {
+  const [branch, setBranch] = useState('')
   const [products, setProducts] = useState([]);
   //ข้อมูลใน input
   const [name, setName] = useState("");
@@ -67,10 +68,10 @@ export function Outbound() {
   };
 
   const handleDateChange = (dateValue) => {
-    const date = new Date(dateValue); // แปลงค่าที่ได้จาก input type="date"
+    const date = new Date(dateValue); 
     const options = { day: "numeric", month: "short", year: "2-digit" };
-    const formattedDate = date.toLocaleDateString("th-TH", options); // ฟอร์แมตวันที่เป็นไทย
-    setSell_date(formattedDate); // เก็บค่าที่ฟอร์แมตแล้วใน state
+    const formattedDate = date.toLocaleDateString("th-TH", options); 
+    setSell_date(formattedDate); 
   };
 
   const parseThaiDate = (thaiDate) => {
@@ -193,7 +194,22 @@ export function Outbound() {
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
 
-  console.log(Item_sendto_database);
+
+  useEffect(() =>{
+    const token = localStorage.getItem('token')
+    axios.get('http://192.168.195.75:5000/v1/product/outbound/profile',{
+      headers: {
+            "Authorization": token, 
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef", 
+          },
+    }).then((res) =>{
+      if(res.status ===200){
+        setBranch(res.data.data.branch_name)
+      }
+    })
+  },[])
+
 
   return (
     <div className="w-full h-[90%] mt-5">
@@ -204,7 +220,7 @@ export function Outbound() {
       </HelmetProvider>
 
       {showmodal ? (
-        <Modal_Outbound close={closeModal} confirm={handleConfirm} />
+        <Modal_Outbound close={closeModal} confirm={handleConfirm} ititialData={confirmitem || ''} />
       ) : null}
       {showmodal_create_product ? (
         <Modal_Create_Products close={closeModal_Create} />
@@ -219,7 +235,7 @@ export function Outbound() {
                 id="branch"
                 className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500"
               >
-                <option>ชลบุรี</option>
+                <option>{branch}</option>
               </select>
             </div>
 

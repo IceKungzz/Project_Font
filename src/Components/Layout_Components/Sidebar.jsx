@@ -3,8 +3,12 @@ import { NavLink, useLocation   } from "react-router-dom";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
+import { useEffect } from 'react';
+import axios from 'axios';
 
 export default function Sidebar() {
+  const [f_name, setF_name] = useState('')
+  const [position, setPosition] = useState('')
 
   const location = useLocation();
   const navigate = useNavigate()
@@ -23,6 +27,22 @@ export default function Sidebar() {
       navigate('login')
     })
   }
+
+    useEffect(() =>{
+      const token = localStorage.getItem('token')
+      axios.get('http://192.168.195.75:5000/v1/product/outbound/profile',{
+        headers: {
+              "Authorization": token, 
+              "Content-Type": "application/json",
+              "x-api-key": "1234567890abcdef", 
+            },
+      }).then((res) =>{
+        if(res.status ===200){
+          setF_name(res.data.data.first_name)
+          setPosition(res.data.data.position)
+        }
+      })
+    },[])
 
   const isHomePage = location.pathname === "/";
 
@@ -46,10 +66,10 @@ export default function Sidebar() {
 
               <div className="text-sm text-black flex flex-col items-center">
                 <span className="hidden md:block xl:text-md 2xl:text-[20px]  text-center text-[#133E87] font-bold">
-                  เมทนี สนธิกัน
+                  {f_name}
                 </span>
                 <span className="hidden text-[#608BC1] text-[20px] xl:block mt-1">
-                  user
+                  {position}
                 </span>
               </div>
             </div>
