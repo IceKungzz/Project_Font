@@ -7,11 +7,11 @@ export function ReturnItem() {
         <div className='w-full h-[90%]  grid grid-rows-12'>
 
 
-            <div className='row-span-1 bg-orange-300 grid grid-cols-8 items-center'>
-                <span className='flex justify-end pr-4'><p className='text-xl text-indigo-900 font-bold'>สาขา :</p></span>
+            <div className='row-span-1 bg-orange-300  flex justify-start items-center pl-5'>
+                <span className='pr-2 font-bold text-xl text-indigo-800'>สาขา :</span>
                 <span>
                     <select
-                        className="h-10 w-full rounded-md border border-gray-500 p-2"
+                        className="h-10 w-[220px] rounded-md border border-gray-500 p-2 "
                     >
                         <option value="">ทั้งหมด</option>
                         <option value="chonburi">ชลบุรี</option>
@@ -19,51 +19,56 @@ export function ReturnItem() {
                         <option value="kokkham">โคกขาม</option>
                     </select>
                 </span>
-                <span className="flex justify-end pr-4"><p className='text-xl text-indigo-900 font-bold'>เลขที่ใบเสร็จ:</p>
+                <span className='pr-2 pl-5 font-bold text-xl text-indigo-800'>เลขที่ใบเสร็จ :</span>
+                <span><input type='text' className="h-10 w-[220px] rounded-md border border-gray-500 p-2" /></span>
+                <span className='pr-2 pl-5 font-bold text-xl text-white'>
+                    <button className='bg-blue-500 h-10 w-28 rounded-md hover:bg-blue-600'>ค้นหา</button>
+                </span>
 
-                </span>
-                <span><input
-                    type="text"
-                    className="h-10 w-full rounded-md border border-gray-500 p-2"
-                />
-                </span>
-                <span className="flex justify-center">
-                    <button className="w-[80%] bg-[#133E87] h-10 rounded-md text-white flex items-center justify-center gap-2">
-                        <i className="fa-solid fa-search"></i>ค้นหา
-                    </button>
-                </span>
             </div>
 
 
 
             <div className='row-span-11 '>
 
-
                 <div className="">
                     <div className="">
-                        <table class="rounded-bl-full bg-slate-600 border-slate-500 border">
+                        <table className="table-auto w-full border-collapse border-red-300">
                             <thead>
                                 <tr>
-                                    <th class="border border-slate-600 ...">State</th>
-                                    <th class="border border-slate-600 ...">City</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 1</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 2</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 3</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 4</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 5</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 6</th>
+                                    <th className="border border-red-300 rounded-lg px-4 py-2">หัวข้อ 7</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {/* แถวที่ 1 */}
                                 <tr>
-                                    <td class="border border-slate-700 ...">Indiana</td>
-                                    <td class="border border-slate-700 ...">Indianapolis</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-1</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-2</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-3</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-4</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-5</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-6</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 1-7</td>
                                 </tr>
+                                {/* แถวที่ 2 */}
                                 <tr>
-                                    <td class="border border-slate-700 ...">Ohio</td>
-                                    <td class="border border-slate-700 ...">Columbus</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-1</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-2</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-3</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-4</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-5</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-6</td>
+                                    <td className="border border-red-300 px-4 py-2">ข้อมูล 2-7</td>
                                 </tr>
-                                <tr>
-                                    <td class="border border-slate-700 ...">Michigan</td>
-                                    <td class="border border-slate-700 ...">Detroit</td>
-                                </tr>
+                                {/* เพิ่มแถวที่ 3 ถึง 10 ตามต้องการ */}
                             </tbody>
                         </table>
-
                     </div>
                 </div>
 

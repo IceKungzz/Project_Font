@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import { Modal } from 'antd';
 import { Modal_Inbound } from './Model_Inbound';
 
 
@@ -24,16 +24,54 @@ export function Inbound() {
         }).then((res) => {
             if (res.status === 200) {
                 setProducts(res.data.data)
-                console.log(res.data.data);
+                // console.log(res.data.data);
             }
 
         })
-
-
-
     }, [])
 
-    console.log(products, 'w');
+    const handlePostData = () => {
+        console.log('Data being sent:', dataconfirm[0]);
+
+        const token = localStorage.getItem('token')
+        console.log(token);
+        
+        axios.post('http://192.168.195.75:5000/v1/product/inbound/product',dataconfirm[0], {
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+            },
+        }).then((res) => {
+            console.log(res);
+            if (res.status === 201) {
+                setProducts(res.data.data)
+                console.log(res);
+            }
+            
+        }).catch((err) => {
+            console.log(err);
+            if (err.response ) {
+                Modal.error({
+                    title: 'ข้อมูลซ้ำ',
+                    content: 'ข้อมูลที่คุณพยายามเพิ่มมีอยู่แล้วในระบบ โปรดลองใหม่อีกครั้ง.',
+                    onOk() {
+                        // Optional: Perform any action when OK is clicked
+                    }
+                });
+            } else {
+                Modal.error({
+                    title: 'เกิดข้อผิดพลาด',
+                    content: 'ขออภัยเกิดข้อผิดพลาดในการดำเนินการ โปรดลองใหม่อีกครั้ง.',
+                });
+            }
+          })
+
+    };
+
+
+
+    // console.log(products, 'w');
 
     const [showmodal, setShowmodal] = useState(false);
     const closeModal = () => {
@@ -59,28 +97,44 @@ export function Inbound() {
                 idx === index ? { ...item, quantity: value } : item
             )
         );
+
     };
 
     const calculateTotalQuantity = () => {
         return dataconfirm.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
     };
 
-    const [count, setCount] = useState(0);  // กำหนดสถานะของ count
+    const [count, setCount] = useState(0);
+    // กำหนดสถานะของ count
     const handleConfirm = (items) => {
         setCount(prevCount => prevCount + 1);  // เพิ่มค่า count ทีละ 1
         console.log(items, '1');
         setDataconfirm((prevItems) => [...prevItems, { ...items, quantity: number.quantity }]);
+
     };
 
-    console.log(dataconfirm, '2');
+    // console.log(dataconfirm, '2');
+    const deletitem = (index) => {
 
+        setDataconfirm((prevTotalpopup) => {
+            const newList = prevTotalpopup.filter((_, i) => i !== index);
 
+            return newList;
+        });
+        setCount(prevCount => prevCount - 1);
+
+    };
+    const reset = () => {
+        setDataconfirm([])
+    };
 
     return (
         <div className='w-full h-[90%]  mt-5'>
+
             {showmodal ? (
                 <Modal_Inbound close={closeModal} confirm={handleConfirm} />
             ) : null}
+            
             <div className='w-full h-[100%] grid grid-cols-5  overflow-auto no-scrollbar '>
 
                 <div className=" col-span-2  grid grid-rows-6 ">
@@ -98,7 +152,7 @@ export function Inbound() {
                         <div className='grid justify-end items-center grid-cols-4 pt-10 '>
                             <span className="col-span-1 grid justify-end  pr-2">
                                 วันที่นำเข้าสินค้า :
-                                
+
                             </span>
                             <div className='border border-gray-500 col-span-3 w-[80%] rounded-lg h-10 flex justify-start items-center text-lg pl-4'>{formattedDate}</div>
                         </div>
@@ -111,7 +165,7 @@ export function Inbound() {
 
                         <div className='grid grid-cols-8 pt-5 '>
                             <span className='col-span-2 '></span>
-                            <button className="col-span-3  w-[80%] bg-[#31AB31] h-10 rounded-md text-white" onClick={() => setShowmodal(true)}>
+                            <button className="col-span-3  w-[80%] bg-[#31AB31] hover:bg-[#2a7e2d] h-10 rounded-md text-white" onClick={() => setShowmodal(true)}>
                                 <i className="fa-solid fa-plus mr-2 "></i>เพิ่มสินค้า
                             </button>
                         </div>
@@ -138,13 +192,13 @@ export function Inbound() {
                                     <thead className="font-bold  bg-slate-200 sticky top-0 border-b-2">
                                         <tr>
                                             <th className="px-4 py-2">ลำดับ</th>
-                                            <th className="px-4 py-2">Item Code</th>
-                                            <th className="px-4 py-2">รายการ</th>
+                                            <th className="px-4 py-2">รหัสสินค้า</th>
+                                            <th className="px-4 py-2">ชื่อสินค้า</th>
                                             <th className="px-4 py-2">ขนาด</th>
                                             <th className="px-4 py-2">เมตร</th>
                                             <th className="px-4 py-2">เซนติเมตร</th>
                                             <th className="px-4 py-2">จำนวน</th>
-                                            <th className="px-4 py-2">หน่วย</th>             
+                                            <th className="px-4 py-2">หน่วย</th>
                                             <th className="px-4 py-2"></th>
                                         </tr>
                                     </thead>
@@ -175,7 +229,8 @@ export function Inbound() {
                                                     </td>
                                                     <td className="px-4 py-2">{item.unit || '-'}</td>
                                                     <td className="px-6 py-2">
-                                                        <i className="fa-solid fa-trash text-red-600 text-xl"></i>
+                                                        <i className="fa-solid fa-trash text-red-600 text-xl cursor-pointer inline-block relative transform transition-transform duration-200 hover:scale-125"
+                                                            onClick={() => deletitem(index)}></i>
                                                     </td>
                                                 </tr>
                                             ))
@@ -210,10 +265,18 @@ export function Inbound() {
 
                         <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
                             <span className='col-span-1 flex  justify-end pr-16 '>
-                                <button className=" bg-[#133E87] w-2/6 p-2 rounded-md"><i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก</button>
+                                <button
+                                    className={`bg-[#133E87] w-2/6 p-2 rounded-md ${count > 0 ? "hover:bg-[#172c4f]" : "cursor-not-allowed opacity-50"
+                                        }`}
+                                    onClick={handlePostData}
+                                    disabled={count <= 0} // ปุ่มจะถูก disable ถ้า count <= 0
+                                ><i className="fa-solid fa-floppy-disk mr-2"></i>
+                                    บันทึก
+                                </button>
+                                
                             </span>
                             <span className='col-span-1 flex  justify-start pl-16 '>
-                                <button className="bg-[#A62628]  w-2/6 p-2 rounded-md" ><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
+                                <button className="bg-[#A62628]  w-2/6 p-2 rounded-md hover:bg-[#762324]" onClick={reset}><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
                             </span>
 
                         </div>
@@ -222,7 +285,7 @@ export function Inbound() {
                 </div>
 
             </div>
-
+                                         
         </div>
     )
 }
