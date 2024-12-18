@@ -26,6 +26,7 @@ export function Outbound() {
   const [showmodal_create_product, setShowmodal_create_product] =
     useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
+  const [confirmitem_create, setConfirmItem_Create] = useState([])
   const [hasVat, setHasVat] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
 
@@ -65,6 +66,17 @@ export function Outbound() {
     }));
     setConfirmitem(updatedItems);
     console.log("Confirmed items: ", updatedItems);
+  };
+
+
+  const handleConfirmItem_Create = (items) => {
+    const updatedItems = items.map((item) => ({
+      ...item,
+      type: item.type || "เช่า",
+      price: 0,
+    }));
+    setConfirmItem_Create(updatedItems);
+    console.log("Confirmed items create: ", updatedItems);
   };
 
   const handleDateChange = (dateValue) => {
@@ -223,7 +235,7 @@ export function Outbound() {
         <Modal_Outbound close={closeModal} confirm={handleConfirm} ititialData={confirmitem || ''} />
       ) : null}
       {showmodal_create_product ? (
-        <Modal_Create_Products close={closeModal_Create} />
+        <Modal_Create_Products close={closeModal_Create} confirm={handleConfirmItem_Create}/>
       ) : null}
       <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar ">
         <div className="col-span-2 grid grid-rows-6 ">
