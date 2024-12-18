@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Modal } from 'antd';
 import { Modal_Inbound } from './Model_Inbound';
-
+import Swal from 'sweetalert2';
 
 
 export function Inbound() {
@@ -45,9 +45,16 @@ export function Inbound() {
         }).then((res) => {
             console.log(res);
             if (res.status === 201) {
-                setProducts(res.data.data)
                 console.log(res);
-            }
+            } Swal.fire({
+                                icon: "success",
+                                text: "กรองข้อมูลสำเร็จ",
+                                confirmButtonText: 'ตกลง'
+                            }).then(() => {
+                                // เปลี่ยนเส้นทางไปหน้า /inventory
+                                setDataconfirm([])
+                                setCount(0)
+                            });
             
         }).catch((err) => {
             console.log(err);
@@ -56,13 +63,7 @@ export function Inbound() {
                     title: 'ข้อมูลซ้ำ',
                     content: 'ข้อมูลที่คุณพยายามเพิ่มมีอยู่แล้วในระบบ โปรดลองใหม่อีกครั้ง.',
                     onOk() {
-                        // Optional: Perform any action when OK is clicked
                     }
-                });
-            } else {
-                Modal.error({
-                    title: 'เกิดข้อผิดพลาด',
-                    content: 'ขออภัยเกิดข้อผิดพลาดในการดำเนินการ โปรดลองใหม่อีกครั้ง.',
                 });
             }
           })

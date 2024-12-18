@@ -25,17 +25,17 @@ export function Modal_Inbound({ close, confirm }) {
   };
 
   // ตรวจสอบว่า field ที่มีดอกจันทั้งหมดถูกกรอกครบหรือไม่
-  // const isFormValid = () => {
-  //   const requiredFields = [
-  //     "code",
-  //     "name",
-  //     "price3D",
-  //     "price30D",
-  //     "price_sell",
-  //     "price_damage",
-  //   ];
-  //   return requiredFields.every((field) => formData[field].trim() !== "");
-  // };
+  const isFormValid = () => {
+    const requiredFields = [
+      "code",
+      "name",
+      "price3D",
+      "price30D",
+      "price_sell",
+      "price_damage",
+    ];
+    return requiredFields.every((field) => formData[field].trim() !== "");
+  };
 
   const confirm_item = () => {
     // if (isFormValid()) {
@@ -117,12 +117,29 @@ export function Modal_Inbound({ close, confirm }) {
               { label: "ราคาเช่า 30 วัน", name: "price30D", sub1: "*" },
               { label: "ราคาขาย", name: "price_sell", sub1: "*" },
               { label: "ราคาค่าปรับ", name: "price_damage", sub1: "*" },
+            ].map((field, index) => (
+              <div key={index} className="flex flex-col">
+                <label className="text-lx font-bold text-gray-600 mb-2">
+                  <label className="text-red-500">{field.sub1}</label>{" "}
+                  {field.label} :{" "}
+                  
+                </label>
+                <input
+                  type="number"
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className="w-full h-12 px-4 border-2 rounded-md border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            ))}
+            {[
               { label: "หน่วย", name: "unit", sub: "(เช่น อัน ก้อน ชิ้น)" },
               { label: "หมายเหตุ", name: "remark" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col">
                 <label className="text-lx font-bold text-gray-600 mb-2">
-                  <label className="text-red-500">{field.sub1}</label>{" "}
+                  
                   {field.label} :{" "}
                   <label className="text-gray-500">{field.sub}</label>
                 </label>
@@ -140,7 +157,7 @@ export function Modal_Inbound({ close, confirm }) {
 
         {/* Footer */}
         <div className="p-6 bg-gray-100 flex justify-center border-t">
-          {/* <button
+          <button
             className={`px-6 py-3 text-white rounded-md text-lg font-medium transition w-1/4 ${
               isFormValid()
                 ? "bg-[#31AB31] hover:bg-green-600 active:bg-green-700"
@@ -150,8 +167,8 @@ export function Modal_Inbound({ close, confirm }) {
             disabled={!isFormValid()} // ปุ่มจะถูก disable ถ้าไม่ valid
           >
             ยืนยัน
-          </button> */}
-          <button className='p-2 w-52 h-10 bg-green-600' onClick={confirm_item}>dwad</button>
+          </button>
+          
         </div>
       </div>
     </div>
