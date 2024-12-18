@@ -25,6 +25,8 @@ export function Modal_Outbound({close, confirm, ititialData}) {
     })
   },[])
 
+  //console.log('data = ',ititialData[0].amount );
+
   const filteritem_Search = () =>{
     const itemFilter = products.filter(item => item.code.includes(keysearchItem))
     setProducts_search(itemFilter)
@@ -48,6 +50,8 @@ export function Modal_Outbound({close, confirm, ititialData}) {
     confirm(confirm_items);
     close();
   }
+
+  
   
   
 
@@ -57,7 +61,7 @@ export function Modal_Outbound({close, confirm, ititialData}) {
         {/* Header */}
         <div className=" w-full flex justify-between items-center p-4">
           <div></div>
-          <h2 className="text-2xl font-semibold">เลือกสินค้า</h2>
+          <h2 className="text-2xl font-semibold">เลือกสินค้า <i class="fa-solid fa-plus"></i></h2>
           <button className="text-gray-500 hover:text-gray-700" onClick={close}>X</button>
         </div>
 
@@ -103,6 +107,7 @@ export function Modal_Outbound({close, confirm, ititialData}) {
                           min={0}
                           className="w-[100px] p-2 text-center border border-black rounded-md"
                           onChange={(e) => select_Item(item,e.target.value)}
+                          defaultValue={0}
                         />
                       </td>
                   </tr>
@@ -120,10 +125,8 @@ export function Modal_Outbound({close, confirm, ititialData}) {
                           min={0}
                           className="w-[100px] p-2 text-center border border-black rounded-md"
                           onChange={(e) => select_Item(item,e.target.value)}
-                          // defaultValue={
-                          //   confirm_items.find((i) => i.code === item.code)?.amount || ''
-                          // }
-                            
+                          // defaultValue={ititialData.find((i) => i.code === item.code) ? ititialData.amount : ''}
+                          defaultValue={ititialData[0].amount === undefined ? 0 : ititialData[0].amount }
                         />
                       </td>
                   </tr>

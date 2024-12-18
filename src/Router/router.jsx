@@ -24,7 +24,7 @@ const router = createBrowserRouter([
                 children: [
                     {path:"outbound", element: <Outbound/>},
                     {path:"inbound", element: <Inbound/>},
-                    {path:"", element: <Home/>},
+                    {path:"/", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
                     {path:"status", element: <StatusProduct/>},
                     {path:"inventory", element: <Inventory />},
