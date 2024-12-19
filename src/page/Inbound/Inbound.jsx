@@ -81,7 +81,7 @@ export function Inbound() {
 
 
     const [dataconfirm, setDataconfirm] = useState([]);
-    const [number, setNumber] = useState({ quantity: '' });
+    const [number, setNumber] = useState({ quantity: '0' });
 
     const handleChange = (e, index) => {
         const { value } = e.target;
@@ -214,7 +214,7 @@ export function Inbound() {
                                             dataconfirm.map((item, index) => (
                                                 <tr className="border-b-2" key={index}>
                                                     <td className="px-4 py-2">{index + 1}</td>
-                                                    <td className="py-2">{item.code || '-'}</td>
+                                                    <td className="py-2 ">{item.code || '-'}</td>
                                                     <td className="px-8 py-2">{item.name || '-'}</td>
                                                     <td className="px-4 py-2">{item.size || '-'}</td>
                                                     <td className="px-4 py-2">{item.meter || '-'}</td>
@@ -270,11 +270,10 @@ export function Inbound() {
                                     className={`bg-[#133E87] w-2/6 p-2 rounded-md ${count > 0 ? "hover:bg-[#172c4f]" : "cursor-not-allowed opacity-50"
                                         }`}
                                     onClick={handlePostData}
-                                    disabled={count <= 0} // ปุ่มจะถูก disable ถ้า count <= 0
+                                    disabled={count <= 0 } // ปุ่มจะถูก disable ถ้า count <= 0
                                 ><i className="fa-solid fa-floppy-disk mr-2"></i>
                                     บันทึก
-                                </button>
-                                
+                                </button>                                
                             </span>
                             <span className='col-span-1 flex  justify-start pl-16 '>
                                 <button className="bg-[#A62628]  w-2/6 p-2 rounded-md hover:bg-[#762324]" onClick={reset}><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>

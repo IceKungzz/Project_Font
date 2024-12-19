@@ -31,7 +31,6 @@ export function Modal_Inbound({ close, confirm }) {
       "name",
       "price3D",
       "price30D",
-      "price_sell",
       "price_damage",
     ];
     return requiredFields.every((field) => formData[field].trim() !== "");
@@ -50,10 +49,10 @@ export function Modal_Inbound({ close, confirm }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50">
-      <div className="bg-white w-[900px] h-[750px] rounded-lg shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-white w-[700px] h-[700px] rounded-lg shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 bg-blue-400 text-white">
-          <h2 className="text-2xl font-bold">รายละเอียดสินค้า</h2>
+        <div className="flex justify-between items-center px-6 py-4 bg-blue-400 text-white ">
+          <h2 className="text-2xl font-bold ">รายละเอียดสินค้า</h2>
           <button
             className="text-lg hover:text-red-300 transition"
             onClick={close}
@@ -63,7 +62,7 @@ export function Modal_Inbound({ close, confirm }) {
         </div>
 
         {/* Form Section */}
-        <div className="p-10 overflow-y-auto flex-grow">
+        <div className="p-8 overflow-y-auto flex-grow">
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
             {[
               { label: "รหัสสินค้า", name: "code", sub1: "*" },
@@ -115,7 +114,7 @@ export function Modal_Inbound({ close, confirm }) {
             {[
               { label: "ราคาเช่า 3 วัน", name: "price3D", sub1: "*" },
               { label: "ราคาเช่า 30 วัน", name: "price30D", sub1: "*" },
-              { label: "ราคาขาย", name: "price_sell", sub1: "*" },
+              { label: "ราคาขาย", name: "price_sell" },
               { label: "ราคาค่าปรับ", name: "price_damage", sub1: "*" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col">
@@ -134,7 +133,7 @@ export function Modal_Inbound({ close, confirm }) {
               </div>
             ))}
             {[
-              { label: "หน่วย", name: "unit", sub: "(เช่น อัน ก้อน ชิ้น)" },
+              { label: "หน่วย", name: "unit", sub: "(เช่น ท่อน แผ่น ชิ้น)" },
               { label: "หมายเหตุ", name: "remark" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col">
@@ -156,11 +155,11 @@ export function Modal_Inbound({ close, confirm }) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-gray-100 flex justify-center border-t">
+        <div className="p-4 bg-gray-100 flex justify-center border-t">
           <button
-            className={`px-6 py-3 text-white rounded-md text-lg font-medium transition w-1/4 ${
+            className={` text-white rounded-md text-lg font-medium transition w-1/5  h-10  ${
               isFormValid()
-                ? "bg-[#31AB31] hover:bg-green-600 active:bg-green-700"
+                ? "bg-[#31AB31] hover:bg-green-600 active:bg-green-700 "
                 : "bg-gray-400 cursor-not-allowed"
             }`}
             onClick={confirm_item}
