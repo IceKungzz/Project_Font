@@ -328,7 +328,7 @@ export function StatusProduct() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="border px-4 py-2">
+                  <td colSpan="6" className="border px-4 py-2">
                     ไม่พบข้อมูล
                   </td>
                 </tr>
