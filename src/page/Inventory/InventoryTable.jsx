@@ -86,19 +86,20 @@ function InventoryTable({ products, showEditIcons, onEditClick }) {
               </td>
               <td className="px-4 py-2 border">{item.name}</td>
               <td className="px-4 py-2 border">{item.size}</td>
-              <td className="px-4 py-2 border">{item.quantity}</td>
+              <td className="px-4 py-2 border flex ">{item.quantity}<img
+                src="/imgoil/utr.png"
+                alt="Edit Icon"
+                className="w-6 h-6 cursor-pointer ms-2"
+                onClick={() => {
+                  console.log("Edit button clicked, ID:", item.id);
+                  onEditClick(item.id);
+                }}
+              />
+              </td>
               <td className="px-4 py-2 border">{item.price3D}</td>
               <td className="px-4 py-2 border">{item.price30D}</td>
-              {showEditIcons && (
-                <td className="px-4 py-2 border">
-                  <img
-                    src="/imgoil/utr.png"
-                    alt="Edit Icon"
-                    className="w-6 h-6 cursor-pointer"
-                    onClick={() => onEditClick(item.id)}
-                  />
-                </td>
-              )}
+
+
             </tr>
           ))}
         </tbody>
@@ -127,9 +128,9 @@ function InventoryTable({ products, showEditIcons, onEditClick }) {
 
       {modalOpen && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-md w-3/4 max-w-3xl shadow-lg">
+          <div className="bg-white p-6 rounded-md w- max-w-3xl shadow-lg">
             <h3 className="text-2xl font-semibold text-indigo-600 mb-6">
-              เปรียบเทียบสินค้าแต่ละสาขา
+              เปรียบเทียบสินค้า
             </h3>
 
             {loading ? (

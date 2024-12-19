@@ -10,8 +10,7 @@ import Preorder from "../page/Preorder/Preorder"
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
 import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products"
 import StatusProduct from "../page/status/status"
-import Inventory from "../page/Inventory/Inventory"
-// import allptc from "../page/allptc/allptc"
+import { StockItem } from "../page/Stock/Stock"
  
 
 const router = createBrowserRouter([
@@ -27,7 +26,7 @@ const router = createBrowserRouter([
                     {path:"/", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
                     {path:"status", element: <StatusProduct/>},
-                    {path:"inventory", element: <Inventory />},
+                    { path: "stock", element: <StockItem /> },
                     
                 ],   
             },

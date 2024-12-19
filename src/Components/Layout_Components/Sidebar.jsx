@@ -73,7 +73,7 @@ export default function Sidebar() {
                 </span>
               </div>
             </div>
-          </div>
+          </div> 
 
           {/* รายการเมนู */}
           {isSidebarOpen && !isHomePage && (
@@ -134,8 +134,9 @@ export default function Sidebar() {
                 <span>คืนสินค้า</span>
               </NavLink>
 
+              
               <NavLink
-                to="/inventory"
+                to="/stock"
                 className={({ isActive }) =>
                   `sidebar-menu
                          ${isActive ? "activeclass" : ""}`

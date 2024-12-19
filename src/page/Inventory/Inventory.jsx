@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import BranchSelector from "./BranchSelector";
 import InventoryTable from "./InventoryTable";
-import EditModal from "./EditModal";
+import EditModal from "./editModal"; // Import EditModal
+
 import axios from "axios";
 
 function Inventory() {
@@ -54,11 +55,7 @@ function Inventory() {
                   branchName: "ชลบุรี", // เพิ่มชื่อสาขา
                 })),
                 ...data.product_samutsakhon.map(item => ({
-                  ...item,
-                  branchName: "โคกขาม", // เพิ่มชื่อสาขา
-                })),
-                ...data.product_pathumthani.map(item => ({
-                  ...item,
+                  ...item, 
                   branchName: "นพวงศ์", // เพิ่มชื่อสาขา
                 })),
               ];
@@ -78,6 +75,7 @@ function Inventory() {
   }, [selectedBranch]);
 
   const handleEditClick = (id) => {
+    console.log(id)
     setEditingProductId(id);
     setIsModalOpen(true); // Open modal on edit
   };
