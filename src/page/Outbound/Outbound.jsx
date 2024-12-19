@@ -5,12 +5,10 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal_Outbound } from "./Modal_Outbound";
 import { Modal_Create_Products } from "./Modal_Create_Products";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from "react-router-dom";
 
 export function Outbound() {
-  const [branch, setBranch] = useState('')
+  const [branch, setBranch] = useState("");
   const [products, setProducts] = useState([]);
   //ข้อมูลใน input
   const [name, setName] = useState("");
@@ -26,11 +24,11 @@ export function Outbound() {
   const [showmodal_create_product, setShowmodal_create_product] =
     useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
-  const [confirmitem_create, setConfirmItem_Create] = useState([])
+  const [confirmitem_create, setConfirmItem_Create] = useState([]);
   const [hasVat, setHasVat] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const menu = [
     { title: "นามลูกค้า/ชื่อบริษัท :", type: "text" },
@@ -68,14 +66,13 @@ export function Outbound() {
     console.log("Confirmed items: ", updatedItems);
   };
 
-
   const handleConfirmItem_Create = (items) => {
     const updatedItems = items.map((item) => ({
       ...item,
       type: item.type || "เช่า",
       price: 0,
     }));
-    setConfirmItem_Create(updatedItems);
+    setConfirmitem(updatedItems);
     console.log("Confirmed items create: ", updatedItems);
   };
 
@@ -150,18 +147,29 @@ export function Outbound() {
   };
 
   const confirm_order = () => {
-    const reserve = [confirmitem.reduce(
-      (acc, item) => {
-        acc.code.push(item.code);
-        acc.product_id.push(String(item.id));
-        acc.size.push(item.size);
-        acc.price.push(item.price);
-        acc.quantity.push(item.amount)
-        acc.type.push(item.type === 'เช่า' ? '0' : '1')
-        return acc;
-      },
-      { code: [], product_id: [], price: [], quantity: [], size: [], centimeter: [], meter: [], type: [] }
-    )];
+    const reserve = [
+      confirmitem.reduce(
+        (acc, item) => {
+          acc.code.push(item.code);
+          acc.product_id.push(String(item.id));
+          acc.size.push(item.size);
+          acc.price.push(item.price);
+          acc.quantity.push(item.amount);
+          acc.type.push(item.type === "เช่า" ? "0" : "1");
+          return acc;
+        },
+        {
+          code: [],
+          product_id: [],
+          price: [],
+          quantity: [],
+          size: [],
+          centimeter: [],
+          meter: [],
+          type: [],
+        }
+      ),
+    ];
     const newOrder = {
       customer_name: name,
       place_name: workside,
@@ -169,59 +177,62 @@ export function Outbound() {
       date: day_length,
       reserve: reserve,
       status_assemble: true,
-      vat: hasVat ? 'vat' : 'nvat',
+      vat: hasVat ? "vat" : "nvat",
       discount: 200,
       shipping_cost: 2500,
       move_price: 1000,
       guarantee_price: 0,
       proponent_name: "bossinwza007",
-      average_price: 0
+      average_price: 0,
     };
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
-    axios.post('http://192.168.195.75:5000/v1/product/outbound/reserve', newOrder,
-      {
-        headers: {
-          "Authorization": token,
-          "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+    axios
+      .post(
+        "http://192.168.195.75:5000/v1/product/outbound/reserve",
+        newOrder,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
         }
-      }
-    ).then((res) => {
-      if (res.status === 201) {
-        Swal.fire({
-          icon: 'success',
-          text: 'เพิ่มข้อมูลสำเร็จ',
-          confirmButton: 'ok'
-        }).then(() => {
-          navigate('/status')
-        })
-
-      }
-    }).catch((err) => {
-      console.log(err);
-
-    })
+      )
+      .then((res) => {
+        if (res.status === 201) {
+          Swal.fire({
+            icon: "success",
+            text: "เพิ่มข้อมูลสำเร็จ",
+            confirmButton: "ok",
+          }).then(() => {
+            navigate("/status");
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
 
-
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    axios.get('http://192.168.195.75:5000/v1/product/outbound/profile', {
-      headers: {
-        "Authorization": token,
-        "Content-Type": "application/json",
-        "x-api-key": "1234567890abcdef",
-      },
-    }).then((res) => {
-      if (res.status === 200) {
-        setBranch(res.data.data.branch_name)
-      }
-    })
-  }, [])
-
+    const token = localStorage.getItem("token");
+    axios
+      .get("http://192.168.195.75:5000/v1/product/outbound/profile", {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef",
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setBranch(res.data.data.branch_name);
+        }
+      });
+  }, []);
 
   return (
     <div className="w-full h-[90%] mt-5">
@@ -232,10 +243,18 @@ export function Outbound() {
       </HelmetProvider>
 
       {showmodal ? (
-        <Modal_Outbound close={closeModal} confirm={handleConfirm} ititialData={confirmitem || ''} />
+        <Modal_Outbound
+          close={closeModal}
+          confirm={handleConfirm}
+          ititialData={confirmitem || ""}
+        />
       ) : null}
       {showmodal_create_product ? (
-        <Modal_Create_Products close={closeModal_Create} confirm={handleConfirmItem_Create}/>
+        <Modal_Create_Products
+          close={closeModal_Create}
+          confirm={handleConfirmItem_Create}
+          ititialData={confirmitem || ""}
+        />
       ) : null}
       <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar ">
         <div className="col-span-2 grid grid-rows-6 ">
@@ -265,12 +284,12 @@ export function Outbound() {
                     item.title === "นามลูกค้า/ชื่อบริษัท :"
                       ? (e) => setName(e.target.value)
                       : item.title === "วันที่เสนอ :"
-                        ? (e) => handleDateChange(e.target.value)
-                        : item.title === "ชื่อไซต์งาน :"
-                          ? (e) => setWorkside(e.target.value)
-                          : item.title === "ที่อยู่ลูกค้า :"
-                            ? (e) => setAddress(e.target.value)
-                            : null
+                      ? (e) => handleDateChange(e.target.value)
+                      : item.title === "ชื่อไซต์งาน :"
+                      ? (e) => setWorkside(e.target.value)
+                      : item.title === "ที่อยู่ลูกค้า :"
+                      ? (e) => setAddress(e.target.value)
+                      : null
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
@@ -362,48 +381,85 @@ export function Outbound() {
                     <tbody>
                       {confirmitem.length > 0 ? (
                         confirmitem.map((item, index) => (
-                          <tr className="border-b-2" key={index}>
-                            <td className="px-4 py-2">{index + 1}</td>
-                            <td className="px-4 py-2">{item.name}</td>
-                            <td className="px-4 py-2">{item.size}</td>
-                            <td className="px-4 py-2">
-                              <select
-                                name="model"
-                                className="px-4 py-2 text-center"
-                                value={item.type || ""}
-                                onChange={(e) =>
-                                  handleModelChange(index, e.target.value)
-                                }
-                              >
-                                <option value="เช่า">เช่า</option>
-                                <option value="ซื้อ">ซื้อ</option>
-                              </select>
-                            </td>
-                            <td className="px-4 py-2">
-                              <input
-                                type="number"
-                                className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                value={item.amount || 0}
-                                required
-                                onChange={(e) =>
-                                  handleAmountChange(index, e.target.value)
-                                }
-                              />
-                            </td>
-                            <td className="px-4 py-2">
-                              <input
-                                type="price"
-                                className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                required
-                                onChange={(e) =>
-                                  handlePriceChange(index, e.target.value)
-                                }
-                              />
-                            </td>
-                            <td className="px-4 py-2">
-                              {item.price * item.amount || 0}
-                            </td>
-                          </tr>
+                          <React.Fragment key={index}>
+                            {/* แสดงรายการหลัก */}
+                            <tr className="border-b-2">
+                              <td className="px-4 py-2">{index + 1}</td>
+                              {item.name === "item_merge" ? (
+                                <td className="px-4 py-2">
+                                  <input
+                                    type="text"
+                                    className="px-2 py-2 w-[100px] border border-black rounded-md"
+                                  />
+                                </td>
+                              ) : (
+                                <td className="px-4 py-2">{item.name}</td>
+                              )}
+                              <td className="px-4 py-2">
+                                {item.name === "item_merge" ? "-" : item.size}
+                              </td>
+                              <td className="px-4 py-2">
+                                <select
+                                  name="model"
+                                  className="px-4 py-2 text-center"
+                                  value={item.type || ""}
+                                  onChange={(e) =>
+                                    handleModelChange(index, e.target.value)
+                                  }
+                                >
+                                  <option value="เช่า">เช่า</option>
+                                  <option value="ซื้อ">ซื้อ</option>
+                                </select>
+                              </td>
+                              <td className="px-4 py-2">
+                                <input
+                                  type="number"
+                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                  value={item.amount || 0}
+                                  required
+                                  onChange={(e) =>
+                                    handleAmountChange(index, e.target.value)
+                                  }
+                                />
+                              </td>
+                              <td className="px-4 py-2">
+                                <input
+                                  type="price"
+                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                  required
+                                  onChange={(e) =>
+                                    handlePriceChange(index, e.target.value)
+                                  }
+                                />
+                              </td>
+                              <td className="px-4 py-2">
+                                {item.price * item.amount || 0}
+                              </td>
+                            </tr>
+
+                            {/* แสดงรายการย่อยสำหรับ item_merge */}
+                            {item.name === "item_merge" &&
+                              item.item_merge &&
+                              item.item_merge.map((merge, mergeIndex) => (
+                                <tr key={mergeIndex}>
+                                  <td
+                                    className="px-4 py-2"
+                                    colSpan="7"
+                                  >
+                                    {/* แสดงรายการย่อย */}
+                                    <div className="grid grid-cols-7 ">
+                                      <span>-</span>
+                                      <span>{merge.name}</span>
+                                      <span>{merge.size}</span>
+                                      <span>เช่า</span>
+                                      <span>{merge.amount}</span>
+                                      <span>-</span>
+                                      <span>-</span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                          </React.Fragment>
                         ))
                       ) : (
                         <tr>
@@ -445,12 +501,12 @@ export function Outbound() {
                 <span className="col-span-1 grid justify-end p-1">
                   {hasVat
                     ? (
-                      confirmitem.reduce(
-                        (total, item) =>
-                          total + (item.price * item.amount || 0),
-                        0
-                      ) * 0.07
-                    ).toFixed(2)
+                        confirmitem.reduce(
+                          (total, item) =>
+                            total + (item.price * item.amount || 0),
+                          0
+                        ) * 0.07
+                      ).toFixed(2)
                     : "0.00"}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
@@ -465,7 +521,6 @@ export function Outbound() {
               </span>
             </div>
           </div>
-
 
           <div className="row-span-1 grid grid-rows-2 ">
             <div className="row-span-1 flex items-center">
@@ -488,7 +543,6 @@ export function Outbound() {
               />
               ไม่มีภาษีมูลค่าเพิ่ม
             </div>
-
 
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
               <span className="col-span-1 flex  justify-end pr-16">

@@ -6,7 +6,7 @@ export function Modal_Outbound({close, confirm, ititialData}) {
   const [products, setProducts] = useState([])
   const [products_search, setProducts_search] = useState([])
   const [keysearchItem, setkeysearchItem] = useState('')
-  const [confirm_items, setConfirm_item] = useState([])
+  const [confirm_items, setConfirm_item] = useState(ititialData || [])
 
 
   useEffect(() =>{
@@ -25,7 +25,6 @@ export function Modal_Outbound({close, confirm, ititialData}) {
     })
   },[])
 
-  //console.log('data = ',ititialData[0].amount );
 
   const filteritem_Search = () =>{
     const itemFilter = products.filter(item => item.code.includes(keysearchItem))
@@ -33,20 +32,33 @@ export function Modal_Outbound({close, confirm, ititialData}) {
   }
 
   const select_Item = (item, amount) => {
-    const newItem = { ...item, amount };
+    const parsedAmount = parseInt(amount) || 0;
+  
     setConfirm_item((prevItems) => {
+      // ถ้าจำนวนเป็น 0 ลบตัวนั้นออกจากรายการ
+      if (parsedAmount === 0) {
+        return prevItems.filter((i) => i.code !== item.code);
+      }
+  
+      // ถ้าไม่ใช่ 0 ให้เพิ่มหรืออัปเดตตัวนั้นในรายการ
       const existingItemIndex = prevItems.findIndex((i) => i.code === item.code);
+  
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex] = newItem; 
+        updatedItems[existingItemIndex] = { ...item, amount: parsedAmount };
         return updatedItems;
       } else {
-        return [...prevItems, newItem];
+        return [...prevItems, { ...item, amount: parsedAmount }];
       }
     });
   };
+  
+  
+  
 
   const confirm_item =() =>{
+    console.log('confirm modal = ',confirm_items);
+    const itemsToConfirm = confirm_items.length > 0 ? confirm_items : ititialData;
     confirm(confirm_items);
     close();
   }
@@ -61,7 +73,7 @@ export function Modal_Outbound({close, confirm, ititialData}) {
         {/* Header */}
         <div className=" w-full flex justify-between items-center p-4">
           <div></div>
-          <h2 className="text-2xl font-semibold">เลือกสินค้า <i class="fa-solid fa-plus"></i></h2>
+          <h2 className="text-2xl font-semibold">เลือกสินค้า </h2>
           <button className="text-gray-500 hover:text-gray-700" onClick={close}>X</button>
         </div>
 
@@ -107,7 +119,12 @@ export function Modal_Outbound({close, confirm, ititialData}) {
                           min={0}
                           className="w-[100px] p-2 text-center border border-black rounded-md"
                           onChange={(e) => select_Item(item,e.target.value)}
-                          defaultValue={0}
+                          defaultValue={
+                            confirm_items.find((i) => i.code === item.code)?.amount || 
+                            ititialData.find((i) => i.code === item.code)?.amount || 
+                            ''
+                          }
+                          
                         />
                       </td>
                   </tr>
@@ -125,8 +142,12 @@ export function Modal_Outbound({close, confirm, ititialData}) {
                           min={0}
                           className="w-[100px] p-2 text-center border border-black rounded-md"
                           onChange={(e) => select_Item(item,e.target.value)}
-                          // defaultValue={ititialData.find((i) => i.code === item.code) ? ititialData.amount : ''}
-                          defaultValue={ititialData[0].amount === undefined ? 0 : ititialData[0].amount }
+                          defaultValue={
+                            confirm_items.find((i) => i.code === item.code)?.amount || 
+                            ititialData.find((i) => i.code === item.code)?.amount || 
+                            ''
+                          }
+                          
                         />
                       </td>
                   </tr>
