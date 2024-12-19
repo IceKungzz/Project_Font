@@ -268,18 +268,44 @@ export function StatusProduct() {
               <option value="kokkham">โคกขาม</option>
             </select>
           </div>
-        </div>
+          <div className="flex items-center gap-2">
+        <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ:</span>
+        <input
+          type="text"
+          value={receiptNumber}
+          onChange={(e) => setReceiptNumber(e.target.value)}
+          className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+          placeholder="ค้นหาเลขที่ใบเสร็จ"
+        />
+      </div>
+
+      <button
+        onClick={() => {
+          // Add logic to filter or search data here
+          const filteredStatus = status.filter(
+            (item) =>
+              (selectedBranch === "" || item.branch_name === selectedBranch) &&
+              (receiptNumber === "" || item.export_number.includes(receiptNumber))
+          );
+          setStatus(filteredStatus);
+        }}
+        className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+        ค้นหา
+      </button>
+    </div>
+
 
         {/* ตารางแสดงข้อมูล */}
-        <div className="w-full overflow-y-scroll no-scrollbar">
-          <table className="table-auto w-full border-separate border-spacing-0 text-center">
-            <thead className="h-16">
+        <div className="w-full overflow-y-scroll">
+          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
+            <thead className="bg-[#CBDCEB] h-16 bg-[#133E87]">
               <tr>
-                <th className="border px-4 py-2">สาขา</th>
-                <th className="border px-4 py-2">เลขที่ใบเสร็จ</th>
-                <th className="border px-4 py-2">นามลูกค้า</th>
-                <th className="border px-4 py-2">สถานะ</th>
-                <th className="border px-4 py-2">เพิ่มเติม</th>
+                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
+                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
               </tr>
             </thead>
             <tbody>
