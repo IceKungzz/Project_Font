@@ -87,30 +87,30 @@ export function ReturnItem() {
 
                 <div className="">
                     <table className="table-auto w-full border-collapse ">
-                        <thead className='bg-slate-200  border-indigo-800 h-14 text-indigo-800 text-xl sticky top-0 rounded-lg '>
+                        <thead className='bg-slate-200 border-l-2  h-14 text-indigo-800 text-xl sticky top-0 rounded-lg '>
                             <tr className='' >
-                                <th className=" px-4  py-2">สาขา</th>
-                                <th className=" px-4  py-2">เลขที่ใบเสร็จ</th>
-                                <th className=" px-4  py-2">วันที่ทำรายการ</th>
-                                <th className=" px-4  py-2">นามลูกค้า/ชื่อบริษัท</th>
-                                <th className=" px-4  py-2">รูปแบบ</th>
-                                <th className=" px-4  py-2">สถานะ</th>
-                                <th className=" px-4  py-2">เพิ่มเติม</th>
+                                <th className=" px-4 border-l-2  py-2">สาขา</th>
+                                <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
+                                <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
+                                <th className=" px-4 border-l-2 py-2">นามลูกค้า/ชื่อบริษัท</th>
+                                <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
+                                <th className=" px-4 border-l-2 py-2">สถานะ</th>
+                                <th className=" px-4 border-l-2 py-2">เพิ่มเติม</th>
                             </tr>
                         </thead>
                         <tbody>
                             {dataMenuReturn.map((items, index) => (
-                                <tr key={index} className='border-b-2 border-indigo-800'>
-                                    <td className="text-center px-4 py-2 ">{items.branch}</td>
-                                    <td className="text-center px-4 py-2">{items.receipt}</td>
-                                    <td className="text-center px-4 py-2">{items.date}</td>
-                                    <td className="text-start  px-4 py-2">{items.name}</td>
-                                    <td className="text-center px-4 py-2">{items.type}</td>
-                                    <td className={`text-center px-4 py-2 
+                                <tr key={index} className='  border-2'>
+                                    <td className="text-center border-l-2 px-4 py-2 ">{items.branch}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{items.receipt}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{items.date}</td>
+                                    <td className="text-start border-l-2 px-4 py-2">{items.name}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{items.type}</td>
+                                    <td className={`text-center border-l-2 px-4 py-2 
                                         ${items.status === 'A' ? 'text-red-500' : 'text-green-500'}`}>
                                         {items.status === 'A' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
                                     </td>
-                                    <td className="text-center w-[20%] py-2 ">
+                                    <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
                                         {items.status === 'A' ? (
                                             <button className="bg-red-500  pt-2 pb-2 pl-10 pr-10 rounded-lg text-white border-2 border-gray-500"
                                                 onClick={() => setShowmodalRed(true)}

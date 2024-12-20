@@ -100,7 +100,7 @@ export function Inbound() {
         );
 
     };
-
+    const allQuantitiesValid = dataconfirm.every((item) => item.quantity > 0);
     const calculateTotalQuantity = () => {
         return dataconfirm.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
     };
@@ -267,10 +267,10 @@ export function Inbound() {
                         <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
                             <span className='col-span-1 flex  justify-end pr-16 '>
                                 <button
-                                    className={`bg-[#133E87] w-2/6 p-2 rounded-md ${count > 0 ? "hover:bg-[#172c4f]" : "cursor-not-allowed opacity-50"
+                                    className={`bg-[#133E87] w-2/6 p-2 rounded-md ${count > 0 && allQuantitiesValid ? "hover:bg-[#172c4f]" : "cursor-not-allowed opacity-50"
                                         }`}
                                     onClick={handlePostData}
-                                    disabled={count <= 0 } // ปุ่มจะถูก disable ถ้า count <= 0
+                                    disabled={count <= 0 || !allQuantitiesValid } // ปุ่มจะถูก disable ถ้า count <= 0
                                 ><i className="fa-solid fa-floppy-disk mr-2"></i>
                                     บันทึก
                                 </button>                                
