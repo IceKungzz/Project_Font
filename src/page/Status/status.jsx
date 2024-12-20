@@ -33,7 +33,7 @@ const Modal = ({ isOpen, onClose, id }) => {
         } else {
           throw new Error(response.data.message);
         }
-        
+
       } catch (error) {
         console.error("Error fetching product details:", error);
         setError(error.message);
@@ -187,43 +187,41 @@ const Modal = ({ isOpen, onClose, id }) => {
   );
 };
 
-export function StatusProduct() {
+const StatusProduct = () => {
   const [status, setStatus] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [receiptNumber, setReceiptNumber] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [error, setError] = useState(null);
 
-  // ฟังก์ชันดึงข้อมูลจาก API
   useEffect(() => {
     const fetchData = async () => {
-      setError(null);
       try {
+
         const token = localStorage.getItem("token");
         if (!token) {
           throw new Error("Token not found");
         }
 
-        const response = await axios.get(
-          "http://192.168.195.75:5000/v1/product/status/status",
-          {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-              "x-api-key": "1234567890abcdef",
-            },
+        const url = "http://192.168.195.75:5000/v1/product/status/status";
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
           }
-        );
+        });
 
         if (response.data.code === 200) {
           setStatus(response.data.data["Status Product"]);
         } else {
           throw new Error(response.data.message);
         }
-        
+
       } catch (error) {
-        console.error("Error fetching data:", error);
         setError(error.message);
       }
     };
@@ -231,7 +229,52 @@ export function StatusProduct() {
     fetchData();
   }, []);
 
-  // ฟังก์ชันเปิด Modal
+  const handleSearch = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      if (receiptNumber === "") {
+        setReceiptNumber(false);
+        fetchData();
+      } else if (transactionDate === "") {
+        setTransactionDate(false);
+        fetchData();
+      }
+
+      let url = "http://192.168.195.75:5000/v1/product/status/status";
+
+      if (receiptNumber) {
+        url = "http://192.168.195.75:5000/v1/product/status/search-status";
+      } else if (transactionDate) {
+        url = "http://192.168.195.75:5000/v1/product/status/between-status";
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef",
+        }
+      });
+
+      const filteredStatus = response.data.data["Status Product"].filter(
+        (item) =>
+          (selectedBranch === "" || item.branch_name === selectedBranch) &&
+          (receiptNumber === "" || item.export_number.includes(receiptNumber)) &&
+          (transactionDate === "" || item.created_at.includes(transactionDate))
+      );
+
+      setStatus(filteredStatus);
+
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   const openModal = (id) => {
     if (!id) {
       console.error("ID is undefined");
@@ -241,7 +284,6 @@ export function StatusProduct() {
     setIsModalOpen(true);
   };
 
-  // ฟังก์ชันปิด Modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedProductId(null);
@@ -269,31 +311,30 @@ export function StatusProduct() {
             </select>
           </div>
           <div className="flex items-center gap-2">
-        <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ:</span>
-        <input
-          type="text"
-          value={receiptNumber}
-          onChange={(e) => setReceiptNumber(e.target.value)}
-          className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-          placeholder="ค้นหาเลขที่ใบเสร็จ"
-        />
-      </div>
-
-      <button
-        onClick={() => {
-          // Add logic to filter or search data here
-          const filteredStatus = status.filter(
-            (item) =>
-              (selectedBranch === "" || item.branch_name === selectedBranch) &&
-              (receiptNumber === "" || item.export_number.includes(receiptNumber))
-          );
-          setStatus(filteredStatus);
-        }}
-        className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
-        ค้นหา
-      </button>
-    </div>
-
+            <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ:</span>
+            <input
+              type="text"
+              value={receiptNumber || ""}
+              onChange={(e) => setReceiptNumber(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              placeholder="ค้นหาเลขที่ใบเสร็จ"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ:</span>
+            <input
+              type="date"
+              value={transactionDate || ""}
+              onChange={(e) => setTransactionDate(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+            />
+          </div>
+          <button
+            onClick={handleSearch}
+            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+            ค้นหา
+          </button>
+        </div>
 
         {/* ตารางแสดงข้อมูล */}
         <div className="w-full overflow-y-scroll">
@@ -309,43 +350,31 @@ export function StatusProduct() {
               </tr>
             </thead>
             <tbody>
-              {status.length > 0 ? (
-                status.map((item, index) => (
-                  <tr key={index}>
-                    <td className="border px-4 py-2">{item.branch_name}</td>
-                    <td className="border px-4 py-2">{item.export_number}</td>
-                    <td className="border px-4 py-2">{item.customer_name}</td>
-                    <td className="border px-4 py-2">{item.status}</td>
-                    <td className="border px-4 py-2">
-                      <button
-                        onClick={() => openModal(item.id)}
-                        className="text-blue-500"
-                      >
-                        ดูข้อมูล
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="border px-4 py-2">
-                    ไม่พบข้อมูล
+              {status.map((item, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">{item.branch_name}</td>
+                  <td className="border px-4 py-2">{item.export_number}</td>
+                  <td className="border px-4 py-2">{item.customer_name}</td>
+                  <td className="border px-4 py-2">
+                    {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
+                  </td>
+                  <td className="border px-4 py-2">{item.status}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      onClick={() => openModal(item.id)}
+                      className="text-blue-500"
+                    >
+                      ดูข้อมูล
+                    </button>
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         </div>
-
-        {/* Modal */}
-        <Modal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          id={selectedProductId}
-        />
       </div>
     </div>
   );
-}
+};
 
 export default StatusProduct;
