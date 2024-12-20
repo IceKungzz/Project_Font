@@ -2,126 +2,84 @@ import { useState } from "react";
 import './test_table.css';
 
 export default function TestTable() {
-  const [items, setItems] = useState([]); // สำหรับเก็บรายการที่กรอกในตาราง
-  const [item_merge, setItem_merge] = useState([]); // สำหรับเก็บข้อมูล m_item ที่รวมค่าต่างๆ
+  const [items, setItems] = useState([]); // เก็บข้อมูลที่รวมแล้ว
+  const [currentInputs, setCurrentInputs] = useState([]); // เก็บ input ที่กำลังพิมพ์
 
-  const data = [
-    { id: 1, itemname: 'item1', amount: 20 },
-    { id: 2, itemname: 'item2', amount: 20 },
-    { id: 3, itemname: 'item3', amount: 20 },
-    { id: 4, itemname: 'item4', amount: 20 },
-    { id: 5, itemname: 'item5', amount: 20 },
-  ];
-
-  const changeamount = (e) => {
+  const handleInputChange = (e) => {
     const { name, value, id } = e.target;
-
-    setItems((prevItems) => {
-      let updatedItems = [...prevItems];
-
-      // ตรวจสอบว่าเป็น m_item หรือไม่
-      if (name.includes('m_')) {
-        // ค้นหาว่ามี m_item หรือยัง
-        const existingMergeItem = updatedItems.find(item => item.m_item);
-
-        if (existingMergeItem) {
-          // ถ้ามี m_item อยู่แล้ว, เช็คว่าค่าที่กรอกไม่ซ้ำ
-          const itemToUpdate = existingMergeItem.m_item.find(item => item.id === id);
-          if (itemToUpdate) {
-            // ถ้าพบ item ที่มี id เดียวกัน, ปรับปรุงค่า amount
-            itemToUpdate.amount = value;
-          } else {
-            // ถ้าไม่พบ, เพิ่มค่าใหม่ใน m_item
-            existingMergeItem.m_item.push({
-              item: value,
-              amount: data.find(d => d.itemname === value)?.amount || 0,
-              id: id
-            });
-          }
-        } else {
-          // ถ้ายังไม่มี m_item, สร้าง m_item ใหม่
-          updatedItems.push({
-            m_item: [{
-              item: value,
-              amount: data.find(d => d.itemname === value)?.amount || 0,
-              id: id
-            }]
-          });
-        }
-      } else {
-        // กรณีที่ไม่ใช่ m_, เพิ่มลงในรายการปกติ
-        const existingItemIndex = prevItems.findIndex((item) => item.id === id);
-
-        if (existingItemIndex >= 0) {
-          // ถ้าพบรายการที่ตรงกับ id, ให้ปรับปรุงค่า
-          updatedItems[existingItemIndex] = { ...updatedItems[existingItemIndex], amount: value };
-        } else {
-          // ถ้าไม่พบ, เพิ่มข้อมูลใหม่ลงไป
-          updatedItems.push({
-            item: value,
-            amount: value,
-            id: id
-          });
-        }
+    setCurrentInputs((prev) => {
+      // ค้นหา input ที่มี id ตรงกัน
+      const existingInput = prev.find((input) => input.id === id);
+      if (existingInput) {
+        // ถ้ามีอยู่แล้ว, อัปเดตค่า amount
+        return prev.map((input) =>
+          input.id === id ? { ...input, amount: value } : input
+        );
       }
-
-      // รวมข้อมูลใน m_item ที่มี id เดียวกัน
-      updatedItems = updatedItems.map(item => {
-        if (item.m_item) {
-          const mergedItems = item.m_item.reduce((acc, curr) => {
-            const existingItem = acc.find(i => i.id === curr.id);
-            if (existingItem) {
-              existingItem.amount += curr.amount; // รวม amount หาก id เดียวกัน
-            } else {
-              acc.push(curr);
-            }
-            return acc;
-          }, []);
-          item.m_item = mergedItems; // อัพเดต m_item
-        }
-        return item;
-      });
-
-      return updatedItems;
+      // ถ้ายังไม่มี, เพิ่ม input ใหม่
+      return [...prev, { item: name, amount: value, id }];
     });
   };
 
-  const show = () => {
-    console.log(items);
+  const handleSave = () => {
+    setItems((prevItems) => {
+      const mergedItems = [...prevItems];
+      const m_itemKey = `m_item${prevItems.length + 1}`; // สร้าง key ใหม่ เช่น m_item1, m_item2
+
+      // รวมข้อมูลจาก currentInputs
+      const newItemGroup = {
+        [m_itemKey]: currentInputs.map(({ item, amount, id }) => ({
+          item,
+          amount,
+          id,
+        })),
+      };
+
+      return [...mergedItems, newItemGroup]; // เพิ่มเข้าไปใน items
+    });
+
+    setCurrentInputs([]); // รีเซ็ต input
   };
 
   return (
     <>
       <div>
-        <h3>Items</h3>
-        {data.map((item, index) => (
-          <ul key={index}>
-            <li>{item.itemname}</li>
-            <li>
-              <input
-                type="text"
-                name={item.itemname}
-                id={index + 1}
-                onChange={changeamount}
-                defaultValue={items.find((i) => i.id === item.id)?.amount || ""}
-              />
-              กรอก
-            </li>
-          </ul>
-        ))}
+        <h3>กรอกข้อมูล</h3>
+        <div>
+          <input
+            type="text"
+            name="item1"
+            id="60"
+            onChange={handleInputChange}
+            value={currentInputs.find((input) => input.id === "60")?.amount || ""}
+          />
+          item 1
+        </div>
+        <div>
+          <input
+            type="text"
+            name="item2"
+            id="71"
+            onChange={handleInputChange}
+            value={currentInputs.find((input) => input.id === "71")?.amount || ""}
+          />
+          item 2
+        </div>
+        <div>
+          <input
+            type="text"
+            name="item3"
+            id="72"
+            onChange={handleInputChange}
+            value={currentInputs.find((input) => input.id === "72")?.amount || ""}
+          />
+          item 3
+        </div>
+        <button onClick={handleSave}>ตกลง</button>
       </div>
 
       <div>
         <h3>รวมข้อมูล m_item</h3>
-        <input type="text" name="m_item1" id="60" onChange={changeamount} />item 1
-        <input type="text" name="m_item2" id="71" onChange={changeamount} />item 2
-      </div>
-
-      <button onClick={show}>Show</button>
-
-      <hr />
-      <div>
-        <h3>รายการที่กรอก</h3>
         <pre>{JSON.stringify(items, null, 2)}</pre>
       </div>
     </>
