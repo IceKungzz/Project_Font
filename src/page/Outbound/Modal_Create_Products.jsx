@@ -7,8 +7,9 @@ export function Modal_Create_Products({ close, confirm }) {
   const [products_search, setProducts_search] = useState([]);
   const [keysearchItem, setkeysearchItem] = useState("");
   const [confirm_items, setConfirm_item] = useState([]);
-  const [newitemname, setNewItemName] = useState('')
-  const [newpriceitem, setNewPriceItem] = useState(0)
+  const [newitemname, setNewItemName] = useState('');
+  const [newpriceitem, setNewPriceItem] = useState(0);
+  const [newItemQuantity, setNewItemQuantity] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,6 +59,7 @@ export function Modal_Create_Products({ close, confirm }) {
             ...item,
             amount: type === "amount" ? parsedValue : 0,
             price: type === "price" ? parsedValue : 0,
+            type: 1, // Default value for type
           },
         ];
       }
@@ -65,10 +67,7 @@ export function Modal_Create_Products({ close, confirm }) {
   };
 
   const confirm_item = () => {
-    console.log(confirm_items);
-    console.log(newitemname);
-    console.log(newpriceitem);
-  
+    // Check if no products are selected
     if (confirm_items.length === 0) {
       Swal.fire({
         icon: "error",
@@ -78,16 +77,27 @@ export function Modal_Create_Products({ close, confirm }) {
       return;
     }
   
+    // Check if new item details are missing
+    if (!newitemname || newpriceitem <= 0 || newItemQuantity <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "ข้อมูลไม่ครบ",
+        text: "กรุณากรอกข้อมูลสินค้าใหม่ให้ครบถ้วน",
+      });
+      return;
+    }
+  
+    // Merge selected items' data
     const item_merge = confirm_items.reduce(
       (acc, item) => {
         acc.code.push(item.code);
-        acc.product_id.push(item.id || ""); // ใช้ default เป็น "" หากไม่มี id
+        acc.product_id.push(item.id || "");
         acc.price.push(item.price);
         acc.quantity.push(item.amount);
-        acc.size.push(item.size || ""); // ใช้ default เป็น "" หากไม่มี size
-        acc.centimeter.push(item.centimeter || 0); // ใช้ default เป็น 0 หากไม่มีค่า
-        acc.meter.push(item.meter || 0); // ใช้ default เป็น 0 หากไม่มีค่า
-        acc.type.push(item.type || ""); // ใช้ default เป็น "" หากไม่มี type
+        acc.size.push(item.size || "");
+        acc.centimeter.push(item.centimeter || 0);
+        acc.meter.push(item.meter || 0);
+        acc.type.push(item.type || "");
         return acc;
       },
       {
@@ -103,17 +113,17 @@ export function Modal_Create_Products({ close, confirm }) {
     );
   
     console.log("Merged Data:", item_merge);
-  
-
-    console.log({
-      newitem: {
-        name: newitemname,
-        price: newpriceitem,
-      },
-      item_merge,
-    });
+    const itemsuccess = [{ ...item_merge,assemble_name: newitemname,pricenewproduct: newpriceitem,quantitynewproduct: newItemQuantity,}]
+    // console.log({
+    //   ...item_merge,
+    //   assemble_name: newitemname,
+    //   pricenewproduct: newpriceitem,
+    //   quantitynewproduct: newItemQuantity,
+    // });
+    console.log(itemsuccess);
     
   
+    // Call the close function after successful validation
     close();
   };
   
@@ -133,15 +143,34 @@ export function Modal_Create_Products({ close, confirm }) {
           <div className=" w-full flex items-center ">
             <div className="w-2/4 h-[60px] flex justify-around items-center">
               <span>ชื่อสินค้าใหม่: </span>
-              <input type="text" 
-              onChange={(e) => setNewItemName(e.target.value)}
-              required className="w-2/4 border border-gray-300 rounded-md p-2" />
+              <input
+                type="text"
+                onChange={(e) => setNewItemName(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
             </div>
             <div className="w-2/4 h-[60px] flex justify-around items-center">
               <span>ราคาสินค้าใหม่:</span>
-              <input type="number"
-              onChange={(e) => setNewPriceItem(e.target.value)}
-              required className="w-2/4 border border-gray-300 rounded-md p-2" />
+              <input
+                type="number"
+                onChange={(e) => setNewPriceItem(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
+            </div>
+          </div>
+
+          <div className="w-full flex items-center mt-4">
+            <div className="w-2/4 h-[60px] flex justify-around items-center">
+              <span>จำนวนสินค้าใหม่:</span>
+              <input
+                type="number"
+                min={1}
+                onChange={(e) => setNewItemQuantity(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
             </div>
           </div>
 
@@ -169,7 +198,7 @@ export function Modal_Create_Products({ close, confirm }) {
           เลือกสินค้าเพื่อสร้างรายการใหม่
         </div>
 
-        <div className="overflow-y-auto max-h-[490px] min-h-[490px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
+        <div className="overflow-y-auto max-h-[410px] min-h-[410px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
           <table className="w-full text-center">
             <thead className="sticky top-0 bg-white z-10">
               <tr className="border-b border-blue-500 text-[#133E87] font-bold">
