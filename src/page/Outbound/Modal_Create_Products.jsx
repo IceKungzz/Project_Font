@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function Modal_Create_Products({ close, confirm, ititialData }) {
+export function Modal_Create_Products({ close, confirm }) {
   const [products, setProducts] = useState([]);
   const [products_search, setProducts_search] = useState([]);
   const [keysearchItem, setkeysearchItem] = useState("");
-  const [confirm_items, setConfirm_item] = useState(ititialData || []);
+  const [confirm_items, setConfirm_item] = useState([]);
+  const [newitemname, setNewItemName] = useState('');
+  const [newpriceitem, setNewPriceItem] = useState(0);
+  const [newItemQuantity, setNewItemQuantity] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,115 +37,168 @@ export function Modal_Create_Products({ close, confirm, ititialData }) {
     setProducts_search(itemFilter);
   };
 
-  const select_Item = (item, amount, type) => {
-    const parsedAmount = parseInt(amount) || 0;
+  const select_Item = (item, value, type) => {
+    const parsedValue = parseInt(value) || 0;
 
-    setConfirm_item((prevItems) => {
-      // Handle item_merge case
-      if (type === "item_merge") {
-        const existingMergeItemIndex = prevItems.findIndex(
-          (i) => i.name === "item_merge"
+    setConfirm_item((prev) => {
+      const existingItem = prev.find((i) => i.code === item.code);
+
+      if (existingItem) {
+        return prev.map((i) =>
+          i.code === item.code
+            ? {
+                ...i,
+                [type]: parsedValue,
+              }
+            : i
         );
-
-        // Update or create the item_merge structure
-        if (existingMergeItemIndex !== -1) {
-          const updatedItems = [...prevItems];
-          const existingItemIndex = updatedItems[existingMergeItemIndex].item_merge.findIndex(
-            (i) => i.code === item.code
-          );
-
-          if (existingItemIndex !== -1) {
-            // Update the existing item in item_merge
-            updatedItems[existingMergeItemIndex].item_merge[existingItemIndex].amount = parsedAmount;
-          } else {
-            // Add the new item to item_merge
-            updatedItems[existingMergeItemIndex].item_merge.push({
-              ...item,
-              amount: parsedAmount,
-            });
-          }
-
-          return updatedItems;
-        } else {
-          // Create a new item_merge group if it doesn't exist
-          return [
-            ...prevItems,
-            {
-              name: "item_merge",
-              price: 0,
-              type: "เช่า",
-              item_merge: [{ ...item, amount: parsedAmount }],
-            },
-          ];
-        }
       } else {
-        // Handle other types (non-item_merge)
-        const existingItemIndex = prevItems.findIndex((i) => i.code === item.code);
-        if (existingItemIndex !== -1) {
-          const updatedItems = [...prevItems];
-          updatedItems[existingItemIndex] = {
+        return [
+          ...prev,
+          {
             ...item,
-            amount: parsedAmount,
-            name: type,
-          };
-          return updatedItems;
-        } else {
-          return [
-            ...prevItems,
-            {
-              ...item,
-              amount: parsedAmount,
-              name: type,
-            },
-          ];
-        }
+            amount: type === "amount" ? parsedValue : 0,
+            price: type === "price" ? parsedValue : 0,
+            type: 1, // Default value for type
+          },
+        ];
       }
     });
   };
-  
-  console.log(ititialData);
-  
 
   const confirm_item = () => {
-    confirm(confirm_items);
+    // Check if no products are selected
+    if (confirm_items.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "ไม่มีสินค้า",
+        text: "กรุณาเลือกสินค้าอย่างน้อย 1 รายการ",
+      });
+      return;
+    }
+  
+    // Check if new item details are missing
+    if (!newitemname || newpriceitem <= 0 || newItemQuantity <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "ข้อมูลไม่ครบ",
+        text: "กรุณากรอกข้อมูลสินค้าใหม่ให้ครบถ้วน",
+      });
+      return;
+    }
+  
+    // Merge selected items' data
+    const item_merge = confirm_items.reduce(
+      (acc, item) => {
+        acc.code.push(item.code);
+        acc.product_id.push(item.id || "");
+        acc.price.push(item.price);
+        acc.quantity.push(item.amount);
+        acc.size.push(item.size || "");
+        acc.centimeter.push(item.centimeter || 0);
+        acc.meter.push(item.meter || 0);
+        acc.type.push(item.type || "");
+        return acc;
+      },
+      {
+        code: [],
+        product_id: [],
+        price: [],
+        quantity: [],
+        size: [],
+        centimeter: [],
+        meter: [],
+        type: [],
+      }
+    );
+  
+    console.log("Merged Data:", item_merge);
+    const itemsuccess = [{ ...item_merge,assemble_name: newitemname,pricenewproduct: newpriceitem,quantitynewproduct: newItemQuantity,}]
+    // console.log({
+    //   ...item_merge,
+    //   assemble_name: newitemname,
+    //   pricenewproduct: newpriceitem,
+    //   quantitynewproduct: newItemQuantity,
+    // });
+    console.log(itemsuccess);
+    
+  
+    // Call the close function after successful validation
     close();
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-20 z-50">
       <div className="bg-white w-[900px] h-[800px] rounded-lg shadow-xl flex flex-col items-center">
         <div className="w-full flex justify-between items-center p-4">
           <div></div>
-          <h2 className="text-2xl font-semibold">เลือกสินค้า</h2>
+          <h2 className="text-2xl font-semibold">เลือกสินค้าที่ต้องการสร้าง</h2>
           <button className="text-gray-500 hover:text-gray-700" onClick={close}>
             X
           </button>
         </div>
 
-        <div className="flex items-center justify-around w-3/4">
-          <span className="w-[150px]">รหัสสินค้า: </span>
-          <div className="w-2/4">
-            <input
-              type="text"
-              placeholder="รหัสสินค้า"
-              className="w-3/4 border border-gray-300 rounded-md p-2"
-              onChange={(e) => setkeysearchItem(e.target.value)}
-            />
+        <div className="flex flex-col items-center justify-around w-3/4 ">
+          <div className=" w-full flex items-center ">
+            <div className="w-2/4 h-[60px] flex justify-around items-center">
+              <span>ชื่อสินค้าใหม่: </span>
+              <input
+                type="text"
+                onChange={(e) => setNewItemName(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div className="w-2/4 h-[60px] flex justify-around items-center">
+              <span>ราคาสินค้าใหม่:</span>
+              <input
+                type="number"
+                onChange={(e) => setNewPriceItem(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
+            </div>
           </div>
 
-          <button
-            className="bg-blue-900 w-1/4 p-2 rounded-md text-white"
-            onClick={filteritem_Search}
-          >
-            ค้นหา
-          </button>
+          <div className="w-full flex items-center mt-4">
+            <div className="w-2/4 h-[60px] flex justify-around items-center">
+              <span>จำนวนสินค้าใหม่:</span>
+              <input
+                type="number"
+                min={1}
+                onChange={(e) => setNewItemQuantity(e.target.value)}
+                required
+                className="w-2/4 border border-gray-300 rounded-md p-2"
+              />
+            </div>
+          </div>
+
+          <div className=" flex w-full justify-around p-3 border-t border-gray">
+            <div className="w-3/4">
+              <span className="w-[150px] ml-3">รหัสสินค้า: </span>
+              <input
+                type="text"
+                placeholder="รหัสสินค้า"
+                className="w-[173px] border border-gray-300 rounded-md p-2 ml-12"
+                onChange={(e) => setkeysearchItem(e.target.value)}
+              />
+            </div>
+
+            <button
+              className="bg-blue-900 w-1/4 p-2 rounded-md text-white"
+              onClick={filteritem_Search}
+            >
+              ค้นหา
+            </button>
+          </div>
         </div>
 
         <div className="w-3/4 p-2 text-[#133E87] font-bold">
           เลือกสินค้าเพื่อสร้างรายการใหม่
         </div>
 
-        <div className="overflow-y-auto max-h-[550px] min-h-[550px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
+        <div className="overflow-y-auto max-h-[410px] min-h-[410px] no-scrollbar w-3/4 border-2 border-blue-500 rounded-md">
           <table className="w-full text-center">
             <thead className="sticky top-0 bg-white z-10">
               <tr className="border-b border-blue-500 text-[#133E87] font-bold">
@@ -150,7 +206,8 @@ export function Modal_Create_Products({ close, confirm, ititialData }) {
                 <th className="px-4 py-2">ชื่อสินค้า</th>
                 <th className="px-4 py-2">ขนาด</th>
                 <th className="px-4 py-2">คงเหลือ</th>
-                <th className="px-4 py-2">เลือก</th>
+                <th className="px-4 py-2">จำนวน</th>
+                <th className="px-4 py-2">ราคา</th>
               </tr>
             </thead>
             <tbody>
@@ -165,9 +222,21 @@ export function Modal_Create_Products({ close, confirm, ititialData }) {
                       <input
                         type="number"
                         min={0}
+                        name="amount"
                         className="w-[100px] p-2 text-center border border-black rounded-md"
                         onChange={(e) =>
-                          select_Item(item, e.target.value, "item_merge")
+                          select_Item(item, e.target.value, "amount")
+                        }
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="number"
+                        min={0}
+                        name="price"
+                        className="w-[100px] p-2 text-center border border-black rounded-md"
+                        onChange={(e) =>
+                          select_Item(item, e.target.value, "price")
                         }
                       />
                     </td>
