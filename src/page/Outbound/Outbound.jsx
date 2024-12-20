@@ -252,8 +252,7 @@ export function Outbound() {
       {showmodal_create_product ? (
         <Modal_Create_Products
           close={closeModal_Create}
-          confirm={handleConfirmItem_Create}
-          ititialData={confirmitem || ""}
+          createitem={setConfirmItem_Create}
         />
       ) : null}
       <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar ">
