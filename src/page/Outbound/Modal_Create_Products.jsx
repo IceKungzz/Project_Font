@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function Modal_Create_Products({ close, confirm }) {
+export function Modal_Create_Products({ close, datadefault }) {
   const [products, setProducts] = useState([]);
   const [products_search, setProducts_search] = useState([]);
   const [keysearchItem, setkeysearchItem] = useState("");
@@ -24,6 +24,8 @@ export function Modal_Create_Products({ close, confirm }) {
       .then((res) => {
         if (res.status === 200) {
           setProducts(res.data.data);
+          console.log(datadefault);
+          
         }
       });
   }, []);
@@ -112,18 +114,28 @@ export function Modal_Create_Products({ close, confirm }) {
       }
     );
   
-    console.log("Merged Data:", item_merge);
-    const itemsuccess = [{ ...item_merge,assemble_name: newitemname,pricenewproduct: newpriceitem,quantitynewproduct: newItemQuantity,}]
-    // console.log({
-    //   ...item_merge,
-    //   assemble_name: newitemname,
-    //   pricenewproduct: newpriceitem,
-    //   quantitynewproduct: newItemQuantity,
-    // });
+    const itemsuccess = [{ ...item_merge,
+      assemble_name: newitemname,
+      pricenewproduct: newpriceitem,
+      quantitynewproduct: newItemQuantity,
+      customer_name:datadefault.name,
+      place_name:datadefault.workside,
+      address:datadefault.address,
+      date:datadefault.sell_date,
+      reserver:[],
+      status_assemble:true,
+      vat:"vat",
+      discount: 200,
+      shipping_cost: 2500,
+      move_price: 1000,
+      guarantee_price: 0,
+      proponent_name: "bossinwza007",
+      average_price: 0,
+    }   
+      ]
     console.log(itemsuccess);
     
   
-    // Call the close function after successful validation
     close();
   };
   

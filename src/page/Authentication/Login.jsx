@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [datauser, setDatauser] = useState({ username: '', password: '', remember: false });
+    const [loading, setLoading] = useState(false); // เพิ่มสถานะ loading
     const navigate = useNavigate();  // ใช้ navigate เพื่อไปยังหน้าถัดไป
 
     const changedata = (e) => {
@@ -23,6 +24,7 @@ const Login = () => {
     };
 
     const confirm_login = async () => {
+        setLoading(true); // เริ่มการโหลด
         try {
             const response = await axios.post('http://192.168.195.75:5000/auth/login', {
                 username: datauser.username,
@@ -30,7 +32,6 @@ const Login = () => {
                 remember: datauser.remember,
             }, {
                 headers: {
-                    
                     'Content-Type': 'application/json',
                     'x-api-key': '1234567890abcdef',
                 }
@@ -40,11 +41,8 @@ const Login = () => {
             console.log("Response data:", response.data);
 
             // Check if token is returned in the response
-         if(response.status===200){
-            if(response.data.data.token){
-                localStorage.setItem('token',response.data.data.token)
-            }
-         
+            if (response.status === 200 && response.data.data.token) {
+                localStorage.setItem('token', response.data.data.token);
 
                 // แสดง SweetAlert เมื่อสำเร็จ
                 Swal.fire({
@@ -52,7 +50,7 @@ const Login = () => {
                     text: "Login success",
                     confirmButtonText: 'ตกลง'
                 }).then(() => {
-                    // เปลี่ยนเส้นทางไปหน้า /inventory
+                    // เปลี่ยนเส้นทางไปหน้า /
                     navigate('/');
                 });
             } else {
@@ -71,6 +69,8 @@ const Login = () => {
                 text: "เกิดข้อผิดพลาดในการล็อกอิน",
                 confirmButtonText: "ตกลง"
             });
+        } finally {
+            setLoading(false); // สิ้นสุดการโหลด
         }
     };
 
@@ -95,8 +95,8 @@ const Login = () => {
                             <input
                                 type='text'
                                 placeholder='ชื่อผู้ใช้งาน'
-                                name='username'  // เปลี่ยนจาก user เป็น username
-                                id='username'   // เปลี่ยนจาก user เป็น username
+                                name='username'
+                                id='username'
                                 className='w-full p-1 outline-none border-2 border-blue-800 mt-1 rounded-lg'
                                 onChange={changedata}
                             />
@@ -129,8 +129,12 @@ const Login = () => {
                     </div>
 
                     <div className=' mt-5 p-5 w-full flex justify-center items-center'>
-                        <button className='bg-[#133E87] text-white w-4/6 p-2 rounded-lg' onClick={confirm_login}>
-                            เข้าสู่ระบบ
+                        <button
+                            className='bg-[#133E87] text-white w-4/6 p-2 rounded-lg'
+                            onClick={confirm_login}
+                            disabled={loading} // ปิดการใช้งานปุ่มเมื่อกำลังโหลด
+                        >
+                            {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
                         </button>
                     </div>
                 </div>

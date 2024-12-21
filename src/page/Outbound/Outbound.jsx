@@ -27,7 +27,8 @@ export function Outbound() {
   const [confirmitem_create, setConfirmItem_Create] = useState([]);
   const [hasVat, setHasVat] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
-
+  const [validateModalInput, setValidateModalInput] = useState(false)
+  const [alldata_default, setAlldata_default] = useState([{}]);
   const navigate = useNavigate();
 
   const menu = [
@@ -66,15 +67,15 @@ export function Outbound() {
     console.log("Confirmed items: ", updatedItems);
   };
 
-  const handleConfirmItem_Create = (items) => {
-    const updatedItems = items.map((item) => ({
-      ...item,
-      type: item.type || "เช่า",
-      price: 0,
-    }));
-    setConfirmitem(updatedItems);
-    console.log("Confirmed items create: ", updatedItems);
-  };
+  // const handleConfirmItem_Create = (items) => {
+  //   const updatedItems = items.map((item) => ({
+  //     ...item,
+  //     type: item.type || "เช่า",
+  //     price: 0,
+  //   }));
+  //   setConfirmitem(updatedItems);
+  //   console.log("Confirmed items create: ", updatedItems);
+  // };
 
   const handleDateChange = (dateValue) => {
     const date = new Date(dateValue);
@@ -126,6 +127,7 @@ export function Outbound() {
   };
   const closeModal_Create = () => {
     setShowmodal_create_product(false);
+    setValidateModalInput(false)
   };
 
   const handleModelChange = (index, value) => {
@@ -234,6 +236,31 @@ export function Outbound() {
       });
   }, []);
 
+  const inputs = [name, address, workside, sell_date, day_length];
+
+  useEffect(() => {
+    const allInputsValid = inputs.every(input => input.length > 0);
+    setValidateModalInput(allInputsValid);
+    //console.log(allInputsValid);
+  }, [inputs]);
+  
+  const status_modal_create = () => {
+    if (validateModalInput) {
+      setShowmodal_create_product(true);
+      setAlldata_default({name, address, workside, sell_date, day_length});
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: "โปรดกรอกข้อมูลให้ครบ",
+        confirmButtonText: 'ตกลง',
+        scrollbarPadding: false 
+      });
+      setShowmodal_create_product(false);
+    }
+  };
+  
+  
+
   return (
     <div className="w-full h-[90%] mt-5">
       <HelmetProvider>
@@ -249,10 +276,11 @@ export function Outbound() {
           ititialData={confirmitem || ""}
         />
       ) : null}
-      {showmodal_create_product ? (
+      {showmodal_create_product && validateModalInput ? (
         <Modal_Create_Products
           close={closeModal_Create}
-          createitem={setConfirmItem_Create}
+          //createitem={setConfirmItem_Create}
+          datadefault={alldata_default}
         />
       ) : null}
       <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar ">
@@ -317,7 +345,7 @@ export function Outbound() {
               </button>
               <button
                 className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300"
-                onClick={() => setShowmodal_create_product(true)}
+                onClick={status_modal_create}
               >
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
