@@ -222,8 +222,8 @@ const StatusProduct = () => {
 
         {/* ตารางแสดงข้อมูล */}
         <div className="w-full overflow-y-scroll">
-          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
-            <thead className="bg-[#CBDCEB] h-16 bg-[#133E87]">
+          <table className="table-auto w-full border-collapse text-center">
+            <thead className="bg-blue-200 text-blue-900">
               <tr>
                 <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
                 <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
@@ -248,9 +248,9 @@ const StatusProduct = () => {
                   <td className="border px-4 py-2">
                     <button
                       onClick={() => openModal(item.id)}
-                      className="text-blue-500"
+                      className="text-blue-500 w-[100px] bg-[#FFFFFF] h-8 rounded-md border border-[#133E87] items-center justify-between px-2"
                     >
-                      ดูข้อมูล
+                      ดูข้อมูล<i className="fa-solid fa-angle-right mr-2"></i>
                     </button>
                   </td>
                 </tr>
@@ -258,16 +258,24 @@ const StatusProduct = () => {
             </tbody>
           </table>
         </div>
+        <Modal
+  isModalOpen={isModalOpen}
+  onClose={closeModal}
+  itemId={selectedProductId}
+/>
       </div>
     </div>
   );
 };
 
+
+
 const Modal = ({ isModalOpen, onClose, itemId }) => {
-  const [productDetails, setProductDetails] = useState(null);
+  const [modalProductDetails, setModalProductDetails] = useState(null); // เปลี่ยนชื่อที่นี่
   const [isLoading, setIsLoading] = useState(false);
   const [itemData, setItemData] = useState(null);
   const [error, setError] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -290,6 +298,7 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
 
           if (response.data.code === 200) {
             setItemData(response.data.data);
+            setModalProductDetails(response.data.data); // อัปเดตที่นี่
           } else {
             throw new Error(response.data.message);
           }
@@ -301,9 +310,9 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
 
       fetchData();
     }
-  }, [isOpen, itemId]);
+  }, [isModalOpen, itemId]);
 
-  if (!isOpen) return null;
+  if (!isModalOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -324,24 +333,24 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
           <p className="mt-6 text-center text-gray-600">กำลังโหลด...</p>
         ) : error ? (
           <p className="mt-6 text-center text-red-500">{error}</p>
-        ) : productDetails ? (
+        ) : modalProductDetails ? (  // อัปเดตที่นี่
           <div className="mt-6 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <p>
                 <strong className="text-gray-700">สาขา:</strong>{" "}
-                {productDetails.branch_name}
+                {modalProductDetails.branch_name}
               </p>
               <p>
                 <strong className="text-gray-700">เลขที่ใบเสร็จ:</strong>{" "}
-                {productDetails.export_number}
+                {modalProductDetails.export_number}
               </p>
               <p>
                 <strong className="text-gray-700">นามลูกค้า/ชื่อบริษัท:</strong>{" "}
-                {productDetails.customer_name}
+                {modalProductDetails.customer_name}
               </p>
               <p>
                 <strong className="text-gray-700">วันที่สร้าง:</strong>{" "}
-                {productDetails.created_at}
+                {modalProductDetails.created_at}
               </p>
             </div>
 
@@ -363,7 +372,7 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {productDetails.products.map((product) => (
+                    {modalProductDetails.products.map((product) => ( // อัปเดตที่นี่
                       <tr
                         key={product.product_id}
                         className="hover:bg-gray-50 transition duration-200"
@@ -379,7 +388,7 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
                           {product.price}
                         </td>
                         <td className="border p-2 text-right">
-                          {productDetails.date}
+                          {modalProductDetails.date}
                         </td>
                         <td className="border p-2 text-center">
                           {product.price_damage}
@@ -398,48 +407,57 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
               <div className="justify-end grid gap-4">
                 <p>
                   <strong className="text-gray-700 me-3">รวมเงิน: </strong>{" "}
-                  {productDetails.price_oute}
+                  {modalProductDetails.price_oute}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">ส่วนลด: </strong>{" "}
-                  {productDetails.discount}
+                  {modalProductDetails.discount}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">
                     รวมหักหลังส่วนลด:{" "}
                   </strong>{" "}
-                  {productDetails.total_price_out}
+                  {modalProductDetails.total_price_out}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">
                     ค่าขนส่งสินค้าไป-กลับ:{" "}
                   </strong>{" "}
-                  {productDetails.shipping_cost}
+                  {modalProductDetails.shipping_cost}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">
                     ค่าบริการเคลื่อนย้ายสินค้า:{" "}
                   </strong>{" "}
-                  {productDetails.move_price}
+                  {modalProductDetails.move_price}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">
                     ค่าประกันสินค้า:{" "}
                   </strong>{" "}
-                  {productDetails.guarantee_price}
+                  {modalProductDetails.guarantee_price}
                 </p>
                 <p>
                   <strong className="text-gray-700 me-3">
                     รวมยอดเงินที่ต้องชำระ:
                   </strong>{" "}
-                  {productDetails.final_price}
+                  {modalProductDetails.final_price}
                 </p>
+
+
               </div>
             </div>
           </div>
         ) : (
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
         )}
+        <button
+          onClick={() => setShowPreview(!showPreview)}
+          className="absolute bottom-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          {showPreview ? "ซ่อนข้อมูล Preview" : "ดูข้อมูล Preview"}
+        </button>
+        
       </div>
     </div>
   );
