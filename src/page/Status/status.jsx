@@ -1,49 +1,307 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { format } from 'date-fns';
+import { th } from 'date-fns/locale';
+import { use } from "react";
 
-// ฟังก์ชัน Modal
-const Modal = ({ isOpen, onClose, id }) => {
-  const [productDetails, setProductDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+const StatusProduct = () => {
+  const [status, setStatus] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [receiptNumber, setReceiptNumber] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
   const [error, setError] = useState(null);
+  const [branchName, setBranchName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
-
-    const fetchProductDetails = async () => {
-      setIsLoading(true);
-      setError(null);
+    const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Token not found");
 
-        const response = await axios.get(
-          `http://192.168.195.75:5000/v1/product/status/statusone/${id}`,
-          {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-              "x-api-key": "1234567890abcdef",
-            },
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        const url = "http://192.168.195.75:5000/v1/product/status/status";
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
           }
-        );
+        });
 
         if (response.data.code === 200) {
-          setProductDetails(response.data.data);
+          setStatus(response.data.data["Status Product"]);
         } else {
           throw new Error(response.data.message);
         }
 
       } catch (error) {
-        console.error("Error fetching product details:", error);
         setError(error.message);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchProductDetails();
-  }, [id]);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        const url = "http://192.168.195.75:5000/v1/product/status/showbranch";
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        if (response.data.code === 200) {
+          setBranchName(response.data.data.branch);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+
+  const handleSearch = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      if (receiptNumber !== "") {
+
+        const url = "http://192.168.195.75:5000/v1/product/status/search-status";
+
+        const response = await axios.get(url, {
+          params: { receiptNumber: receiptNumber },
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        if (response.data.code === 200) {
+          const filteredStatus = response.data.data
+            .filter((item) => (item.export_number.includes(receiptNumber)));
+          setStatus(filteredStatus);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } else if (transactionDate !== "") {
+
+        const url = "http://192.168.195.75:5000/v1/product/status/date";
+
+        const response = await axios.get(url, {
+          params: { date: transactionDate },
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        console.log(response.data.data);
+        if (response.data.code === 200) {
+          const filteredStatus = response.data.data['Status Product']
+            .filter((item) => (item.created_at.includes(transactionDate)));
+          setStatus(filteredStatus);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } else {
+        if (receiptNumber === "" || transactionDate === "") {
+          const url = "http://192.168.195.75:5000/v1/product/status/status";
+
+          const response = await axios.get(url,
+            {
+              headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+              }
+            });
+
+          if (response.data.code === 200) {
+            setStatus(response.data.data["Status Product"]);
+          } else {
+            throw new Error(response.data.message);
+          }
+        }
+      }
+
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const openModal = (id) => {
+    if (!id) {
+      console.error("ID is undefined");
+      return;
+    }
+    setSelectedProductId(id);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProductId(null);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'd MMMM yyyy', { locale: th });
+  };
+
+  return (
+    <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
+      <div className="w-full h-full flex flex-col gap-4">
+        {/* แสดง Error หากเกิดปัญหา */}
+        {error && <p className="text-red-500">{error}</p>}
+
+        {/* Row 1: ค้นหา */}
+        <div className="w-full flex items-start justify-start gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">สาขา :</span>
+            <div
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
+              style={{ overflow: "visible", color: "black" }}
+            >
+              {branchName ? branchName : "-"}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ :</span>
+            <input
+              type="text"
+              value={receiptNumber || ""}
+              onChange={(e) => setReceiptNumber(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              placeholder="ค้นหาเลขที่ใบเสร็จ"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ :</span>
+            <input
+              type="date"
+              value={transactionDate || ""}
+              onChange={(e) => setTransactionDate(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+            />
+          </div>
+          <button
+            onClick={handleSearch}
+            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+            ค้นหา
+          </button>
+        </div>
+
+        {/* ตารางแสดงข้อมูล */}
+        <div className="w-full overflow-y-scroll">
+          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
+            <thead className="bg-[#CBDCEB] h-16 bg-[#133E87]">
+              <tr>
+                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">วันที่ทำรายการ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
+                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
+              </tr>
+            </thead>
+            <tbody>
+              {status.map((item, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">{item.branch_name}</td>
+                  <td className="border px-4 py-2">{item.export_number}</td>
+                  <td className="border px-4 py-2">{formatDate(item.created_at)}</td>
+                  <td className="border px-4 py-2">{item.customer_name}</td>
+                  <td className="border px-4 py-2">
+                    {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
+                  </td>
+                  <td className="border px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      onClick={() => openModal(item.id)}
+                      className="text-blue-500"
+                    >
+                      ดูข้อมูล
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Modal = ({ isModalOpen, onClose, itemId }) => {
+  const [productDetails, setProductDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [itemData, setItemData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const fetchData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            throw new Error("Token not found");
+          }
+
+          const url = `http://192.168.195.75:5000/v1/product/status/status-one/${itemId}`;
+
+          const response = await axios.get(url, {
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+              "x-api-key": "1234567890abcdef",
+            }
+          });
+
+          if (response.data.code === 200) {
+            setItemData(response.data.data);
+          } else {
+            throw new Error(response.data.message);
+          }
+        } catch (error) {
+          console.error("Error fetching item data:", error);
+          setError(error.message);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isOpen, itemId]);
 
   if (!isOpen) return null;
 
@@ -182,196 +440,6 @@ const Modal = ({ isOpen, onClose, id }) => {
         ) : (
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
         )}
-      </div>
-    </div>
-  );
-};
-
-const StatusProduct = () => {
-  const [status, setStatus] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [receiptNumber, setReceiptNumber] = useState("");
-  const [transactionDate, setTransactionDate] = useState("");
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Token not found");
-        }
-
-        const url = "http://192.168.195.75:5000/v1/product/status/status";
-
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
-          }
-        });
-
-        if (response.data.code === 200) {
-          setStatus(response.data.data["Status Product"]);
-        } else {
-          throw new Error(response.data.message);
-        }
-
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleSearch = async () => {
-    try {
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Token not found");
-      }
-
-      if (receiptNumber === "") {
-        setReceiptNumber(false);
-        fetchData();
-      } else if (transactionDate === "") {
-        setTransactionDate(false);
-        fetchData();
-      }
-
-      let url = "http://192.168.195.75:5000/v1/product/status/status";
-
-      if (receiptNumber) {
-        url = "http://192.168.195.75:5000/v1/product/status/search-status";
-      } else if (transactionDate) {
-        url = "http://192.168.195.75:5000/v1/product/status/between-status";
-      }
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
-        }
-      });
-
-      const filteredStatus = response.data.data["Status Product"].filter(
-        (item) =>
-          (selectedBranch === "" || item.branch_name === selectedBranch) &&
-          (receiptNumber === "" || item.export_number.includes(receiptNumber)) &&
-          (transactionDate === "" || item.created_at.includes(transactionDate))
-      );
-
-      setStatus(filteredStatus);
-
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const openModal = (id) => {
-    if (!id) {
-      console.error("ID is undefined");
-      return;
-    }
-    setSelectedProductId(id);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedProductId(null);
-  };
-
-  return (
-    <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
-      <div className="w-full h-full flex flex-col gap-4 p-4">
-        {/* แสดง Error หากเกิดปัญหา */}
-        {error && <p className="text-red-500">{error}</p>}
-
-        {/* Row 1: ค้นหา */}
-        <div className="w-full flex items-start justify-start gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">สาขา:</span>
-            <select
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-            >
-              <option value="">ทั้งหมด</option>
-              <option value="chonburi">ชลบุรี</option>
-              <option value="naphawong">นพวงศ์</option>
-              <option value="kokkham">โคกขาม</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ:</span>
-            <input
-              type="text"
-              value={receiptNumber || ""}
-              onChange={(e) => setReceiptNumber(e.target.value)}
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-              placeholder="ค้นหาเลขที่ใบเสร็จ"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ:</span>
-            <input
-              type="date"
-              value={transactionDate || ""}
-              onChange={(e) => setTransactionDate(e.target.value)}
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-            />
-          </div>
-          <button
-            onClick={handleSearch}
-            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
-            ค้นหา
-          </button>
-        </div>
-
-        {/* ตารางแสดงข้อมูล */}
-        <div className="w-full overflow-y-scroll">
-          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
-            <thead className="bg-[#CBDCEB] h-16 bg-[#133E87]">
-              <tr>
-                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
-                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
-              </tr>
-            </thead>
-            <tbody>
-              {status.map((item, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{item.branch_name}</td>
-                  <td className="border px-4 py-2">{item.export_number}</td>
-                  <td className="border px-4 py-2">{item.customer_name}</td>
-                  <td className="border px-4 py-2">
-                    {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
-                  </td>
-                  <td className="border px-4 py-2">{item.status}</td>
-                  <td className="border px-4 py-2">
-                    <button
-                      onClick={() => openModal(item.id)}
-                      className="text-blue-500"
-                    >
-                      ดูข้อมูล
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   );
