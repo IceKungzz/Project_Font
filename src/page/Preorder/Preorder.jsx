@@ -1,4 +1,6 @@
 import React from "react";
+import {useState, useEffect} from "react";
+
 
 export default function Quotation() {
   const datatable = [
@@ -182,7 +184,7 @@ export default function Quotation() {
       </div>
 
       <div className="grid grid-cols-10 h-[100px] border-b-2 border-r-2 border-l-2 border-black text-[9px]">
-        <div className="bg-blue-900 col-span-5 border-r-2 border-black flex flex-col p-5 justify-around items-center">
+        <div className=" col-span-5 border-r-2 border-black flex flex-col p-5 justify-around items-center">
           <div>
             <b>ผู้อนุมัติ:</b>
             <span>__________________________________________</span>
@@ -193,7 +195,7 @@ export default function Quotation() {
           </div>
         </div>
 
-        <div className="bg-blue-500 col-span-5 flex flex-col p-5 justify-around items-center">
+        <div className="col-span-5 flex flex-col p-5 justify-around items-center">
           <div>
               <b>ผู้เสนอ:</b>
               <span>__________________________________________</span>
@@ -206,7 +208,7 @@ export default function Quotation() {
 
       </div>
       
-
+    <button className='bg-blue-500 w-full p-3 print:hidden mt-3 text-[24px]' onClick={window.print}>PRINT</button>
     </div>
   );
 }
