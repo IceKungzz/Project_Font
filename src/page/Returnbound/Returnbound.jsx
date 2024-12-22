@@ -33,22 +33,46 @@ export function ReturnItem() {
     ];
 
     const [products, setProducts] = useState([])
+    
     useEffect(() => {
         const token = localStorage.getItem('token')
         axios.get('http://192.168.195.75:5000/v1/product/inbound/show-branch', {
+            
             headers: {
                 "Authorization": token,
                 "Content-Type": "application/json",
                 "x-api-key": "1234567890abcdef",
             },
+            
         }).then((res) => {
             if (res.status === 200) {
-                setProducts(res.data.data)
-                // console.log(res.data.data);
+                setProducts(res.data.data) 
+                console.log(res.data.data);
             }
 
         })
+        
     }, [])
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        axios.get('http://192.168.195.75:5000/v1/product/return/get-return-list', {
+            
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+            },
+            
+        }).then((res) => {
+            if (res.status === 200) {
+                // setProducts(res.data.data) 
+                console.log(res);
+            }
+
+        })
+        
+    }, [])
+    
 
     const [showmodalGreen, setShowmodalGreen] = useState(false);
     const closeModalGreen = () => {
@@ -101,10 +125,10 @@ export function ReturnItem() {
 
             <div className='row-span-11 overflow-auto no-scrollbar '>
 
-                <div className="">
+               
                     <table className="table-auto w-full border-collapse ">
                         <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg '>
-                            <tr className='' >
+                            <tr>
                                 <th className=" px-4 border-l-2  py-2">สาขา</th>
                                 <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
                                 <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
@@ -117,6 +141,7 @@ export function ReturnItem() {
                         <tbody>
                             {dataMenuReturn.map((items, index) => (
                                 <tr key={index} className='  border-2'>
+                                    
                                     <td className="text-center border-l-2 px-4 py-2 ">{items.branch}</td>
                                     <td className="text-center border-l-2 px-4 py-2">{items.receipt}</td>
                                     <td className="text-center border-l-2 px-4 py-2">{items.date}</td>
@@ -148,7 +173,7 @@ export function ReturnItem() {
 
                         </tbody>
                     </table>
-                </div>
+                
 
 
 

@@ -177,7 +177,7 @@ export function Inbound() {
 
                 <div className=" col-span-3 grid grid-rows-10  ">
 
-                    <div className='row-span-9 grid grid-rows-12 border border-gray-500  rounded-lg '>
+                    <div className='row-span-9 grid grid-rows-12 border border-gray-500  rounded-lg overflow-auto no-scrollbar '>
 
                         <div className='row-span-1 grid grid-cols-3 pl-4 pr-4  pt-3 '>
                             <span className='col-span-1  grid justify-start items-center'>ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก</span>
@@ -187,11 +187,11 @@ export function Inbound() {
                             <span className='col-span-1  grid justify-end items-center '>{formattedDate}</span>
                         </div>
 
-                        <div className='row-span-10  grid grid-rows-3 pt-4 '>
-                            <div className=' row-span-3 overflow-auto 0 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3'>
-                                <table className="w-full table-auto text-center border-collapse border-t-2">
-                                    <thead className="font-bold  bg-slate-200 sticky top-0 border-b-2">
-                                        <tr>
+                        <div className='row-span-10  grid grid-rows-3 mt-4 h-[600px] '>
+                            <div className=' row-span-3 overflow-auto no-scrollbar  border-b-4 flex justify-center items-start mr-3 ml-3'>
+                                <table className="w-full table-auto text-center border-collapse ">
+                                    <thead className="font-bold  bg-blue-200 text-sky-800 sticky top-0 ">
+                                        <tr >
                                             <th className="px-4 py-2">ลำดับ</th>
                                             <th className="px-4 py-2">รหัสสินค้า</th>
                                             <th className="px-4 py-2">ชื่อสินค้า</th>
@@ -212,8 +212,8 @@ export function Inbound() {
                                             </tr>
                                         ) : (
                                             dataconfirm.map((item, index) => (
-                                                <tr className="border-b-2" key={index}>
-                                                    <td className="px-4 py-2">{index + 1}</td>
+                                                <tr className="border-b-2 " key={index}>
+                                                    <td className="px-4 py-2 " >{index + 1}</td>
                                                     <td className="py-2 ">{item.code || '-'}</td>
                                                     <td className="px-8 py-2">{item.name || '-'}</td>
                                                     <td className="px-4 py-2">{item.size || '-'}</td>
@@ -230,7 +230,7 @@ export function Inbound() {
                                                     </td>
                                                     <td className="px-4 py-2">{item.unit || '-'}</td>
                                                     <td className="px-6 py-2">
-                                                        <i className="fa-solid fa-trash text-red-600 text-xl cursor-pointer inline-block relative transform transition-transform duration-200 hover:scale-125"
+                                                        <i className="fa-solid fa-trash text-red-600 text-xl cursor-pointer  hover:scale-125"
                                                             onClick={() => deletitem(index)}></i>
                                                     </td>
                                                 </tr>

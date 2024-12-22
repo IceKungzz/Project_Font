@@ -394,7 +394,7 @@ export function Outbound() {
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
                 <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2">
-                    <thead className="font-bold bg-slate-200 sticky top-0 border-b-2">
+                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2">
                       <tr>
                         <th className="px-4 py-2">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>

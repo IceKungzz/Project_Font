@@ -9,20 +9,27 @@ const PrivateRoute = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://192.168.195.75:5000/v1/product/outbound/product", {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
-        },
-      })
-      .then((res) => {
-        if (res.status === 403 || res.response.data.message === 'Token Expired') {
-          localStorage.removeItem("token");
-          window.location.href = "/login";  
-        }
-      });
-  }, []);
+        .get("http://192.168.195.75:5000/v1/product/outbound/product", {
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+            },
+        })
+        .then((res) => {
+            if (res.status === 403 || res.data.message === "Token Expired") {
+                localStorage.removeItem("token");
+                window.location.href = "/login";  
+            }
+        })
+        .catch((err) => {
+            console.error("Error fetching data:", err);
+            if (err.response?.status === 403 || err.response?.data?.message === "Token Expired") {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }
+        });
+}, []);
 
 
   if (!token) {
