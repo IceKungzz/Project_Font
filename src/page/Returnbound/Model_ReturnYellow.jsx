@@ -59,7 +59,7 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
             {showmodalItem ? (
                             <Modal_ReturnItem close={closeModalRed} />
                         ) : null}
-            <div className="  w-[900px] h-[750px] rounded-lg shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
+            <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4  text-yellow-700">
                     <div></div>
@@ -124,9 +124,9 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                             </label>
                         </div>
                         <div className=" col-span-2  ">
-                            <input type='date' className="w-[30%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+                            <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
                             <label className="pl-5 pr-5 text-xl font-bold text-gray-600 ">ถึง</label>
-                            <input type='date' className="w-[30%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+                            <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
                         </div>
                         <div className=" col-span-1  ">
                             <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
