@@ -43,8 +43,8 @@ export function Modal_Inbound({ close, confirm }) {
     //   close();
     // }
     console.log(formData);
-      confirm(formData);
-      close();
+    confirm(formData);
+    close();
   };
 
   return (

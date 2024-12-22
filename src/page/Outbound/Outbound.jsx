@@ -156,7 +156,8 @@ export function Outbound() {
           acc.product_id.push(String(item.id));
           acc.size.push(item.size);
           acc.price.push(item.price);
-          acc.quantity.push(item.amount);
+          acc.quantity.push(String(item.amount));
+          acc.quantity.push(String(item.amount));
           acc.type.push(item.type === "เช่า" ? "0" : "1");
           return acc;
         },
@@ -189,8 +190,10 @@ export function Outbound() {
     };
     const token = localStorage.getItem("token");
 
-    axios
-      .post(
+
+    console.log('neworder=  ', newOrder);
+    
+    axios.post(
         "http://192.168.195.75:5000/v1/product/outbound/reserve",
         newOrder,
         {
@@ -394,7 +397,7 @@ export function Outbound() {
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
                 <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2">
-                    <thead className="font-bold bg-slate-200 sticky top-0 border-b-2">
+                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2">
                       <tr>
                         <th className="px-4 py-2">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>

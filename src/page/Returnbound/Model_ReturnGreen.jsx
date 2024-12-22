@@ -59,7 +59,7 @@ export function Modal_ReturnGreen({ close, confirmGreen }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
-            <div className="  w-[900px] h-[750px] rounded-lg shadow-2xl overflow-hidden flex flex-col bg-green-200 border-green-700 border-2">
+            <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-green-200 border-green-700 border-2">
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4  text-green-700">
                     <div></div>
@@ -113,7 +113,7 @@ export function Modal_ReturnGreen({ close, confirmGreen }) {
                         </div>
                         <div className=" col-span-2  flex items-center justify-between">
                             <label className="text-xl  text-gray-600 h-full  ">
-                                20 พ.ย. 2567 <label className="pl-10 pr-10">ถึง</label> 25 พ.ย. 2567
+                                20 พ.ย. 2567 <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label> 25 พ.ย. 2567
                             </label>
 
                         </div>
@@ -124,7 +124,7 @@ export function Modal_ReturnGreen({ close, confirmGreen }) {
                             </label>
                         </div>
                         <div className=" col-span-2  ">
-                            <input type='date' className="w-[60%] h-10 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                            <input type='date' className="w-[70%] h-10 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" />
                         </div>
                         <div className=" col-span-1  ">
                             <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
@@ -155,7 +155,7 @@ export function Modal_ReturnGreen({ close, confirmGreen }) {
                             </label>
                         </div>
                         <div className=" col-span-2  ">
-                            <input type='tel' className="w-[60%] h-40 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                            <input type='tel' className="w-[70%] h-40 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" />
                         </div>
                     </div>
                 </div>

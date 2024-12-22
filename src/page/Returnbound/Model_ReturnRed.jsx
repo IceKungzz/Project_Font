@@ -60,7 +60,7 @@ export function Modal_ReturnRed({ close, confirmRed }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
-            <div className="  w-[900px] h-[750px] rounded-lg shadow-2xl overflow-hidden flex flex-col bg-red-200 border-red-700 border-2">
+            <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-red-200 border-red-700 border-2">
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4  text-red-700">
                     <div></div>
@@ -134,7 +134,7 @@ export function Modal_ReturnRed({ close, confirmRed }) {
                             </label>
                         </div>
                         <div className=" col-span-2  ">
-                        <div className='border-2 border-gray-400 rounded-md w-[60%]  h-10 flex justify-start items-center text-lg pl-4 bg-white'>{formattedDate}</div>
+                        <div className='border-2 border-gray-400 rounded-md w-[70%]  h-10 flex justify-start items-center text-lg pl-4 bg-white'>{formattedDate}</div>
                             {/* <input type='date' className="w-[60%] h-10 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" /> */}
                         </div>
                         <div className=" col-span-1  ">
@@ -166,7 +166,7 @@ export function Modal_ReturnRed({ close, confirmRed }) {
                             </label>
                         </div>
                         <div className=" col-span-2  ">
-                            <input type='tel' className="w-[60%] h-32 px-4 border-2 border-gray-400 rounded-md" />
+                            <input type='tel' className="w-[70%] h-32 px-4 border-2 border-gray-400 rounded-md" />
                         </div>
                     </div>
                 </div>

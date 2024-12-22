@@ -8,19 +8,18 @@ const PrivateRoute = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios
-      .get("http://192.168.195.75:5000/v1/product/outbound/product", {
+    axios.get("http://192.168.195.75:5000/v1/product/outbound/product", {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
           "x-api-key": "1234567890abcdef",
         },
       })
-      .then((res) => {
-        if (res.status === 403 || res.response.data.message === 'Token Expired') {
+      .catch((err) => {
           localStorage.removeItem("token");
           window.location.href = "/login";  
-        }
+          console.log(err);
+          
       });
   }, []);
 
