@@ -16,11 +16,11 @@ const PrivateRoute = () => {
           "x-api-key": "1234567890abcdef",
         },
       })
-      .then((res) => {
-        if (res.status === 403 || res.response.data.message === 'Token Expired') {
+      .catch((err) => {
           localStorage.removeItem("token");
           window.location.href = "/login";  
-        }
+          console.log(err);
+          
       });
   }, []);
 

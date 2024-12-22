@@ -74,7 +74,7 @@ export function Modal_Outbound({close, confirm, ititialData}) {
         <div className=" w-full flex justify-between items-center p-4">
           <div></div>
           <h2 className="text-2xl font-semibold">เลือกสินค้า </h2>
-          <button className="text-gray-500 hover:text-gray-700" onClick={close}>X</button>
+          <button className="text-gray-500 hover:text-gray-700 text-[24px]" onClick={close}>X</button>
         </div>
 
         {/* Search */}

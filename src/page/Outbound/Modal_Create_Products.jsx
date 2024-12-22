@@ -92,14 +92,14 @@ export function Modal_Create_Products({ close, datadefault }) {
     // Merge selected items' data
     const item_merge = confirm_items.reduce(
       (acc, item) => {
-        acc.code.push(item.code);
-        acc.product_id.push(item.id || "");
-        acc.price.push(item.price);
-        acc.quantity.push(item.amount);
-        acc.size.push(item.size || "");
-        acc.centimeter.push(item.centimeter || 0);
-        acc.meter.push(item.meter || 0);
-        acc.type.push(item.type || "");
+        acc.code.push(String(item.code));
+        acc.product_id.push(String(item.id) || "");
+        acc.price.push(String(item.price));
+        acc.quantity.push(String(item.amount));
+        acc.size.push(String(item.size) || "");
+        acc.centimeter.push(item.centimeter || '');
+        acc.meter.push(item.meter || '');
+        acc.type.push(String(item.type) || "");
         return acc;
       },
       {
@@ -146,7 +146,7 @@ export function Modal_Create_Products({ close, datadefault }) {
         <div className="w-full flex justify-between items-center p-4">
           <div></div>
           <h2 className="text-2xl font-semibold">เลือกสินค้าที่ต้องการสร้าง</h2>
-          <button className="text-gray-500 hover:text-gray-700" onClick={close}>
+          <button className="text-gray-500 hover:text-gray-700 text-[24px]"  onClick={close}>
             X
           </button>
         </div>
@@ -198,7 +198,7 @@ export function Modal_Create_Products({ close, datadefault }) {
             </div>
 
             <button
-              className="bg-blue-900 w-1/4 p-2 rounded-md text-white"
+              className="bg-blue-800 w-1/4 p-2 rounded-md text-white hover:bg-blue-900 transition duration-200"
               onClick={filteritem_Search}
             >
               ค้นหา
@@ -261,7 +261,7 @@ export function Modal_Create_Products({ close, datadefault }) {
 
         <div className="flex justify-center p-4 border-t w-3/4 mt-2">
           <button
-            className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center"
+            className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center hover:bg-[#278427] transition duration-200"
             onClick={confirm_item}
           >
             ยืนยัน

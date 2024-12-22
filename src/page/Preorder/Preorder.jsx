@@ -1,6 +1,7 @@
 import React from "react";
 import {useState, useEffect} from "react";
-
+import axios from "axios";
+import thaiBahtText from 'thai-baht-text';
 
 export default function Quotation() {
   const datatable = [
@@ -24,7 +25,41 @@ export default function Quotation() {
     },
   ];
 
+  const [data, setData] = useState([])
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    
+    axios
+      .get("http://192.168.195.75:5000/v1/product/status/status-one/69", {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef",
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setData(res.data.data);
+          setProducts(res.data.data.products)
+          console.log(res.data.data);
+          
+        }
+      });
+  }, []);
+
   const num = [1, 2, 3, 4, 5, 6];
+
+  const formatThaiBahtText = (value) => {
+    if (isNaN(Number(value)) || value === null || value === undefined) {
+      return 'Invalid input';
+    }
+    return thaiBahtText(Number(value));
+  };
+
+  
+  
 
   return (
     <div className="w-screen h-auto bg-white p-8">
@@ -60,14 +95,13 @@ export default function Quotation() {
       <div className="mb-2 grid grid-cols-3 ">
         <div className="col-span-2 border-2 border-black print:col-span-2 print:text-[9px] text-md p-2 print:p-2 flex flex-col justify-around">
           <p>
-            <span className="font-bold">ชื่อผู้ติดต่อ:</span> คุณภัทราชู
+            <span className="font-bold">ชื่อผู้ติดต่อ:</span> {data.customer_name}
           </p>
           <p>
-            <span className="font-bold">ชื่อร้านค้า:</span> -
+            <span className="font-bold">ชื่อร้านค้า:</span> {data.place_name}
           </p>
           <p>
-            <span className="font-bold">ที่อยู่:</span> หน้างาน -
-            ระเบาะ-ลาดหลุมแก้ว/ปทุมธานี
+            <span className="font-bold">ที่อยู่:</span> {data.address}
           </p>
           <p>
             <span className="font-bold">โทร:</span> -
@@ -78,15 +112,15 @@ export default function Quotation() {
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center">
             เลขที่ :
           </p>{" "}
-          <p className="border-b-2 border-black text-center">6711-001</p>
+          <p className="border-b-2 border-black text-center">{data.export_number}</p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center">
             วันที่เสนอราคา :
           </p>{" "}
-          <p className="border-b-2 border-black text-center">31 ต.ค. 67</p>
+          <p className="border-b-2 border-black text-center">{data.created_at}</p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center">
             ยืนราคาภายใน(วัน) :
           </p>{" "}
-          <p className="border-b-2 border-black text-center">-</p>
+          <p className="border-b-2 border-black text-center">{data.date} วัน</p>
           <p className="col-span-1  border-r-2 border-black text-center">
             เงื่อนไขการชำระเงิน :
           </p>{" "}
@@ -99,24 +133,21 @@ export default function Quotation() {
         {/* หัวตาราง */}
         <div className="bg-red-200 h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
           <span className="bg-green-500 border-b-2 border-t-2 border-black">ลำดับ</span>
-          <span>1</span>
-          {/* <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span>
-          <span>1</span> */}
+          {products.map((product, index) => (
+            <span key={index}>{index+1}</span>
+          ))}
         </div>
         <div className="bg-red-300 h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="bg-green-500  border-b-2 border-t-2 border-black">รายการ</span>
-          <span>แบบเสา</span>
+          {products.map((product, index) => (
+            <span key={index}>{product.product_name}</span>
+          ))}
         </div>
         <div className="bg-red-400 h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวน</span>
-          <span>16ต้น</span>
+          {products.map((product, index) => (
+            <span key={index}>{product.quantity}  {product.unit}</span>
+          ))}
         </div>
         <div className="bg-red-500 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าเช่า/วัน</span>
@@ -127,8 +158,10 @@ export default function Quotation() {
           <span>3</span>
         </div>
         <div className="bg-red-700 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าปรับสิยค้า/ชิ้น</span>
-          <span>2000.00</span>
+          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าปรับสินค้า/ชิ้น</span>
+          {products.map((product, index) => (
+            <span key={index}>{data.guarantee_price}</span>
+          ))}
         </div>
 
         <div className="bg-red-800 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
@@ -165,21 +198,21 @@ export default function Quotation() {
           <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">รวมหลังหักส่วนลด</span>
           <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
           <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ค่าขนส่งสินค้าไป-กลับ</span>
-          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">1400.00</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">{data.shipping_cost}</span>
 
           <div className="bg-red-500 col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1">
             <u>หมายเหตุ:</u> ขนส่งสินค้าโดยรถกะบะไป-กลับ 2 รอบ/หน้างานช่วยขึ้นลง
           </div>
           <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าบริการเคลื่อนย้ายสินค้า</span>
-          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">-</span>
+          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">{data.shipping_cost}</span>
           <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าประกันสินค้า</span>
           <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">5000.00</span>
 
           <div className="bg-yellow-500 col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black">
-            แปดพันสี่ร้อยเจ็ดสิบสามบาทหกสิบสตางค์
+            {formatThaiBahtText(data.total_price_out)}
           </div>
           <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1">รวมยอดเงินที่ต้องชำระ</span>
-          <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-center items-center">8473.60</span>
+          <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-center items-center">{data.total_price_out}</span>
 
       </div>
 

@@ -157,6 +157,7 @@ export function Outbound() {
           acc.size.push(item.size);
           acc.price.push(item.price);
           acc.quantity.push(item.amount);
+          acc.quantity.push(String(item.amount));
           acc.type.push(item.type === "เช่า" ? "0" : "1");
           return acc;
         },
@@ -191,6 +192,9 @@ export function Outbound() {
 
     axios
       .post(
+    console.log('neworder=  ', newOrder);
+    
+    axios.post(
         "http://192.168.195.75:5000/v1/product/outbound/reserve",
         newOrder,
         {
