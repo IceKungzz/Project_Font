@@ -156,7 +156,7 @@ export function Outbound() {
           acc.product_id.push(String(item.id));
           acc.size.push(item.size);
           acc.price.push(item.price);
-          acc.quantity.push(item.amount);
+          acc.quantity.push(String(item.amount));
           acc.quantity.push(String(item.amount));
           acc.type.push(item.type === "เช่า" ? "0" : "1");
           return acc;
@@ -190,8 +190,7 @@ export function Outbound() {
     };
     const token = localStorage.getItem("token");
 
-    axios
-      .post(
+
     console.log('neworder=  ', newOrder);
     
     axios.post(
