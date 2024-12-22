@@ -1,8 +1,9 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
 import { Modal_ReturnGreen } from './Model_ReturnGreen';
 import { Modal_ReturnRed } from './Model_ReturnRed';
 import { Modal_ReturnYellow } from './Model_ReturnYellow';
+import axios from 'axios';
 
 export function ReturnItem() {
 
@@ -30,6 +31,24 @@ export function ReturnItem() {
 
 
     ];
+
+    const [products, setProducts] = useState([])
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        axios.get('http://192.168.195.75:5000/v1/product/inbound/show-branch', {
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+            },
+        }).then((res) => {
+            if (res.status === 200) {
+                setProducts(res.data.data)
+                // console.log(res.data.data);
+            }
+
+        })
+    }, [])
 
     const [showmodalGreen, setShowmodalGreen] = useState(false);
     const closeModalGreen = () => {
@@ -59,21 +78,18 @@ export function ReturnItem() {
                 <Modal_ReturnYellow close={closeModalYellow} />
             ) : null}
 
-            <div className='row-span-1   flex justify-start items-center pl-5'>
-                <span className='pr-2 font-bold text-xl text-indigo-800'>สาขา :</span>
+            <div className='row-span-1 '>
+                <span className='pr-2 font-bold text-xl text-sky-800'>สาขา :</span>
                 <span>
                     <select
                         className="h-10 w-[220px] rounded-md border border-gray-500 p-2 "
                     >
-                        <option value="">ทั้งหมด</option>
-                        <option value="chonburi">ชลบุรี</option>
-                        <option value="naphawong">นพวงศ์</option>
-                        <option value="kokkham">โคกขาม</option>
+                        <option value="">{products.branch_name}</option>
                     </select>
                 </span>
-                <span className='pr-2 pl-5 font-bold text-xl text-indigo-800'>เลขที่ใบเสร็จ :</span>
+                <span className='pr-2 pl-5 font-bold text-xl text-sky-800'>เลขที่ใบเสร็จ :</span>
                 <span><input type='text' className="h-10 w-[220px] rounded-md border border-gray-500 p-2" /></span>
-                <span className='pr-2 pl-5 font-bold text-xl text-indigo-800'>วันที่ทำรายการ :</span>
+                <span className='pr-2 pl-5 font-bold text-xl text-sky-800'>วันที่ทำรายการ :</span>
                 <span><input type='date' className="h-10 w-[220px] rounded-md border border-gray-500 p-2" /></span>
                 <span className='pr-2 pl-5 font-bold text-xl text-white'>
                     <button className='bg-blue-500 h-10 w-28 rounded-md hover:bg-blue-600'>ค้นหา</button>
@@ -83,11 +99,11 @@ export function ReturnItem() {
 
 
 
-            <div className='row-span-11 overflow-auto no-scrollbar mt-2'>
+            <div className='row-span-11 overflow-auto no-scrollbar '>
 
                 <div className="">
                     <table className="table-auto w-full border-collapse ">
-                        <thead className='bg-slate-200 border-l-2  h-14 text-indigo-800 text-xl sticky top-0 rounded-lg '>
+                        <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg '>
                             <tr className='' >
                                 <th className=" px-4 border-l-2  py-2">สาขา</th>
                                 <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
@@ -112,15 +128,15 @@ export function ReturnItem() {
                                     </td>
                                     <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
                                         {items.status === 'A' ? (
-                                            <button className="bg-red-500  pt-2 pb-2 pl-10 pr-10 rounded-lg text-white border-2 border-gray-500"
+                                            <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
                                                 onClick={() => setShowmodalRed(true)}
                                             >เลยกำหนด</button>
                                         ) : items.status === 'B' ? (
                                             <>
-                                                <button className="bg-green-500 pt-2 pb-2 pl-10 pr-10 mx-3 rounded-lg text-white border-2 border-gray-500"
+                                                <button className="bg-green-500 pt-2 pb-2 w-24 mx-3 rounded-lg text-white  "
                                                     onClick={() => setShowmodalGreen(true)}
                                                 >ส่งคืน</button>
-                                                <button className="bg-yellow-300 pt-2 pb-2 pl-10 pr-10 mx-3 rounded-lg border-2 border-gray-500"
+                                                <button className="bg-yellow-300 pt-2 pb-2 w-24 mx-3 rounded-lg  "
                                                     onClick={() => setShowmodalYellow(true)}
                                                 >เช่าต่อ</button>
                                             </>
