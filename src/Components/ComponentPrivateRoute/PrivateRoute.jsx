@@ -8,8 +8,7 @@ const PrivateRoute = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios
-      .get("http://192.168.195.75:5000/v1/product/outbound/product", {
+    axios.get("http://192.168.195.75:5000/v1/product/outbound/product", {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
