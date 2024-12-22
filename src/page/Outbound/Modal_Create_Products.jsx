@@ -61,7 +61,7 @@ export function Modal_Create_Products({ close, datadefault }) {
             ...item,
             amount: type === "amount" ? parsedValue : 0,
             price: type === "price" ? parsedValue : 0,
-            type: 1, // Default value for type
+            type: 1,
           },
         ];
       }
@@ -69,7 +69,6 @@ export function Modal_Create_Products({ close, datadefault }) {
   };
 
   const confirm_item = () => {
-    // Check if no products are selected
     if (confirm_items.length === 0) {
       Swal.fire({
         icon: "error",
@@ -79,7 +78,7 @@ export function Modal_Create_Products({ close, datadefault }) {
       return;
     }
   
-    // Check if new item details are missing
+
     if (!newitemname || newpriceitem <= 0 || newItemQuantity <= 0) {
       Swal.fire({
         icon: "error",
@@ -89,7 +88,7 @@ export function Modal_Create_Products({ close, datadefault }) {
       return;
     }
   
-    // Merge selected items' data
+
     const item_merge = confirm_items.reduce(
       (acc, item) => {
         acc.code.push(String(item.code));
@@ -114,7 +113,8 @@ export function Modal_Create_Products({ close, datadefault }) {
       }
     );
   
-    const itemsuccess = [{ ...item_merge,
+    const itemsuccess = [{ 
+      itemmerge: {...item_merge},
       assemble_name: newitemname,
       pricenewproduct: newpriceitem,
       quantitynewproduct: newItemQuantity,
