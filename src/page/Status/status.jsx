@@ -167,6 +167,7 @@ const StatusProduct = () => {
   };
 
   const openModal = (id) => {
+    
     if (!id) {
       console.error("ID is undefined");
       return;
