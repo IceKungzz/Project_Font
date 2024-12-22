@@ -180,7 +180,7 @@ export function ReturnItem() {
                                         <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
                                         onClick={() => handleOpenModal(items.id, 'red')}
                                         >เลยกำหนด</button>
-                                    ) : items.status === 'hire' ? (
+                                    ) : items.status === 'hire' || items.status === 'continue' ? (
                                         <>
                                             <button className="bg-green-500 pt-2 pb-2 w-24 mx-3 rounded-lg text-white  "
                                                onClick={() => handleOpenModal(items.id, 'green')}
