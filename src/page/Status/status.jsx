@@ -3,6 +3,7 @@ import axios from "axios";
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { use } from "react";
+// import { Navigate } from 'react-router-dom';
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
@@ -13,6 +14,7 @@ const StatusProduct = () => {
   const [branchName, setBranchName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  // const navigate = Navigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +37,8 @@ const StatusProduct = () => {
 
         if (response.data.code === 200) {
           setStatus(response.data.data["Status Product"]);
+          console.log(response.data.data , "response" );
+          
         } else {
           throw new Error(response.data.message);
         }
@@ -46,6 +50,10 @@ const StatusProduct = () => {
 
     fetchData();
   }, []);
+
+  // const handleNavigate = () => {
+  //   navigate('/preorder', { state: { id: selectedProductId } }); 
+  // };
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -244,7 +252,7 @@ const StatusProduct = () => {
                   <td className="border px-4 py-2">
                     {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
                   </td>
-                  <td className="border px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status}</td>
+                  <td className="border px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
                   <td className="border px-4 py-2">
                     <button
                       onClick={() => openModal(item.id)}
@@ -262,6 +270,7 @@ const StatusProduct = () => {
   isModalOpen={isModalOpen}
   onClose={closeModal}
   itemId={selectedProductId}
+  status={status}
 />
       </div>
     </div>
@@ -270,12 +279,13 @@ const StatusProduct = () => {
 
 
 
-const Modal = ({ isModalOpen, onClose, itemId }) => {
+const Modal = ({ isModalOpen, onClose, itemId , status}) => {
   const [modalProductDetails, setModalProductDetails] = useState(null); // เปลี่ยนชื่อที่นี่
   const [isLoading, setIsLoading] = useState(false);
   const [itemData, setItemData] = useState(null);
   const [error, setError] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  console.log(itemId);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -299,7 +309,9 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
           if (response.data.code === 200) {
             setItemData(response.data.data);
             setModalProductDetails(response.data.data); // อัปเดตที่นี่
+            console.log(response.data.data);
           } else {
+            
             throw new Error(response.data.message);
           }
         } catch (error) {
@@ -313,13 +325,18 @@ const Modal = ({ isModalOpen, onClose, itemId }) => {
   }, [isModalOpen, itemId]);
 
   if (!isModalOpen) return null;
-
+  // status.find((item) => item.id === itemId)
+  console.log(status.find((item) => item.id === itemId).status);
+  // console.log(status);
+  
+  
   return (
+
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg w-full max-w-3xl shadow-lg relative">
         <div className="flex justify-between items-center border-b pb-2">
           <h2 className="text-2xl font-semibold text-gray-800">
-            ใบเสนอราคา-เช่า
+            {status.find((item) => item.id === itemId).status === 'reserve' ? 'จอง' : status.find((item) => item.id === itemId).status === 'hire' ? 'เช่า' : status.find((item) => item.id === itemId).status === 'continue' ? 'เช่าต่อ' : status.find((item) => item.id === itemId).status}
           </h2>
           <button
             onClick={onClose}
