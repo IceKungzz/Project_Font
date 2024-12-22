@@ -22,11 +22,12 @@ function App() {
 
   // รายการของหน้า
   const pageData = [
-    { title: 'ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก', route: '/home' },
+    { title: 'ห้างหุ้นส่วนจำกัด ภัทรชัย แบบเหล็ก', route: '/' },
     { title: 'นำเข้าสินค้า', route: '/inbound' },
     { title: 'ส่งออกสินค้า', route: '/outbound' },
     { title: 'คืนสินค้า', route: '/returnitem' },
     { title: 'สถานะสินค้า', route: '/status' },
+    { title: 'คลังสินค้า', route: '/stock' },
   ];
 
   // เปรียบเทียบและดึงข้อมูลจาก route ปัจจุบัน
@@ -41,7 +42,7 @@ function App() {
         <Sidebar />
       </div>
       <main className="flex-grow shadow-[-5px_0px_3px_0px_rgba(0,0,0,0.200)] mt-4 mr-4 mb-4 border rounded-xl pl-5 pr-5">
-        <div className="pt-3 pb-3 border-b-4  border-[#608BC1] flex justify-between items-center text-[#608BC1] mb-2">
+        <div className="pt-3 pb-3 border-b-4  border-[#608BC1] flex justify-between items-center text-[#608BC1] mb-7">
           <div className="text-xl font-bold text-sky-800">
             {displayTitle} {/* แสดงชื่อหน้า */}
           </div>

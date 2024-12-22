@@ -1,238 +1,448 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { format } from 'date-fns';
+import { th } from 'date-fns/locale';
+import { use } from "react";
 
-export function Status_product(props) {
-    return (
-      <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
-        <div className="w-full h-full flex flex-col gap-4 p-4">
-          {/* Row 1 */}
-          <div className="w-full flex items-start justify-start gap-4">
-            {/* สาขา */}
-            <div className="flex items-center gap-2">
-              <span className="text-[16px] xl:text-[20px] text-end">สาขา:</span>
-              <select
-                name=""
-                id=""
-                className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-              >
-                <option value="">ชลบุรี</option>
-                <option value="">นพวงศ์</option>
-                <option value="">โคกขาม</option>
-                <option value="">ทั้งหมด</option>
-              </select>
-            </div>
-  
-            {/* เลขที่ใบเสร็จ */}
-            <div className="flex items-center gap-2">
-              <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ:</span>
-              <input
-                type="text"
-                className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-              />
-            </div>
-  
-            {/* วันที่ทำรายการ */}
-            <div className="flex items-center gap-2">
-              <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ:</span>
-              <input
-                type="date"
-                className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
-              />
-            </div>
-  
-            {/* ปุ่มค้นหา */}
-            <div className="flex items-center">
-              <button className="w-[120px] bg-[#133E87] h-10 rounded-md text-white flex items-center justify-center gap-2">
-                <i className="fa-solid fa-search"></i>ค้นหา
-              </button>
+const StatusProduct = () => {
+  const [status, setStatus] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [receiptNumber, setReceiptNumber] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+  const [error, setError] = useState(null);
+  const [branchName, setBranchName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        const url = "http://192.168.195.75:5000/v1/product/status/status";
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        if (response.data.code === 200) {
+          setStatus(response.data.data["Status Product"]);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        const url = "http://192.168.195.75:5000/v1/product/status/showbranch";
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        if (response.data.code === 200) {
+          setBranchName(response.data.data.branch);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+
+  const handleSearch = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      if (receiptNumber !== "") {
+
+        const url = "http://192.168.195.75:5000/v1/product/status/search-status";
+
+        const response = await axios.get(url, {
+          params: { receiptNumber: receiptNumber },
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        if (response.data.code === 200) {
+          const filteredStatus = response.data.data
+            .filter((item) => (item.export_number.includes(receiptNumber)));
+          setStatus(filteredStatus);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } else if (transactionDate !== "") {
+
+        const url = "http://192.168.195.75:5000/v1/product/status/date";
+
+        const response = await axios.get(url, {
+          params: { date: transactionDate },
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          }
+        });
+
+        console.log(response.data.data);
+        if (response.data.code === 200) {
+          const filteredStatus = response.data.data['Status Product']
+            .filter((item) => (item.created_at.includes(transactionDate)));
+          setStatus(filteredStatus);
+        } else {
+          throw new Error(response.data.message);
+        }
+
+      } else {
+        if (receiptNumber === "" || transactionDate === "") {
+          const url = "http://192.168.195.75:5000/v1/product/status/status";
+
+          const response = await axios.get(url,
+            {
+              headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+              }
+            });
+
+          if (response.data.code === 200) {
+            setStatus(response.data.data["Status Product"]);
+          } else {
+            throw new Error(response.data.message);
+          }
+        }
+      }
+
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const openModal = (id) => {
+    if (!id) {
+      console.error("ID is undefined");
+      return;
+    }
+    setSelectedProductId(id);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProductId(null);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'd MMMM yyyy', { locale: th });
+  };
+
+  return (
+    <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
+      <div className="w-full h-full flex flex-col gap-4">
+        {/* แสดง Error หากเกิดปัญหา */}
+        {error && <p className="text-red-500">{error}</p>}
+
+        {/* Row 1: ค้นหา */}
+        <div className="w-full flex items-start justify-start gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">สาขา :</span>
+            <div
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
+              style={{ overflow: "visible", color: "black" }}
+            >
+              {branchName ? branchName : "-"}
             </div>
           </div>
-  
-          {/* Row 2: ตาราง */}
-          <div className="w-full overflow-y-scroll">
-            <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
-              <thead className="bg-[#CBDCEB] h-16">
-                <tr>
-                  <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
-                  <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
-                  <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">วันที่ทำรายการ</th>
-                  <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
-                  <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
-                  <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">
-                    <div className="flex flex-row items-center justify-center gap-2">สถานะ
-                      <select
-                        name=""
-                        id=""
-                        className="bg-[#8FCAFF] w-4 h-4 px-1 items-center justify-center">
-                        <option value=""></option>
-                      </select>
-                    </div>
-                  </th>
-                  <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* ตัวอย่างข้อมูล */}
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00110</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#555555]">เสร็จสมบูรณ์</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00111</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#01BBFF]">กำลังเช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00112</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-red-600">เลยกำหนดคืนสินค้า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00113</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#01BBFF]">กำลังเช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00114</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#555555]">เสร็จสมบูรณ์</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00115</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#9025C6]">จอง</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00116</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#158B11]">ส่งคืนแล้ว</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00117</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#C3C000]">เช่าต่อ</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00118</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#01BBFF]">กำลังเช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00119</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#01BBFF]">กำลังเช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00120</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-red-600">เลยกำหนดคืนสินค้า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ชลบุรี</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">00121</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">26 พฤศจิกายน 2567</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-left">คุณสมพร</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center">ขาย/เช่า</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center text-[#555555]">เสร็จสมบูรณ์</td>
-                  <td className="border-b-2 border-[#133E87] px-4 py-2 text-center flex justify-center items-center">
-                    <button className="w-[80px] bg-[#FFFFFF] h-8 rounded-md text-[#000000] text-sm flex items-center justify-center gap-2 border border-gray-300">
-                      ดูข้อมูล<i className="fa-solid fa-angle-right"></i>
-                    </button>
-                  </td>
-                </tr>
-  
-              </tbody>
-            </table>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ :</span>
+            <input
+              type="text"
+              value={receiptNumber || ""}
+              onChange={(e) => setReceiptNumber(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              placeholder="ค้นหาเลขที่ใบเสร็จ"
+            />
           </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ :</span>
+            <input
+              type="date"
+              value={transactionDate || ""}
+              onChange={(e) => setTransactionDate(e.target.value)}
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+            />
+          </div>
+          <button
+            onClick={handleSearch}
+            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+            ค้นหา
+          </button>
+        </div>
+
+        {/* ตารางแสดงข้อมูล */}
+        <div className="w-full overflow-y-scroll">
+          <table className="table-auto w-full border-collapse text-center rounded-xl overflow-hidden">
+            <thead className="bg-[#CBDCEB] h-16 bg-[#133E87]">
+              <tr>
+                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">วันที่ทำรายการ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
+                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
+                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
+              </tr>
+            </thead>
+            <tbody>
+              {status.map((item, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">{item.branch_name}</td>
+                  <td className="border px-4 py-2">{item.export_number}</td>
+                  <td className="border px-4 py-2">{formatDate(item.created_at)}</td>
+                  <td className="border px-4 py-2">{item.customer_name}</td>
+                  <td className="border px-4 py-2">
+                    {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
+                  </td>
+                  <td className="border px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      onClick={() => openModal(item.id)}
+                      className="text-blue-500"
+                    >
+                      ดูข้อมูล
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+};
+
+const Modal = ({ isModalOpen, onClose, itemId }) => {
+  const [productDetails, setProductDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [itemData, setItemData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const fetchData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            throw new Error("Token not found");
+          }
+
+          const url = `http://192.168.195.75:5000/v1/product/status/status-one/${itemId}`;
+
+          const response = await axios.get(url, {
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+              "x-api-key": "1234567890abcdef",
+            }
+          });
+
+          if (response.data.code === 200) {
+            setItemData(response.data.data);
+          } else {
+            throw new Error(response.data.message);
+          }
+        } catch (error) {
+          console.error("Error fetching item data:", error);
+          setError(error.message);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isOpen, itemId]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-3xl shadow-lg relative">
+        <div className="flex justify-between items-center border-b pb-2">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            ใบเสนอราคา-เช่า
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-red-500 hover:text-red-600 font-bold text-lg transition duration-300"
+          >
+            ✕
+          </button>
+        </div>
+
+        {isLoading ? (
+          <p className="mt-6 text-center text-gray-600">กำลังโหลด...</p>
+        ) : error ? (
+          <p className="mt-6 text-center text-red-500">{error}</p>
+        ) : productDetails ? (
+          <div className="mt-6 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <p>
+                <strong className="text-gray-700">สาขา:</strong>{" "}
+                {productDetails.branch_name}
+              </p>
+              <p>
+                <strong className="text-gray-700">เลขที่ใบเสร็จ:</strong>{" "}
+                {productDetails.export_number}
+              </p>
+              <p>
+                <strong className="text-gray-700">นามลูกค้า/ชื่อบริษัท:</strong>{" "}
+                {productDetails.customer_name}
+              </p>
+              <p>
+                <strong className="text-gray-700">วันที่สร้าง:</strong>{" "}
+                {productDetails.created_at}
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                รายการสินค้า
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border shadow-sm">
+                  <thead className="bg-gray-200 text-gray-700">
+                    <tr>
+                      <th className="border p-2">รหัสสินค้า</th>
+                      <th className="border p-2">ชื่อสินค้า</th>
+                      <th className="border p-2">จำนวน</th>
+                      <th className="border p-2">ราคาเช่าต่อวัน</th>
+                      <th className="border p-2">จำนวนวัน</th>
+                      <th className="border p-2">ค่าปรับ</th>
+                      <th className="border p-2">จำนวนรวม</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productDetails.products.map((product) => (
+                      <tr
+                        key={product.product_id}
+                        className="hover:bg-gray-50 transition duration-200"
+                      >
+                        <td className="border p-2 text-center">
+                          {product.code}
+                        </td>
+                        <td className="border p-2">{product.product_name}</td>
+                        <td className="border p-2 text-center">
+                          {product.quantity} {product.unit}
+                        </td>
+                        <td className="border p-2 text-right">
+                          {product.price}
+                        </td>
+                        <td className="border p-2 text-right">
+                          {productDetails.date}
+                        </td>
+                        <td className="border p-2 text-center">
+                          {product.price_damage}
+                        </td>
+                        <td className="border p-2 text-right">
+                          {product.amount_price}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="mt-6 me-6">
+              <div className="justify-end grid gap-4">
+                <p>
+                  <strong className="text-gray-700 me-3">รวมเงิน: </strong>{" "}
+                  {productDetails.price_oute}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">ส่วนลด: </strong>{" "}
+                  {productDetails.discount}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">
+                    รวมหักหลังส่วนลด:{" "}
+                  </strong>{" "}
+                  {productDetails.total_price_out}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">
+                    ค่าขนส่งสินค้าไป-กลับ:{" "}
+                  </strong>{" "}
+                  {productDetails.shipping_cost}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">
+                    ค่าบริการเคลื่อนย้ายสินค้า:{" "}
+                  </strong>{" "}
+                  {productDetails.move_price}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">
+                    ค่าประกันสินค้า:{" "}
+                  </strong>{" "}
+                  {productDetails.guarantee_price}
+                </p>
+                <p>
+                  <strong className="text-gray-700 me-3">
+                    รวมยอดเงินที่ต้องชำระ:
+                  </strong>{" "}
+                  {productDetails.final_price}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default StatusProduct;

@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "antd": "^5.22.5",
     "axios": "^1.7.8",
+    "date-fns": "^4.1.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
     "react": "^18.3.1",
@@ -18,8 +20,10 @@
     "react-helmet": "^6.1.0",
     "react-helmet-async": "^2.0.5",
     "react-router-dom": "^7.0.1",
+    "react-toastify": "^11.0.1",
     "sweetalert2": "^11.15.0",
-    "sweetalert2-react-content": "^5.0.7"
+    "sweetalert2-react-content": "^5.0.7",
+    "thai-baht-text": "^2.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

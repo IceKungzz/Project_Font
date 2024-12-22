@@ -1,18 +1,55 @@
-import { useState } from "react"; 
-import { NavLink } from "react-router-dom";
+import Swal from 'sweetalert2'
+import { NavLink, useLocation } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import React from "react";
+import { useEffect } from 'react';
+import axios from 'axios';
 
 export default function Sidebar() {
+  const [f_name, setF_name] = useState('')
+  const [position, setPosition] = useState('')
 
+  const location = useLocation();
+  const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const logout = () => {
+    localStorage.removeItem('token')
+    Swal.fire({
+      icon: 'success',
+      text: "Logout Successfully",
+      confirmButton: 'ok'
+    }).then((res) => {
+      navigate('login')
+    })
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    axios.get('http://192.168.195.75:5000/v1/product/outbound/profile', {
+      headers: {
+        "Authorization": token,
+        "Content-Type": "application/json",
+        "x-api-key": "1234567890abcdef",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        setF_name(res.data.data.first_name)
+        setPosition(res.data.data.position)
+      }
+    })
+  }, [])
+
+  const isHomePage = location.pathname === "/";
+
   return (
     <div className="h-screen flex flex-col">
       <div className="flex items-center justify-center h-1/6 mt-3">
-        <img src="img/logo.png" alt="image" width={150} />
+        <img src="img/logo.png" alt="image" width={250} />
       </div>
 
       <div className="flex flex-col justify-between h-full w-full mt-4">
@@ -29,90 +66,90 @@ export default function Sidebar() {
 
               <div className="text-sm text-black flex flex-col items-center">
                 <span className="hidden md:block xl:text-md 2xl:text-[20px]  text-center text-[#133E87] font-bold">
-                  เมทนี สนธิกัน
+                  {f_name}
                 </span>
                 <span className="hidden text-[#608BC1] text-[20px] xl:block mt-1">
-                  user
+                  {position}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* รายการเมนู */}
-          {isSidebarOpen && (
+                    {/* รายการเมนู */}
+          {isSidebarOpen && !isHomePage && (
             <>
               <NavLink
                 to="/"
                 onClick={toggleSidebar}
                 className={({ isActive }) =>
-                  `sidebar-menu
+                  `sidebar-menu my-1
                         ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-house-chimney w-10 mr-2"></i>
                 <span>หน้าแรก</span>
               </NavLink>
-
+          
               <NavLink
                 to="/inbound"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-file w-10 mr-2"></i>
                 <span>นำเข้าสินค้า</span>
               </NavLink>
-
+          
               <NavLink
                 to="/outbound"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-file-import w-10 mr-2"></i>{" "}
                 <span>ส่งออกสินค้า</span>
               </NavLink>
-
+          
               <NavLink
                 to="/status"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-list-check w-10 mr-2"></i>
                 <span>สถานะสินค้า</span>
               </NavLink>
-
+          
               <NavLink
                 to="/returnitem"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-recycle w-10 mr-2"></i>
                 <span>คืนสินค้า</span>
               </NavLink>
-
+          
               <NavLink
-                to="/d"
+                to="/stock"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-store w-10 mr-2"></i>
                 <span>สินค้าคงคลัง</span>
               </NavLink>
-
+          
               <NavLink
-                to="/e"
+                to="/allptc"
                 className={({ isActive }) =>
-                  `sidebar-menu
-                         ${isActive ? "activeclass" : ""}`
+                  `sidebar-menu my-1
+                        ${isActive ? "activeclass" : ""}`
                 }
               >
                 <i className="fa-solid fa-clipboard-list w-10 mr-2"></i>
@@ -123,10 +160,10 @@ export default function Sidebar() {
           {/* รายการเมนู */}
         </div>
 
-        <div className="text-xl text-[#608BC1]  h-1/6 w-full flex items-center justify-center">
-          <div className="bg-[#133E87] w-3/4 p-1 text-md cursor-pointer 2xl:p-3 rounded-md 2xl:text-lg text-center">
-            <span>
-              <i className="fa-solid fa-right-from-bracket mt-2 mr-2"></i> ออกจากระบบ
+        <div className="text-xl text-[#608BC1] h-1/6 w-full flex items-center justify-center">
+          <div className="bg-[#133E87] w-3/4 p-1 text-sm cursor-pointer xl:p-2 rounded-md xl:text-md text-center" onClick={logout}>
+            <span className="text-white">
+              <i className="text-[#ffffff] fa-solid fa-right-from-bracket mt-1 mr-1"></i> ออกจากระบบ
             </span>
           </div>
         </div>

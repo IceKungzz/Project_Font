@@ -8,11 +8,10 @@ import { ReturnItem } from "../page/Returnbound/Returnbound"
 import { Home } from "../page/Home/Home"
 import Preorder from "../page/Preorder/Preorder"
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound"
-
-import Modal_Outbound_SweetAlert from "../page/Outbound/Modal_order_SweetAlert"
-import { Status_product } from "../page/status/status"
-
-
+import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products"
+import StatusProduct from "../page/status/status"
+import { StockItem } from "../page/Stock/Stock"
+ 
 
 const router = createBrowserRouter([
     {
@@ -24,17 +23,19 @@ const router = createBrowserRouter([
                 children: [
                     {path:"outbound", element: <Outbound/>},
                     {path:"inbound", element: <Inbound/>},
-                    {path:"", element: <Home/>},
+                    {path:"/", element: <Home/>},
                     {path:"returnitem", element: <ReturnItem/>},
-                    {path:"status", element: <Status_product/>},
-                ],
+                    {path:"status", element: <StatusProduct/>},
+                    { path: "stock", element: <StockItem /> },
+                    
+                ],   
             },
             {path:"preorder", element: <Preorder/>},
         ],
     },
     {path:"/login", element: <Login/>},
     {path:"/modal_outbound", element: <Modal_Outbound/>},
-    {path:"/modal_order", element: <Modal_Outbound_SweetAlert/>},
+    {path:"/modal_create_products", element: <Modal_Create_Products/>},
 ])
 
 export default router
