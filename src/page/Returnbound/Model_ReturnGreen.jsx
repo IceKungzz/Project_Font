@@ -2,26 +2,42 @@ import React, { useState } from "react";
 
 export function Modal_ReturnGreen({ close, data }) {
 
-    const formatThaiDate = (dateString) => {
-        if (!dateString) return ""; // ตรวจสอบว่ามีข้อมูลวันที่หรือไม่
+    const calculateNewDate = (actualOut, daysToAdd) => {
+        if (!actualOut) {
+            console.error("actualOut is missing:", actualOut);
+            return "วันที่ไม่พร้อมใช้งาน";
+        }
+        if (isNaN(daysToAdd)) {
+            console.error("daysToAdd is not a number:", daysToAdd);
+            return "จำนวนวันไม่ถูกต้อง";
+        }
     
-        const [year, month, day] = dateString.split(" ")[0].split("-"); // แยกปี เดือน และวันจากวันที่
+        const actualOutDate = new Date(actualOut);
+        if (isNaN(actualOutDate)) {
+            console.error("Cannot parse actualOut:", actualOut);
+            return "รูปแบบวันที่ไม่ถูกต้อง";
+        }
+    
+        actualOutDate.setDate(actualOutDate.getDate() + parseInt(daysToAdd, 10));
+    
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
         ];
-        const thaiYear = parseInt(year, 10) + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
+        const day = actualOutDate.getDate();
+        const month = thaiMonthsShort[actualOutDate.getMonth()];
+        const year = actualOutDate.getFullYear() + 543;
     
-        return ` ${parseInt(day, 10)} ${thaiMonthsShort[parseInt(month, 10) - 1]} ${thaiYear}`; // คืนค่าที่จัดรูปแบบ
+        return `${day} ${month} ${year}`;
     };
-    
+
     const [hasVat, setHasVat] = useState(true);
 
     const handleVatChange = (e) => {
         setHasVat(e.target.value === "true");
     };
-    console.log(data,"มาแล้ว");
-    
+    console.log(data, "มาแล้ว");
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
             <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-green-200 border-green-700 border-2">
@@ -59,7 +75,7 @@ export function Modal_ReturnGreen({ close, data }) {
                             </div>
                             <div className=" col-span-2  ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                {items.receip_number}
+                                    {items.receip_number}
                                 </label>
                             </div>
                             <div className=" col-span-1  ">
@@ -79,7 +95,13 @@ export function Modal_ReturnGreen({ close, data }) {
                             </div>
                             <div className=" col-span-2  flex items-center justify-between">
                                 <label className="text-xl  text-gray-600 h-full  ">
-                                {formatThaiDate(items.actual_out)} <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label> 25 พ.ย. 2567
+                                    {/* แสดงวันที่เริ่มต้น */}
+                                    {items.actual_out ? calculateNewDate(items.actual_out, 0) : "ไม่มีวันที่เริ่มต้น"}
+                                    <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label>
+                                    {/* แสดงวันที่สิ้นสุด */}
+                                    {items.actual_out && items.date
+                                        ? calculateNewDate(items.actual_out, items.date)
+                                        : "ไม่มีวันที่สิ้นสุด"}
                                 </label>
 
                             </div>

@@ -2,32 +2,49 @@ import React, { useState } from "react";
 import { Modal_ReturnItem } from "./Model_ReturnItem";
 
 export function Modal_ReturnYellow({ close, data }) {
-    const formatThaiDate = (dateString) => {
-        if (!dateString) return ""; // ตรวจสอบว่ามีข้อมูลวันที่หรือไม่
-    
-        const [year, month, day] = dateString.split(" ")[0].split("-"); // แยกปี เดือน และวันจากวันที่
+
+    const calculateNewDate = (actualOut, daysToAdd) => {
+        if (!actualOut) {
+            console.error("actualOut is missing:", actualOut);
+            return "วันที่ไม่พร้อมใช้งาน";
+        }
+        if (isNaN(daysToAdd)) {
+            console.error("daysToAdd is not a number:", daysToAdd);
+            return "จำนวนวันไม่ถูกต้อง";
+        }
+
+        const actualOutDate = new Date(actualOut);
+        if (isNaN(actualOutDate)) {
+            console.error("Cannot parse actualOut:", actualOut);
+            return "รูปแบบวันที่ไม่ถูกต้อง";
+        }
+
+        actualOutDate.setDate(actualOutDate.getDate() + parseInt(daysToAdd, 10));
+
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
         ];
-        const thaiYear = parseInt(year, 10) + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
-    
-        return ` ${parseInt(day, 10)} ${thaiMonthsShort[parseInt(month, 10) - 1]} ${thaiYear}`; // คืนค่าที่จัดรูปแบบ
+        const day = actualOutDate.getDate();
+        const month = thaiMonthsShort[actualOutDate.getMonth()];
+        const year = actualOutDate.getFullYear() + 543;
+
+        return `${day} ${month} ${year}`;
     };
-    
+
     const [showmodalItem, setShowmodalItem] = useState(false);
-        const closeModalRed = () => {
-            setShowmodalItem(false);
-        };
-    
-    console.log([data],"เหลืองมาแล้ว");
-    
+    const closeModalRed = () => {
+        setShowmodalItem(false);
+    };
+
+    console.log([data], "เหลืองมาแล้ว");
+
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
             {showmodalItem ? (
-                            <Modal_ReturnItem close={closeModalRed} />
-                        ) : null}
+                <Modal_ReturnItem close={closeModalRed} />
+            ) : null}
             <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4  text-yellow-700">
@@ -43,104 +60,110 @@ export function Modal_ReturnYellow({ close, data }) {
 
                 {/* Form Section */}
                 <div className=" overflow-y-auto flex-grow">
-                {data.map((items,index) =>(
-                    <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
+                    {data.map((items, index) => (
+                        <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
 
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                                สาขา :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                            {items.branch_name}
-                            </label>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                                เลขที่ใบเสร็จ :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                            {items.receip_number}
-                            </label>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                            นามลูกค้า/ชื่อบริษัท :
-                            </label>
-                        </div>
-                        <div className=" col-span-2">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                            {items.customer_name}
-                            </label>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                                วันที่เริ่มเช่า :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  flex items-center justify-between">
-                            <label className="text-xl  text-gray-600 h-full  ">
-                            {items.actual_out} <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label> 25 พ.ย. 2567
-                            </label>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    สาขา :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    {items.branch_name}
+                                </label>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    เลขที่ใบเสร็จ :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    {items.receip_number}
+                                </label>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    นามลูกค้า/ชื่อบริษัท :
+                                </label>
+                            </div>
+                            <div className=" col-span-2">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    {items.customer_name}
+                                </label>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    วันที่เริ่มเช่า :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  flex items-center justify-between">
+                                <label className="text-xl  text-gray-600 h-full  ">
+                                    {/* แสดงวันที่เริ่มต้น */}
+                                    {items.actual_out ? calculateNewDate(items.actual_out, 0) : "ไม่มีวันที่เริ่มต้น"}
+                                    <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label>
+                                    {/* แสดงวันที่สิ้นสุด */}
+                                    {items.actual_out && items.date
+                                        ? calculateNewDate(items.actual_out, items.date)
+                                        : "ไม่มีวันที่สิ้นสุด"}
+                                </label>
 
-                        </div>
+                            </div>
 
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                                วันที่ส่งคืนจริง :
-                            </label>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    วันที่ส่งคืนจริง :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+                                <label className="pl-5 pr-5 text-xl font-bold text-gray-600 ">ถึง</label>
+                                <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    จำนวนวัน :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    5  <label className="pl-5">วัน</label>
+                                </label>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    รายการเช่าต่อ :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <button className="border-2 border-gray-400 pl-4 pr-4 pt-2 pb-2 rounded-md bg-slate-500 text-white"
+                                    onClick={() => setShowmodalItem(true)}
+                                >เลือกรายการ</button>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    สินค้าทั้งหมด :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    6  <label className="pl-5">ชิ้น</label>
+                                </label>
+                            </div>
+                            <div className=" col-span-1  ">
+                                <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
+                                    เช่าต่อ :
+                                </label>
+                            </div>
+                            <div className=" col-span-2  ">
+                                <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
+                                    3  <label className="pl-5 pr-10">ชิ้น</label>
+                                    <label className="pl-14 pr-5 text-xl font-bold text-gray-600 ">ส่งคืน :</label> 3 <label className="pl-5 ">ชิ้น</label>
+                                </label>
+                            </div>
                         </div>
-                        <div className=" col-span-2  ">
-                            <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
-                            <label className="pl-5 pr-5 text-xl font-bold text-gray-600 ">ถึง</label>
-                            <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                            จำนวนวัน :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                5  <label className="pl-5">วัน</label>
-                            </label>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                            รายการเช่าต่อ :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <button className="border-2 border-gray-400 pl-4 pr-4 pt-2 pb-2 rounded-md bg-slate-500 text-white"
-                            onClick={() => setShowmodalItem(true)}
-                            >เลือกรายการ</button>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                            สินค้าทั้งหมด :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                6  <label className="pl-5">ชิ้น</label>
-                            </label>
-                        </div>
-                        <div className=" col-span-1  ">
-                            <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
-                            เช่าต่อ :
-                            </label>
-                        </div>
-                        <div className=" col-span-2  ">
-                            <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                3  <label className="pl-5 pr-10">ชิ้น</label>
-                                <label className="pl-14 pr-5 text-xl font-bold text-gray-600 ">ส่งคืน :</label> 3 <label className="pl-5 ">ชิ้น</label>
-                            </label>
-                        </div>
-                    </div>
-                ))}
+                    ))}
                 </div>
 
                 {/* Footer */}

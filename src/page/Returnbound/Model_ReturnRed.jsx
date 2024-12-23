@@ -99,8 +99,7 @@ export function Modal_ReturnRed({ close, data }) {
                                     วันที่เริ่มเช่า :
                                 </label>
                             </div>
-                            <div className="col-span-2 flex items-center justify-between">
-                                <div className="col-span-2 flex items-center justify-between">
+                            <div className="col-span-2 flex items-center justify-between">                               
                                     <label className="text-xl text-gray-600 h-full">
                                         {/* แสดงวันที่เริ่มต้น */}
                                         {items.actual_out ? calculateNewDate(items.actual_out, 0) : "ไม่มีวันที่เริ่มต้น"}
@@ -110,7 +109,6 @@ export function Modal_ReturnRed({ close, data }) {
                                             ? calculateNewDate(items.actual_out, items.date)
                                             : "ไม่มีวันที่สิ้นสุด"}
                                     </label>
-                                </div>
                             </div>
                             <div className=" col-span-1  ">
                                 <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
