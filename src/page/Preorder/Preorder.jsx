@@ -32,7 +32,7 @@ export default function Quotation() {
     const token = localStorage.getItem("token");
     
     axios
-      .get("http://192.168.195.75:5000/v1/product/status/status-one/69", {
+      .get("http://192.168.195.75:5000/v1/product/status/status-one/63", {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
@@ -131,20 +131,20 @@ export default function Quotation() {
       {/* Table */}
       <div className="h-[230px] text-sm grid grid-cols-10 grid-rows-11 print:text-[9px]">
         {/* หัวตาราง */}
-        <div className="bg-red-200 h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
-          <span className="bg-green-500 border-b-2 border-t-2 border-black">ลำดับ</span>
+        <div className=" h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
+          <span className=" border-b-2 border-t-2 border-black">ลำดับ</span>
           {products.map((product, index) => (
             <span key={index}>{index+1}</span>
           ))}
         </div>
-        <div className="bg-red-300 h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">รายการ</span>
+        <div className=" h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="  border-b-2 border-t-2 border-black">รายการ</span>
           {products.map((product, index) => (
             <span key={index}>{product.product_name}</span>
           ))}
         </div>
-        <div className="bg-red-400 h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวน</span>
+        <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="  border-b-2 border-t-2 border-black">จำนวน</span>
           {products.map((product, index) => (
             <span key={index}>{product.quantity}  {product.unit}</span>
           ))}
@@ -172,7 +172,7 @@ export default function Quotation() {
 
       </div>
       {/* ส่วนเงื่อนไข */}
-      <div className="bg-green-500 grid grid-cols-10 grid-rows-14 h-[350px] text-[9px]">
+      <div className=" grid grid-cols-10 grid-rows-14 h-[350px] text-[9px]">
           {/* เงื่อนไขซ้ายมือ */}
           <div className="col-span-7 row-span-11 grid grid-rows-11 border-2 border-black text-[9px] print:text-[8px] p-1">
               <span className="row-span-1">เงื่อนไขการเช่าสินค้า/โปรดอ่านเงื่อนไขก่อนทำการเช่าสินค้า</span>
@@ -188,9 +188,9 @@ export default function Quotation() {
               <span className="row-span-1">8.ผู้เช่าต้องเป็นผู้กำเนินการเคลื่อนย้ายสินค้าเองทุกครั้ง หากไม่เคลื่อนย้ายสินค้าเอง ผู้เช่าจะต้องจ่ายค่าบริการเคลื่อนย้ายสินค้าให้แก่ผู้ให้เช่า</span>
           </div>
           {/* row7 */}
-          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
-          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
-          <div className="bg-blue-500 border-r-2 col-span-1 row-span-7 border-black"></div>
+          <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
+          <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
+          <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
           <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1">รวมเงิน</span>
           <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
           <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ส่วนลด</span>
@@ -200,7 +200,7 @@ export default function Quotation() {
           <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ค่าขนส่งสินค้าไป-กลับ</span>
           <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">{data.shipping_cost}</span>
 
-          <div className="bg-red-500 col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1">
+          <div className=" col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1">
             <u>หมายเหตุ:</u> ขนส่งสินค้าโดยรถกะบะไป-กลับ 2 รอบ/หน้างานช่วยขึ้นลง
           </div>
           <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าบริการเคลื่อนย้ายสินค้า</span>
@@ -208,7 +208,7 @@ export default function Quotation() {
           <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าประกันสินค้า</span>
           <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">5000.00</span>
 
-          <div className="bg-yellow-500 col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black">
+          <div className="col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black">
             {formatThaiBahtText(data.total_price_out)}
           </div>
           <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1">รวมยอดเงินที่ต้องชำระ</span>

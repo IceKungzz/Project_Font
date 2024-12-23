@@ -29,6 +29,7 @@ export function Outbound() {
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
   const [validateModalInput, setValidateModalInput] = useState(false)
   const [alldata_default, setAlldata_default] = useState([{}]);
+  const [mergetable, setMergetable] = useState([])
   const navigate = useNavigate();
 
   const menu = [
@@ -67,15 +68,12 @@ export function Outbound() {
     console.log("Confirmed items: ", updatedItems);
   };
 
-  // const handleConfirmItem_Create = (items) => {
-  //   const updatedItems = items.map((item) => ({
-  //     ...item,
-  //     type: item.type || "เช่า",
-  //     price: 0,
-  //   }));
-  //   setConfirmitem(updatedItems);
-  //   console.log("Confirmed items create: ", updatedItems);
-  // };
+  const handleConfirmItem_Create = (items) => {
+    setConfirmItem_Create(items)
+    setMergetable(items.merge)
+    console.log('confirmitem_create = ', items.assemble_status);
+    
+  };
 
   const handleDateChange = (dateValue) => {
     const date = new Date(dateValue);
@@ -148,7 +146,9 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
-  const confirm_order = () => {
+
+
+  const confirm_order = async() => {
     const reserve = [
       confirmitem.reduce(
         (acc, item) => {
@@ -179,7 +179,7 @@ export function Outbound() {
       address,
       date: day_length,
       reserve: reserve,
-      status_assemble: true,
+      assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
       discount: 200,
       shipping_cost: 2500,
@@ -189,11 +189,15 @@ export function Outbound() {
       average_price: 0,
     };
     const token = localStorage.getItem("token");
-
-
-    console.log('neworder=  ', newOrder);
+    const merge = confirmitem_create.merge
     
-    axios.post(
+    //  console.log('neworder=  ', newOrder);
+      console.log('merge = ', merge);
+     //console.log(confirmitem_create.status_assemble);
+     
+    
+    try{
+      axios.post(
         "http://192.168.195.75:5000/v1/product/outbound/reserve",
         newOrder,
         {
@@ -205,19 +209,27 @@ export function Outbound() {
         }
       )
       .then((res) => {
-        if (res.status === 201) {
-          Swal.fire({
-            icon: "success",
-            text: "เพิ่มข้อมูลสำเร็จ",
-            confirmButton: "ok",
-          }).then(() => {
-            navigate("/status");
-          });
-        }
+        Swal.fire({
+          icon: "success",
+          text: "เพิ่มข้อมูลสำเร็จ",
+          confirmButton: "ok",
+        }).then(() => {
+          navigate("/status");
+        });
+        console.log('send success');
+        
       })
       .catch((err) => {
         console.log(err);
       });
+
+    }catch(err){
+      console.log(err);
+      
+    }
+    
+
+  
 
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
@@ -262,6 +274,7 @@ export function Outbound() {
     }
   };
   
+  console.log(mergetable);
   
 
   return (
@@ -282,7 +295,7 @@ export function Outbound() {
       {showmodal_create_product && validateModalInput ? (
         <Modal_Create_Products
           close={closeModal_Create}
-          //createitem={setConfirmItem_Create}
+          createitem={handleConfirmItem_Create}
           datadefault={alldata_default}
         />
       ) : null}
