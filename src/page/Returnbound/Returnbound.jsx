@@ -67,6 +67,9 @@ export function ReturnItem() {
     const closeModalYellow = () => {
         setShowmodalYellow(false);
     };
+    const [dataGreen,setDataGreen] = useState([])
+    const [dataRed,setDataRed] = useState([])
+    const [dataYellow,setDataYellow] = useState([])
 
 
     const handleOpenModal = (id, modalType) => {
@@ -94,7 +97,10 @@ export function ReturnItem() {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    console.log(res.data.data); // แสดงข้อมูลที่ได้
+                    setDataGreen(res.data.data)
+                    setDataRed(res.data.data)
+                    setDataYellow(res.data.data)
+                    // console.log(res.data.data); 
                 }
             })
             .catch((error) => {
@@ -102,20 +108,31 @@ export function ReturnItem() {
             });
     };
 
-
+    const formatThaiDate = (dateString) => {
+        if (!dateString) return ""; // ตรวจสอบว่ามีข้อมูลวันที่หรือไม่
+    
+        const [year, month, day] = dateString.split(" ")[0].split("-"); // แยกปี เดือน และวันจากวันที่
+        const thaiMonthsShort = [
+            "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
+            "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
+        ];
+        const thaiYear = parseInt(year, 10) + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
+    
+        return ` ${parseInt(day, 10)} ${thaiMonthsShort[parseInt(month, 10) - 1]} ${thaiYear}`; // คืนค่าที่จัดรูปแบบ
+    };
     
 
     return (
         <div className='w-full h-[90%]  grid grid-rows-12'>
 
             {showmodalGreen ? (
-                <Modal_ReturnGreen close={closeModalGreen} />
+                <Modal_ReturnGreen close={closeModalGreen} data={[dataGreen]} />
             ) : null}
             {showmodalRed ? (
-                <Modal_ReturnRed close={closeModalRed} />
+                <Modal_ReturnRed close={closeModalRed} data={[dataRed]}/>
             ) : null}
             {showmodalYellow ? (
-                <Modal_ReturnYellow close={closeModalYellow} />
+                <Modal_ReturnYellow close={closeModalYellow} data={[dataYellow]}/>
             ) : null}
 
             <div className='row-span-1 '>
@@ -168,7 +185,7 @@ export function ReturnItem() {
                                 <td className="text-center border-l-2 px-4 py-2 ">{index + 1}</td>
                                 <td className="text-center border-l-2 px-4 py-2 ">{items.branch_name}</td>
                                 <td className="text-center border-l-2 px-4 py-2">{items.receip_number}</td>
-                                <td className="text-center border-l-2 px-4 py-2">{items.created_at}</td>
+                                <td className="text-center border-l-2 px-4 py-2">{formatThaiDate(items.created_at)}</td>
                                 <td className="text-start border-l-2 px-4 py-2">{items.customer_name}</td>
                                 <td className="text-center border-l-2 px-4 py-2">{items.type}</td>
                                 <td className={`text-center border-l-2 px-4 py-2 
