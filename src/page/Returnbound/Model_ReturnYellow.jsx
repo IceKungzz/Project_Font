@@ -1,58 +1,27 @@
 import React, { useState } from "react";
 import { Modal_ReturnItem } from "./Model_ReturnItem";
 
-export function Modal_ReturnYellow({ close, confirmYellow }) {
-    const [formData, setFormData] = useState({
-        code: "",
-        name: "",
-        size: "",
-        meter: "",
-        centimeter: "",
-        price3D: "",
-        price30D: "",
-        price_sell: "",
-        price_damage: "",
-        unit: "",
-        remark: "",
-    });
-
-    // ฟังก์ชัน handleChange สำหรับอัปเดตข้อมูลฟอร์ม
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
-    // ตรวจสอบว่า field ที่มีดอกจันทั้งหมดถูกกรอกครบหรือไม่
-    const isFormValid = () => {
-        const requiredFields = [
-            "code",
-            "name",
-            "price3D",
-            "price30D",
-            "price_sell",
-            "price_damage",
+export function Modal_ReturnYellow({ close, data }) {
+    const formatThaiDate = (dateString) => {
+        if (!dateString) return ""; // ตรวจสอบว่ามีข้อมูลวันที่หรือไม่
+    
+        const [year, month, day] = dateString.split(" ")[0].split("-"); // แยกปี เดือน และวันจากวันที่
+        const thaiMonthsShort = [
+            "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
+            "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
         ];
-        return requiredFields.every((field) => formData[field].trim() !== "");
+        const thaiYear = parseInt(year, 10) + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
+    
+        return ` ${parseInt(day, 10)} ${thaiMonthsShort[parseInt(month, 10) - 1]} ${thaiYear}`; // คืนค่าที่จัดรูปแบบ
     };
-
+    
     const [showmodalItem, setShowmodalItem] = useState(false);
         const closeModalRed = () => {
             setShowmodalItem(false);
         };
     
-    const confirm_item = () => {
-        // if (isFormValid()) {
-        //   console.log(formData);
-        //   confirm(formData);
-        //   close();
-        // }
-        console.log(formData);
-        confirmYellow(formData);
-        close();
-    };
+    console.log([data],"เหลืองมาแล้ว");
+    
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
@@ -74,7 +43,8 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
 
                 {/* Form Section */}
                 <div className=" overflow-y-auto flex-grow">
-                    <div className="grid grid-cols-3 gap-x-6 gap-y-6 ">
+                {data.map((items,index) =>(
+                    <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
 
                         <div className=" col-span-1  ">
                             <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
@@ -83,7 +53,7 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                         </div>
                         <div className=" col-span-2  ">
                             <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                ชลบุรี
+                            {items.branch_name}
                             </label>
                         </div>
                         <div className=" col-span-1  ">
@@ -93,7 +63,7 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                         </div>
                         <div className=" col-span-2  ">
                             <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                00100
+                            {items.receip_number}
                             </label>
                         </div>
                         <div className=" col-span-1  ">
@@ -101,9 +71,9 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                             นามลูกค้า/ชื่อบริษัท :
                             </label>
                         </div>
-                        <div className=" col-span-2  ">
+                        <div className=" col-span-2">
                             <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                คุณสมพร
+                            {items.customer_name}
                             </label>
                         </div>
                         <div className=" col-span-1  ">
@@ -113,7 +83,7 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                         </div>
                         <div className=" col-span-2  flex items-center justify-between">
                             <label className="text-xl  text-gray-600 h-full  ">
-                                20 พ.ย. 2567 <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label> 25 พ.ย. 2567
+                            {items.actual_out} <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label> 25 พ.ย. 2567
                             </label>
 
                         </div>
@@ -170,17 +140,13 @@ export function Modal_ReturnYellow({ close, confirmYellow }) {
                             </label>
                         </div>
                     </div>
+                ))}
                 </div>
 
                 {/* Footer */}
                 <div className="p-6  flex justify-center ">
                     <button
-                        className={`px-6 py-3 text-white rounded-md text-lg font-medium transition w-1/4 ${isFormValid()
-                            ? "bg-[#31AB31] hover:bg-green-600 active:bg-green-700"
-                            : "bg-gray-400 cursor-not-allowed"
-                            }`}
-                        onClick={confirm_item}
-                        disabled={!isFormValid()} // ปุ่มจะถูก disable ถ้าไม่ valid
+                        className="px-6 py-3 text-white rounded-md text-lg font-medium transition w-1/4 bg-[#31AB31] hover:bg-green-600 active:bg-green-700"
                     >
                         ยืนยันเช่าต่อ
                     </button>
