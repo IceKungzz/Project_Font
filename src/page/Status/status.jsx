@@ -195,7 +195,7 @@ const StatusProduct = () => {
         {/* Row 1: ค้นหา */}
         <div className="w-full flex items-start justify-start gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">สาขา :</span>
+            <span className="r-2 font-bold text-xl text-sky-800">สาขา :</span>
             <div
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
               style={{ overflow: "visible", color: "black" }}
@@ -203,8 +203,8 @@ const StatusProduct = () => {
               {branchName ? branchName : "-"}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">เลขที่ใบเสร็จ :</span>
+          <div className="flex items-center">
+            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">เลขที่ใบเสร็จ :</span>
             <input
               type="text"
               value={receiptNumber || ""}
@@ -213,8 +213,8 @@ const StatusProduct = () => {
               placeholder="ค้นหาเลขที่ใบเสร็จ"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] xl:text-[20px] text-end">วันที่ทำรายการ :</span>
+          <div className="flex items-center">
+            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">วันที่ทำรายการ :</span>
             <input
               type="date"
               value={transactionDate || ""}
@@ -230,31 +230,31 @@ const StatusProduct = () => {
         </div>
 
         {/* ตารางแสดงข้อมูล */}
-        <div className="w-full overflow-y-scroll">
-          <table className="table-auto w-full border-collapse text-center">
-            <thead className="bg-blue-200 text-blue-900">
+        <div className="row-span-11 overflow-auto no-scrollbar">
+          <table className="table-auto w-full border-collapse">
+            <thead className="bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
               <tr>
-                <th className="border-t-2 border-b-2 border-l-2 border-[#133E87] px-4 py-2 text-[#133E87]">สาขา</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">เลขที่ใบเสร็จ</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">วันที่ทำรายการ</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">นามลูกค้า/ชื่อบริษัท</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">รูปแบบ</th>
-                <th className="border-t-2 border-b-2 border-[#133E87] px-4 py-2 text-[#133E87]">สถานะ</th>
-                <th className="border-t-2 border-b-2 border-r-2 border-[#133E87] px-4 py-2 text-[#133E87]">เพิ่มเติม</th>
+                <th className="px-4 border-l-2  py-2">สาขา</th>
+                <th className="px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
+                <th className="px-4 border-l-2  py-2">วันที่ทำรายการ</th>
+                <th className="px-4 border-l-2  py-2">นามลูกค้า/ชื่อบริษัท</th>
+                <th className="px-4 border-l-2  py-2">รูปแบบ</th>
+                <th className="px-4 border-l-2  py-2">สถานะ</th>
+                <th className="px-4 border-l-2  py-2">เพิ่มเติม</th>
               </tr>
             </thead>
             <tbody>
               {status.map((item, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{item.branch_name}</td>
-                  <td className="border px-4 py-2">{item.export_number}</td>
-                  <td className="border px-4 py-2">{formatDate(item.created_at)}</td>
-                  <td className="border px-4 py-2">{item.customer_name}</td>
-                  <td className="border px-4 py-2">
+                <tr key={index} className='  border-2'>
+                  <td className="text-center border-l-2 px-4 py-2">{item.branch_name}</td>
+                  <td className="text-center border-l-2 px-4 py-2">{item.export_number}</td>
+                  <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
+                  <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
+                  <td className="text-center border-l-2 px-4 py-2">
                     {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
                   </td>
-                  <td className="border px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
-                  <td className="border px-4 py-2">
+                  <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
+                  <td className="text-center border-l-2 px-4 py-2">
                     <button
                       onClick={() => openModal(item.id)}
                       className="text-blue-500 w-[100px] bg-[#FFFFFF] h-8 rounded-md border border-[#133E87] items-center justify-between px-2"
@@ -337,7 +337,7 @@ const Modal = ({ isModalOpen, onClose, itemId , status}) => {
       <div className="bg-white p-6 rounded-lg w-full max-w-3xl shadow-lg relative">
         <div className="flex justify-between items-center border-b pb-2">
           <h2 className="text-2xl font-semibold text-gray-800">
-            {status.find((item) => item.id === itemId).status === 'reserve' ? 'จอง' : status.find((item) => item.id === itemId).status === 'hire' ? 'เช่า' : status.find((item) => item.id === itemId).status === 'continue' ? 'เช่าต่อ' : status.find((item) => item.id === itemId).status}
+            {status.find((item) => item.id === itemId).status === 'reserve' ? 'จอง' : status.find((item) => item.id === itemId).status === 'late' ? 'เลยกำหนด': status.find((item) => item.id === itemId).status === 'hire' ? 'เช่า' : status.find((item) => item.id === itemId).status === 'continue' ? 'เช่าต่อ' : status.find((item) => item.id === itemId).status}
           </h2>
           <button
             onClick={onClose}
