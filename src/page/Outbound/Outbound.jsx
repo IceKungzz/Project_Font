@@ -71,7 +71,9 @@ export function Outbound() {
   const handleConfirmItem_Create = (items) => {
     setConfirmItem_Create(items)
     setMergetable(items.merge)
-    console.log('confirmitem_create = ', items.assemble_status);
+    console.log('item = ',items);
+    
+    console.log('confirmitem_create = ', items.merge);
     
   };
 
@@ -274,8 +276,11 @@ export function Outbound() {
     }
   };
   
-  console.log(mergetable);
+
+
+  console.log('test = ',mergetable.map((item) => item.code)[0]);
   
+
 
   return (
     <div className="w-full h-[90%] mt-5">
@@ -481,27 +486,31 @@ export function Outbound() {
                             </tr>
 
                             {/* แสดงรายการย่อยสำหรับ item_merge */}
-                            {item.name === "item_merge" &&
-                              item.item_merge &&
-                              item.item_merge.map((merge, mergeIndex) => (
-                                <tr key={mergeIndex}>
-                                  <td
-                                    className="px-4 py-2"
-                                    colSpan="7"
-                                  >
-                                    {/* แสดงรายการย่อย */}
-                                    <div className="grid grid-cols-7 ">
-                                      <span>-</span>
-                                      <span>{merge.name}</span>
-                                      <span>{merge.size}</span>
-                                      <span>เช่า</span>
-                                      <span>{merge.amount}</span>
-                                      <span>-</span>
-                                      <span>-</span>
-                                    </div>
+                            {mergetable.length > 0 ? (
+                              mergetable.map((item , key) =>(
+                                <tr key={key}>
+                                  <td>{key+1}</td>
+                                  <td>{item.code.map((subitem) => (
+                                    <ul>
+                                      <li>{subitem}</li>
+                                    </ul>
+                                  ))}
+                                    
                                   </td>
+                                  <td>{item.size.map((subitem) =>(
+                                    <ul>
+                                    <li>{subitem}</li>
+                                    </ul>
+                                  ) )}</td>
+                                  <td>เช่า</td>
+                                  <td>{item.quantity_assemble}</td>
+                                  <td>{item.price}</td>
+                                  <td>{Number(item.quantity_assemble)* Number(item.price)}</td>
                                 </tr>
-                              ))}
+                              ))
+
+
+                            ) : null}
                           </React.Fragment>
                         ))
                       ) : (

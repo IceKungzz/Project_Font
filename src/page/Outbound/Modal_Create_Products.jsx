@@ -127,7 +127,7 @@ export function Modal_Create_Products({ close, datadefault, createitem }) {
       average_price: 0,
       assemble_status:true,
     }   
-    console.log(itemsuccess.merge[0]);
+    console.log(itemsuccess);
     const mock = itemsuccess.merge[0]
     const token = localStorage.getItem("token");
     axios.post(
@@ -141,7 +141,7 @@ export function Modal_Create_Products({ close, datadefault, createitem }) {
               },
             }
           ).then((res) =>{
-            console.log(res);
+            //console.log(res);
   })
     //console.log(itemsuccess);
     createitem(itemsuccess);
