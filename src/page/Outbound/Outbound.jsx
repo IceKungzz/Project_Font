@@ -278,7 +278,7 @@ export function Outbound() {
   
 
 
-  console.log('test = ',mergetable.map((item) => item.code)[0]);
+  //console.log('test = ',mergetable.map((item) => item.code)[0]);
   
 
 
