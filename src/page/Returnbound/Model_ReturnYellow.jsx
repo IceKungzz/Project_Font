@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Modal_ReturnItem } from "./Model_ReturnItem";
 
 export function Modal_ReturnYellow({ close, data }) {
+    
+    
+    console.log(data, "เหลืองมาแล้ว");
+
+   
 
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
@@ -33,17 +38,15 @@ export function Modal_ReturnYellow({ close, data }) {
     };
 
     const [showmodalItem, setShowmodalItem] = useState(false);
-    const closeModalRed = () => {
+    const closeModalItem = () => {
         setShowmodalItem(false);
     };
-
-    console.log([data], "เหลืองมาแล้ว");
-
+    
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
             {showmodalItem ? (
-                <Modal_ReturnItem close={closeModalRed} />
+                <Modal_ReturnItem close={closeModalItem} data={data}/>
             ) : null}
             <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
                 {/* Header */}

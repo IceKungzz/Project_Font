@@ -31,6 +31,10 @@ export function Modal_ReturnGreen({ close, data }) {
         return `${day} ${month} ${year}`;
     };
 
+    const today = new Date();
+    const options = { day: "numeric", month: "long", year: "numeric" };
+    const formattedDate = today.toLocaleDateString("th-TH", options);
+
     const [hasVat, setHasVat] = useState(true);
 
     const handleVatChange = (e) => {
@@ -112,7 +116,7 @@ export function Modal_ReturnGreen({ close, data }) {
                                 </label>
                             </div>
                             <div className=" col-span-2  ">
-                                <input type='date' className="w-[70%] h-10 px-4 border-2 border-gray-400 rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                            <div className='border-2 border-gray-400 rounded-md w-[70%]  h-10 flex justify-start items-center text-lg pl-4 bg-white'>{formattedDate}</div>
                             </div>
                             <div className=" col-span-1  ">
                                 <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
