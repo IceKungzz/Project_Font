@@ -151,6 +151,26 @@ export function Outbound() {
 
 
   const confirm_order = async() => {
+    // console.log(confirmitem);
+    
+    if (
+      !name ||
+      !workside ||
+      !address ||
+      !day_length ||
+      confirmitem.length === 0 ||
+      confirmitem.some((item) => !item.price) 
+    ) {
+      Swal.fire({
+        icon: "warning",
+        text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+        confirmButtonText: "ตกลง",
+      });
+      return; 
+    }
+
+    console.log(confirmitem.price);
+    
     const reserve = [
       confirmitem.reduce(
         (acc, item) => {
@@ -193,9 +213,6 @@ export function Outbound() {
     const token = localStorage.getItem("token");
     const merge = confirmitem_create.merge
     
-    //  console.log('neworder=  ', newOrder);
-      console.log('merge = ', merge);
-     //console.log(confirmitem_create.status_assemble);
      
     
     try{
@@ -230,9 +247,6 @@ export function Outbound() {
       
     }
     
-
-  
-
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
 
@@ -258,7 +272,6 @@ export function Outbound() {
   useEffect(() => {
     const allInputsValid = inputs.every(input => input.length > 0);
     setValidateModalInput(allInputsValid);
-    //console.log(allInputsValid);
   }, [inputs]);
   
   const status_modal_create = () => {
@@ -344,12 +357,12 @@ export function Outbound() {
               </div>
             ))}
 
-            <div className="grid justify-end items-center grid-cols-4 pt-10 ">
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
               <span className="col-span-1 grid justify-end pr-2 ">
                 ระยะเวลา :
               </span>
               <input
-                type="text"
+                type="number"
                 className="col-span-2 h-10 rounded-lg border border-gray-500 p-2"
                 onChange={(e) => setDay_Length(e.target.value)}
               />
@@ -374,7 +387,7 @@ export function Outbound() {
           </div>
         </div>
 
-        <div className="col-span-3 grid grid-rows-10">
+        <div className="col-span-3 grid grid-rows-10 h-[700px]">
           <div className="row-span-9 grid grid-rows-4 border border-gray-500 rounded-lg">
             <div className="row-span-1 grid grid-cols-3 grid-rows-6 pl-4 pr-4 pt-3 ">
               <span className="col-span-1 grid justify-start items-center ">
@@ -411,7 +424,7 @@ export function Outbound() {
               </span>
             </div>
 
-            <div className="row-span-3 grid grid-rows-3">
+            <div className="row-span-3 grid grid-rows-3 ">
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
                 <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2">
@@ -491,14 +504,14 @@ export function Outbound() {
                                 <tr key={key}>
                                   <td>{key+1}</td>
                                   <td>{item.code.map((subitem) => (
-                                    <ul>
+                                    <ul key={key}>
                                       <li>{subitem}</li>
                                     </ul>
                                   ))}
                                     
                                   </td>
                                   <td>{item.size.map((subitem) =>(
-                                    <ul>
+                                    <ul key={key}>
                                     <li>{subitem}</li>
                                     </ul>
                                   ) )}</td>
@@ -574,7 +587,7 @@ export function Outbound() {
             </div>
           </div>
 
-          <div className="row-span-1 grid grid-rows-2 ">
+          <div className="row-span-1 grid grid-rows-2">
             <div className="row-span-1 flex items-center">
               <input
                 type="radio"
@@ -596,7 +609,7 @@ export function Outbound() {
               ไม่มีภาษีมูลค่าเพิ่ม
             </div>
 
-            <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
+            <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white mt-5">
               <span className="col-span-1 flex  justify-end pr-16">
                 <button
                   className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"

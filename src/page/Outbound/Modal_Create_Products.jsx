@@ -142,7 +142,7 @@ export function Modal_Create_Products({ close, datadefault, createitem }) {
           ).then((res) =>{
             //console.log(res);
   })
-    //console.log(itemsuccess);
+
     createitem(itemsuccess);
   
     close();
