@@ -69,9 +69,9 @@ export default function Quotation() {
           <img
             src="img/logo.png"
             alt="logo"
-            className="w-32 h-32 object-contain mr-4"
+            className="w-36 h-32 object-contain mr-4 "
           />
-          <div className="text-md print:text-[8px]">
+          <div className="text-md print:text-[10px] ">
             <h1 className="text-xl font-bold">ร้านภัทรชัย แบบเหล็ก</h1>
             <p>รับผลิต จำหน่ายและให้เช่า</p>
             <p>แบบคาน, แบบเสา, แบบหล่องานถนน, ฟุตติ้ง</p>
@@ -93,7 +93,7 @@ export default function Quotation() {
 
       {/* Customer Info */}
       <div className="mb-2 grid grid-cols-3 ">
-        <div className="col-span-2 border-2 border-black print:col-span-2 print:text-[9px] text-md p-2 print:p-2 flex flex-col justify-around">
+        <div className="col-span-2 border-2 border-black print:col-span-2 print:text-[12px] text-md p-2 print:p-2 flex flex-col justify-around">
           <p>
             <span className="font-bold">ชื่อผู้ติดต่อ:</span> {data.customer_name}
           </p>
@@ -108,7 +108,7 @@ export default function Quotation() {
           </p>
         </div>
 
-        <div className="col-span-1 print:col-span-1 border-t-2 border-b-2 border-r-2 border-black grid grid-cols-2 grid-rows-4 text-sm print:text-[9px] items-center">
+        <div className="col-span-1 print:col-span-1 border-t-2 border-b-2 border-r-2 border-black grid grid-cols-2 grid-rows-4 text-sm print:text-[12px] items-center">
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center">
             เลขที่ :
           </p>{" "}
@@ -132,41 +132,41 @@ export default function Quotation() {
       <div className="h-[230px] text-sm grid grid-cols-10 grid-rows-11 print:text-[9px]">
         {/* หัวตาราง */}
         <div className=" h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
-          <span className=" border-b-2 border-t-2 border-black">ลำดับ</span>
+          <span className=" border-b-2 border-t-2 border-black font-bold">ลำดับ</span>
           {products.map((product, index) => (
             <span key={index}>{index+1}</span>
           ))}
         </div>
-        <div className=" h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="  border-b-2 border-t-2 border-black">รายการ</span>
+        <div className=" h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col ">
+          <span className="  border-b-2 border-t-2 border-black text-center font-bold">รายการ</span>
           {products.map((product, index) => (
-            <span key={index}>{product.product_name}</span>
+            <span key={index} className="ml-2">{product.product_name}  <span className='ml-5'>รอข้อมูลsize จากหลังบ้าน</span></span>
           ))}
         </div>
-        <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="  border-b-2 border-t-2 border-black">จำนวน</span>
+        <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center ">
+          <span className="  border-b-2 border-t-2 border-black font-bold">จำนวน</span>
           {products.map((product, index) => (
             <span key={index}>{product.quantity}  {product.unit}</span>
           ))}
         </div>
-        <div className="bg-red-500 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าเช่า/วัน</span>
-          <span>40.00</span>
+        <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
+          <span className="  border-b-2 border-t-2 border-black  text-center font-bold">ค่าเช่า/วัน</span>
+          <span className='mr-2 text-end'>40.00</span>
         </div>
-        <div className="bg-red-600 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวนวัน</span>
-          <span>3</span>
+        <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
+          <span className="  border-b-2 border-t-2 border-black  text-center font-bold">จำนวนวัน</span>
+          <span className='print:text-[10px]'>3</span>
         </div>
-        <div className="bg-red-700 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">ค่าปรับสินค้า/ชิ้น</span>
+        <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
+          <span className="  border-b-2 border-t-2 border-black text-center font-bold">ค่าปรับสินค้า/ชิ้น</span>
           {products.map((product, index) => (
-            <span key={index}>{data.guarantee_price}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px]'>{data.guarantee_price}</span>
           ))}
         </div>
 
-        <div className="bg-red-800 h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
-          <span className="bg-green-500  border-b-2 border-t-2 border-black">จำนวนเงินรวม</span>
-          <span>1920.00</span>
+        <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ]">
+          <span className=" border-b-2 border-t-2 border-black text-center font-bold">จำนวนเงินรวม</span>
+          <span className='mr-2 text-end print:text-[10px]'>1920.00</span>
         </div>
         {/* ข้อมูลในตาราง */}
 
@@ -191,50 +191,50 @@ export default function Quotation() {
           <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
           <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
           <div className=" border-r-2 col-span-1 row-span-7 border-black"></div>
-          <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1">รวมเงิน</span>
-          <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
-          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ส่วนลด</span>
-          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">-</span>
-          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">รวมหลังหักส่วนลด</span>
-          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">2073.60</span>
-          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1">ค่าขนส่งสินค้าไป-กลับ</span>
-          <span className=" border-b-2 border-r-2 border-black flex items-center justify-center ">{data.shipping_cost}</span>
+          <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px] ">รวมเงิน</span>
+          <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[12px]">2073.60</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px]">ส่วนลด</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-end print:text-[12px] print:pr-2">-</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px]">รวมหลังหักส่วนลด</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-end print:text-[12px]">2073.60</span>
+          <span className="col-span-2 row-span-1  border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px]">ค่าขนส่งสินค้าไป-กลับ</span>
+          <span className=" border-b-2 border-r-2 border-black flex items-center justify-end print:text-[12px]">{data.shipping_cost}</span>
 
-          <div className=" col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1">
+          <div className=" col-span-7 row-span-2 border-r-2 border-l-2 border-b-2 border-black print:p-1 print:text-[12px]">
             <u>หมายเหตุ:</u> ขนส่งสินค้าโดยรถกะบะไป-กลับ 2 รอบ/หน้างานช่วยขึ้นลง
           </div>
-          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าบริการเคลื่อนย้ายสินค้า</span>
-          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">{data.shipping_cost}</span>
-          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1">ค่าประกันสินค้า</span>
-          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-center items-center">5000.00</span>
+          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px]">ค่าบริการเคลื่อนย้ายสินค้า</span>
+          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[12px]">{data.shipping_cost}</span>
+          <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[12px]">ค่าประกันสินค้า</span>
+          <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[12px]">5000.00</span>
 
-          <div className="col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black">
+          <div className="col-span-7 row-span-1 p-1 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black print:text-[12px]">
             {formatThaiBahtText(data.total_price_out)}
           </div>
-          <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1">รวมยอดเงินที่ต้องชำระ</span>
-          <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-center items-center">{data.total_price_out}</span>
+          <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[12px]">รวมยอดเงินที่ต้องชำระ</span>
+          <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[12px]">{data.total_price_out}</span>
 
       </div>
 
       <div className="grid grid-cols-10 h-[100px] border-b-2 border-r-2 border-l-2 border-black text-[9px]">
         <div className=" col-span-5 border-r-2 border-black flex flex-col p-5 justify-around items-center">
           <div>
-            <b>ผู้อนุมัติ:</b>
+            <b className='print:text-[12px]'>ผู้อนุมัติ:</b>
             <span>__________________________________________</span>
           </div>
           <div>
-            <b>ลงวันที่:</b>
+            <b className='print:text-[12px]'>ลงวันที่:</b>
             <span>__________________________________________</span>
           </div>
         </div>
 
         <div className="col-span-5 flex flex-col p-5 justify-around items-center">
           <div>
-              <b>ผู้เสนอ:</b>
+              <b className='print:text-[12px]'> ผู้เสนอ:</b>
               <span>__________________________________________</span>
             </div>
             <div>
-              <b>ลงวันที่:</b>
+              <b className='print:text-[12px]'>ลงวันที่:</b>
               <span>__________________________________________</span>
             </div>
         </div>
