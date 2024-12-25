@@ -335,14 +335,18 @@ const Modal = ({ isModalOpen, onClose, itemId , status}) => {
 
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg w-full max-w-3xl shadow-lg relative">
-        <div className="flex justify-between items-center border-b pb-2">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            {status.find((item) => item.id === itemId).status === 'reserve' ? 'จอง' : status.find((item) => item.id === itemId).status === 'late' ? 'เลยกำหนด': status.find((item) => item.id === itemId).status === 'hire' ? 'เช่า' : status.find((item) => item.id === itemId).status === 'continue' ? 'เช่าต่อ' : status.find((item) => item.id === itemId).status}
+        <div className="relative flex items-center justify-center border-b pb-2">
+          <h2 className="text-2xl font-semibold text-gray-800 text-center">
+            {status.find((item) => item.id === itemId).status === 'reserve' ? 'จองสินค้า'
+            : status.find((item) => item.id === itemId).status === 'late' ? 'เลยกำหนดคืนสินค้า'
+            : status.find((item) => item.id === itemId).status === 'hire' ? 'เช่าสินค้า'
+            : status.find((item) => item.id === itemId).status === 'continue' ? 'เช่าต่อ'
+            : status.find((item) => item.id === itemId).status}
           </h2>
           <button
             onClick={onClose}
-            className="text-red-500 hover:text-red-600 font-bold text-lg transition duration-300"
-          >
+            className="absolute right-0 text-red-500 hover:text-red-600 font-bold text-lg transition duration-300"
+            >
             ✕
           </button>
         </div>
@@ -420,51 +424,90 @@ const Modal = ({ isModalOpen, onClose, itemId , status}) => {
                 </table>
               </div>
             </div>
-
-            <div className="mt-6 me-6">
-              <div className="justify-end grid gap-4">
-                <p>
-                  <strong className="text-gray-700 me-3">รวมเงิน: </strong>{" "}
-                  {modalProductDetails.price_oute}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">ส่วนลด: </strong>{" "}
-                  {modalProductDetails.discount}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">
-                    รวมหักหลังส่วนลด:{" "}
-                  </strong>{" "}
-                  {modalProductDetails.total_price_out}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">
-                    ค่าขนส่งสินค้าไป-กลับ:{" "}
-                  </strong>{" "}
-                  {modalProductDetails.shipping_cost}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">
-                    ค่าบริการเคลื่อนย้ายสินค้า:{" "}
-                  </strong>{" "}
-                  {modalProductDetails.move_price}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">
-                    ค่าประกันสินค้า:{" "}
-                  </strong>{" "}
-                  {modalProductDetails.guarantee_price}
-                </p>
-                <p>
-                  <strong className="text-gray-700 me-3">
-                    รวมยอดเงินที่ต้องชำระ:
-                  </strong>{" "}
-                  {modalProductDetails.final_price}
-                </p>
-
-
-              </div>
-            </div>
+            <table className="w-5/12 border-collapse mt-6 me-6 ml-auto">
+            <colgroup>
+    <col style={{ width: "70%" }} />
+    <col style={{ width: "30%" }} />
+  </colgroup>
+  <tbody>
+    <tr>
+      <td className="text-gray-700 text-right pr-4">รวมเงิน:</td>
+      <td className="text-right px-6">{modalProductDetails.price_oute}</td>
+    </tr>
+    <tr>
+      <td className="text-gray-700 text-right pr-4">ส่วนลด:</td>
+      <td className="text-right">
+      <input
+        type="number"
+        value={modalProductDetails.discount}
+        onChange={(e) =>
+          setModalProductDetails({
+            ...modalProductDetails,
+            discount: e.target.value,
+          })
+        }
+        className="w-[100px] border rounded px-2 py-1 text-right"
+      />
+    </td>
+    </tr>
+    <tr>
+      <td className="text-gray-700 text-right pr-4">รวมหักหลังส่วนลด:</td>
+      <td className="text-right px-6">{modalProductDetails.total_price_out}</td>
+    </tr>
+    <tr>
+      <td className="text-gray-700 text-right pr-4">ค่าขนส่งสินค้าไป-กลับ:</td>
+      <td className="text-right">
+      <input
+        type="number"
+        value={modalProductDetails.shipping_cost}
+        onChange={(e) =>
+          setModalProductDetails({
+            ...modalProductDetails,
+            shipping_cost: e.target.value,
+          })
+        }
+        className="w-[100px] border rounded px-2 py-1 text-right"
+      />
+    </td>
+  </tr>
+  <tr>
+    <td className="text-gray-700 text-right pr-4">ค่าบริการเคลื่อนย้ายสินค้า:</td>
+    <td className="text-right">
+      <input
+        type="number"
+        value={modalProductDetails.move_price}
+        onChange={(e) =>
+          setModalProductDetails({
+            ...modalProductDetails,
+            move_price: e.target.value,
+          })
+        }
+        className="w-[100px] border rounded px-2 py-1 text-right"
+      />
+    </td>
+  </tr>
+  <tr>
+    <td className="text-gray-700 text-right pr-4">ค่าประกันสินค้า:</td>
+    <td className="text-right">
+      <input
+        type="number"
+        value={modalProductDetails.guarantee_price}
+        onChange={(e) =>
+          setModalProductDetails({
+            ...modalProductDetails,
+            guarantee_price: e.target.value,
+          })
+        }
+        className="w-[100px] border rounded px-2 py-1 text-right"
+      />
+    </td>
+    </tr>
+    <tr>
+      <td className="text-gray-700 text-right pr-4">รวมยอดเงินที่ต้องชำระ:</td>
+      <td className="text-right px-6">{modalProductDetails.final_price}</td>
+    </tr>
+  </tbody>
+</table>
           </div>
         ) : (
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
@@ -473,7 +516,17 @@ const Modal = ({ isModalOpen, onClose, itemId , status}) => {
           onClick={() => setShowPreview(!showPreview)}
           className="absolute bottom-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-md"
         >
-          {showPreview ? "ซ่อนข้อมูล Preview" : "ดูข้อมูล Preview"}
+          {showPreview ? (
+          <>
+            <span className="text-lg">📄</span> {/* Printer Icon */}
+            <span>Hide</span>
+          </>
+        ) : (
+          <>
+            <span className="text-lg">🖨️</span> {/* Document Icon */}
+            <span>Preview</span>
+          </>
+          )}
         </button>
         
       </div>

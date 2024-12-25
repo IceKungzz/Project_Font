@@ -43,7 +43,6 @@ const Login = () => {
             // Check if token is returned in the response
             if (response.status === 200 && response.data.data.token) {
                 localStorage.setItem('token', response.data.data.token);
-
                 // แสดง SweetAlert เมื่อสำเร็จ
                 Swal.fire({
                     icon: "success",
