@@ -11,15 +11,15 @@ export function Modal_ReturnGreen({ close, data }) {
             console.error("daysToAdd is not a number:", daysToAdd);
             return "จำนวนวันไม่ถูกต้อง";
         }
-    
+
         const actualOutDate = new Date(actualOut);
         if (isNaN(actualOutDate)) {
             console.error("Cannot parse actualOut:", actualOut);
             return "รูปแบบวันที่ไม่ถูกต้อง";
         }
-    
+
         actualOutDate.setDate(actualOutDate.getDate() + parseInt(daysToAdd, 10));
-    
+
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
@@ -27,7 +27,7 @@ export function Modal_ReturnGreen({ close, data }) {
         const day = actualOutDate.getDate();
         const month = thaiMonthsShort[actualOutDate.getMonth()];
         const year = actualOutDate.getFullYear() + 543;
-    
+
         return `${day} ${month} ${year}`;
     };
 
@@ -59,7 +59,7 @@ export function Modal_ReturnGreen({ close, data }) {
 
                 {/* Form Section */}
                 <div className=" overflow-y-auto flex-grow">
-                    {data.map((items, index) => (
+                    {data && Array.isArray(data) && data.map((items, index) => (
                         <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
 
                             <div className=" col-span-1  ">
@@ -116,7 +116,7 @@ export function Modal_ReturnGreen({ close, data }) {
                                 </label>
                             </div>
                             <div className=" col-span-2  ">
-                            <div className='border-2 border-gray-400 rounded-md w-[70%]  h-10 flex justify-start items-center text-lg pl-4 bg-white'>{formattedDate}</div>
+                                <div className='border-2 border-gray-400 rounded-md w-[70%]  h-10 flex justify-start items-center text-lg pl-4 bg-white'>{formattedDate}</div>
                             </div>
                             <div className=" col-span-1  ">
                                 <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
@@ -125,7 +125,10 @@ export function Modal_ReturnGreen({ close, data }) {
                             </div>
                             <div className=" col-span-2  ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                    5  <label className="pl-5">ชิ้น</label>
+                                    {items.products && Array.isArray(items.products)
+                                        ? `${items.products.length}`
+                                        : "ไม่มีข้อมูลสินค้า"}
+                                    <label className="pl-5">รายการ</label>
                                 </label>
                             </div>
                             <div className=" col-span-1  ">

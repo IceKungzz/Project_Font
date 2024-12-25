@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function Modal_ReturnRed({ close, data }) {
+
 
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
@@ -11,15 +12,15 @@ export function Modal_ReturnRed({ close, data }) {
             console.error("daysToAdd is not a number:", daysToAdd);
             return "จำนวนวันไม่ถูกต้อง";
         }
-    
+
         const actualOutDate = new Date(actualOut);
         if (isNaN(actualOutDate)) {
             console.error("Cannot parse actualOut:", actualOut);
             return "รูปแบบวันที่ไม่ถูกต้อง";
         }
-    
+
         actualOutDate.setDate(actualOutDate.getDate() + parseInt(daysToAdd, 10));
-    
+
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
@@ -27,7 +28,7 @@ export function Modal_ReturnRed({ close, data }) {
         const day = actualOutDate.getDate();
         const month = thaiMonthsShort[actualOutDate.getMonth()];
         const year = actualOutDate.getFullYear() + 543;
-    
+
         return `${day} ${month} ${year}`;
     };
 
@@ -61,7 +62,7 @@ export function Modal_ReturnRed({ close, data }) {
 
                 {/* Form Section */}
                 <div className=" overflow-y-auto flex-grow">
-                    {data.map((items, index) => (
+                    {data && Array.isArray(data) && data.map((items, index) => (
                         <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
 
                             <div className=" col-span-1  ">
@@ -99,25 +100,30 @@ export function Modal_ReturnRed({ close, data }) {
                                     วันที่เริ่มเช่า :
                                 </label>
                             </div>
-                            <div className="col-span-2 flex items-center justify-between">                               
-                                    <label className="text-xl text-gray-600 h-full">
-                                        {/* แสดงวันที่เริ่มต้น */}
-                                        {items.actual_out ? calculateNewDate(items.actual_out, 0) : "ไม่มีวันที่เริ่มต้น"}
-                                        <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label>
-                                        {/* แสดงวันที่สิ้นสุด */}
-                                        {items.actual_out && items.date
-                                            ? calculateNewDate(items.actual_out, items.date)
-                                            : "ไม่มีวันที่สิ้นสุด"}
-                                    </label>
+                            <div className="col-span-2 flex items-center justify-between">
+                                <label className="text-xl text-gray-600 h-full">
+                                    {/* แสดงวันที่เริ่มต้น */}
+                                    {items.actual_out ? calculateNewDate(items.actual_out, 0) : "ไม่มีวันที่เริ่มต้น"}
+                                    <label className="pl-10 pr-10 text-xl font-bold text-gray-600">ถึง</label>
+                                    {/* แสดงวันที่สิ้นสุด */}
+                                    {items.actual_out && items.date
+                                        ? calculateNewDate(items.actual_out, items.date)
+                                        : "ไม่มีวันที่สิ้นสุด"}
+                                </label>
                             </div>
                             <div className=" col-span-1  ">
                                 <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
                                     รายการเช่า :
                                 </label>
                             </div>
-                            <div className=" col-span-2  ">
+                            <div className=" col-span-2 ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                    5  <label className="pl-5">ชิ้น</label>
+
+                                    {items.products && Array.isArray(items.products)
+                                        ? `${items.products.length}`
+                                        : "ไม่มีข้อมูลสินค้า"}
+
+                                    <label className="pl-5">รายการ</label>
                                 </label>
                             </div>
                             <div className=" col-span-1  ">

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Modal_ReturnItem } from "./Model_ReturnItem";
 
 export function Modal_ReturnYellow({ close, data }) {
-    
-    
+
+
     console.log(data, "เหลืองมาแล้ว");
 
-   
+
 
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
@@ -41,14 +41,14 @@ export function Modal_ReturnYellow({ close, data }) {
     const closeModalItem = () => {
         setShowmodalItem(false);
     };
-    
+
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
             {showmodalItem ? (
-                <Modal_ReturnItem close={closeModalItem} data={data}/>
+                <Modal_ReturnItem close={closeModalItem} data={data} />
             ) : null}
-            <div className="  w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
+            <div className="w-[750px] h-[750px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-yellow-200 border-yellow-700 border-2">
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4  text-yellow-700">
                     <div></div>
@@ -63,7 +63,7 @@ export function Modal_ReturnYellow({ close, data }) {
 
                 {/* Form Section */}
                 <div className=" overflow-y-auto flex-grow">
-                    {data.map((items, index) => (
+                    {data && Array.isArray(data) && data.map((items, index) => (
                         <div className="grid grid-cols-3 gap-x-6 gap-y-6 " key={index}>
 
                             <div className=" col-span-1  ">
@@ -120,9 +120,8 @@ export function Modal_ReturnYellow({ close, data }) {
                                 </label>
                             </div>
                             <div className=" col-span-2  ">
-                                <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
-                                <label className="pl-5 pr-5 text-xl font-bold text-gray-600 ">ถึง</label>
-                                <input type='date' className="w-[35%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+                                <input type='date' className="w-[45%] h-10 px-4 border-2 border-gray-400 rounded-md" />
+
                             </div>
                             <div className=" col-span-1  ">
                                 <label className="text-xl font-bold text-gray-600    h-full flex items-center justify-end ">
@@ -131,7 +130,7 @@ export function Modal_ReturnYellow({ close, data }) {
                             </div>
                             <div className=" col-span-2  ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                    5  <label className="pl-5">วัน</label>
+                                    {items.date}  <label className="pl-5">วัน</label>
                                 </label>
                             </div>
                             <div className=" col-span-1  ">
@@ -151,7 +150,10 @@ export function Modal_ReturnYellow({ close, data }) {
                             </div>
                             <div className=" col-span-2  ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                    6  <label className="pl-5">ชิ้น</label>
+                                    {items.products && Array.isArray(items.products)
+                                        ? `${items.products.length}`
+                                        : "ไม่มีข้อมูลสินค้า"}
+                                    <label className="pl-5">รายการ</label>
                                 </label>
                             </div>
                             <div className=" col-span-1  ">
@@ -161,8 +163,8 @@ export function Modal_ReturnYellow({ close, data }) {
                             </div>
                             <div className=" col-span-2  ">
                                 <label className="text-xl  text-gray-600 h-full flex items-center justify-start ">
-                                    3  <label className="pl-5 pr-10">ชิ้น</label>
-                                    <label className="pl-14 pr-5 text-xl font-bold text-gray-600 ">ส่งคืน :</label> 3 <label className="pl-5 ">ชิ้น</label>
+                                    0  <label className="pl-5 pr-10">รายการ</label>
+                                    <label className="pl-14 pr-5 text-xl font-bold text-gray-600 ">ส่งคืน :</label> 0 <label className="pl-5 ">รายการ</label>
                                 </label>
                             </div>
                         </div>
