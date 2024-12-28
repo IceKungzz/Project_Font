@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal_Outbound } from "./Modal_Outbound";
+import { ModalDiscount } from "./Modal_Discount";
 import { Modal_Create_Products } from "./Modal_Create_Products";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { fr } from "date-fns/locale";
 
 export function Outbound() {
   const [branch, setBranch] = useState("");
   const [products, setProducts] = useState([]);
-  //ข้อมูลใน input
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [workside, setWorkside] = useState("");
   const [sell_date, setSell_date] = useState("");
   const [day_length, setDay_Length] = useState("");
-  //const [enddate, setEndDate] = useState('')
   //------------------------------------------------------
   const [items, setItems] = useState([]);
   const [netPrice, setNetPrice] = useState(0);
   const [showmodal, setShowmodal] = useState(false);
-  const [showmodal_create_product, setShowmodal_create_product] =
-    useState(false);
+  const [showModalDiscount, setShowModalDiscount] = useState(false);
+  const [showmodal_create_product, setShowmodal_create_product] = useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
   const [confirmitem_create, setConfirmItem_Create] = useState([]);
   const [hasVat, setHasVat] = useState(true);
@@ -30,6 +29,8 @@ export function Outbound() {
   const [validateModalInput, setValidateModalInput] = useState(false)
   const [alldata_default, setAlldata_default] = useState([{}]);
   const [mergetable, setMergetable] = useState([])
+  const [formData, setFormData] = useState({});
+  const [quantitySum, setQuantitySum] = useState(0);
   const navigate = useNavigate();
 
   const menu = [
@@ -48,14 +49,15 @@ export function Outbound() {
   };
 
   useEffect(() => {
+
     const totalPrice = confirmitem.reduce(
       (total, item) => total + (item.price * item.amount || 0),
       0
     );
 
     const vat = hasVat ? totalPrice * 0.07 : 0;
-
     setNetPrice(totalPrice + vat);
+
   }, [confirmitem, hasVat]);
 
   const handleConfirm = (items) => {
@@ -65,16 +67,20 @@ export function Outbound() {
       price: 0,
     }));
     setConfirmitem(updatedItems);
-    console.log("Confirmed items: ", updatedItems);
+  };
+
+  const handleConfirmDiscount = (items) => {
+    const updatedItems = items.map((item) => ({
+      ...item,
+      type: item.type || "เช่า",
+      price: 0,
+    }));
+    setConfirmitem(updatedItems);
   };
 
   const handleConfirmItem_Create = (items) => {
     setConfirmItem_Create(items)
     setMergetable(items.merge)
-    console.log('item = ',items);
-    
-    console.log('confirmitem_create = ', items.merge);
-    
   };
 
   const handleDateChange = (dateValue) => {
@@ -122,9 +128,18 @@ export function Outbound() {
     return start.toLocaleDateString("th-TH", options);
   };
 
-  const closeModal = () => {
+  const closeModal = (data) => {
+    setQuantitySum(data);  // รับเป็นตัวเลข
     setShowmodal(false);
   };
+
+  const closeModalDiscount = (data) => {
+    if (data) {
+      setFormData(data);
+    }
+    setShowModalDiscount(false);
+  };
+
   const closeModal_Create = () => {
     setShowmodal_create_product(false);
     setValidateModalInput(false)
@@ -148,29 +163,30 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
+  const confirm_order = async () => {
 
-
-  const confirm_order = async() => {
-    // console.log(confirmitem);
-    
     if (
+
       !name ||
       !workside ||
       !address ||
       !day_length ||
       confirmitem.length === 0 ||
-      confirmitem.some((item) => !item.price) 
+      confirmitem.some((item) => !item.price)
+
     ) {
+
       Swal.fire({
         icon: "warning",
         text: "กรุณากรอกข้อมูลให้ครบถ้วน",
         confirmButtonText: "ตกลง",
       });
-      return; 
+      return;
+
     }
 
     console.log(confirmitem.price);
-    
+
     const reserve = [
       confirmitem.reduce(
         (acc, item) => {
@@ -178,7 +194,6 @@ export function Outbound() {
           acc.product_id.push(String(item.id));
           acc.size.push(item.size);
           acc.price.push(item.price);
-          acc.quantity.push(String(item.amount));
           acc.quantity.push(String(item.amount));
           acc.type.push(item.type === "เช่า" ? "0" : "1");
           return acc;
@@ -193,8 +208,9 @@ export function Outbound() {
           meter: [],
           type: [],
         }
-      ),
+      )
     ];
+
     const newOrder = {
       customer_name: name,
       place_name: workside,
@@ -203,19 +219,18 @@ export function Outbound() {
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
-      discount: 200,
-      shipping_cost: 2500,
-      move_price: 1000,
-      guarantee_price: 0,
+      ...formData,
       proponent_name: "bossinwza007",
       average_price: 0,
     };
+    console.log("Sending new order1:", formData);
+    console.log("Sending new order:", newOrder);
+
     const token = localStorage.getItem("token");
     const merge = confirmitem_create.merge
-    
-     
-    
-    try{
+
+    try {
+
       axios.post(
         "http://192.168.195.75:5000/v1/product/outbound/reserve",
         newOrder,
@@ -226,8 +241,7 @@ export function Outbound() {
             "x-api-key": "1234567890abcdef",
           },
         }
-      )
-      .then((res) => {
+      ).then((res) => {
         Swal.fire({
           icon: "success",
           text: "เพิ่มข้อมูลสำเร็จ",
@@ -236,17 +250,15 @@ export function Outbound() {
           navigate("/status");
         });
         console.log('send success');
-        
-      })
-      .catch((err) => {
+
+      }).catch((err) => {
         console.log(err);
       });
 
-    }catch(err){
+    } catch (err) {
       console.log(err);
-      
     }
-    
+
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
 
@@ -273,27 +285,21 @@ export function Outbound() {
     const allInputsValid = inputs.every(input => input.length > 0);
     setValidateModalInput(allInputsValid);
   }, [inputs]);
-  
+
   const status_modal_create = () => {
     if (validateModalInput) {
       setShowmodal_create_product(true);
-      setAlldata_default({name, address, workside, sell_date, day_length});
+      setAlldata_default({ name, address, workside, sell_date, day_length });
     } else {
       Swal.fire({
         icon: "error",
         text: "โปรดกรอกข้อมูลให้ครบ",
         confirmButtonText: 'ตกลง',
-        scrollbarPadding: false 
+        scrollbarPadding: false
       });
       setShowmodal_create_product(false);
     }
   };
-  
-
-
-  //console.log('test = ',mergetable.map((item) => item.code)[0]);
-  
-
 
   return (
     <div className="w-full h-[90%] mt-5">
@@ -307,9 +313,10 @@ export function Outbound() {
         <Modal_Outbound
           close={closeModal}
           confirm={handleConfirm}
-          ititialData={confirmitem || ""}
+          ititialData={confirmitem || []}
         />
       ) : null}
+
       {showmodal_create_product && validateModalInput ? (
         <Modal_Create_Products
           close={closeModal_Create}
@@ -317,7 +324,15 @@ export function Outbound() {
           datadefault={alldata_default}
         />
       ) : null}
-      <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar ">
+
+      {showModalDiscount ? (
+        <ModalDiscount
+          close={closeModalDiscount}
+          consfirm={handleConfirmDiscount}
+        />
+      ) : null}
+
+      <div className="w-full h-[100%] grid grid-cols-5 overflow-auto no-scrollbar overflow-y-hidden">
         <div className="col-span-2 grid grid-rows-6 ">
           <div className="row-span-4 items-center text-base ">
             <div className="grid justify-end items-center grid-cols-4 ">
@@ -345,12 +360,12 @@ export function Outbound() {
                     item.title === "นามลูกค้า/ชื่อบริษัท :"
                       ? (e) => setName(e.target.value)
                       : item.title === "วันที่เสนอ :"
-                      ? (e) => handleDateChange(e.target.value)
-                      : item.title === "ชื่อไซต์งาน :"
-                      ? (e) => setWorkside(e.target.value)
-                      : item.title === "ที่อยู่ลูกค้า :"
-                      ? (e) => setAddress(e.target.value)
-                      : null
+                        ? (e) => handleDateChange(e.target.value)
+                        : item.title === "ชื่อไซต์งาน :"
+                          ? (e) => setWorkside(e.target.value)
+                          : item.title === "ที่อยู่ลูกค้า :"
+                            ? (e) => setAddress(e.target.value)
+                            : null
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
@@ -369,7 +384,7 @@ export function Outbound() {
               <span className="col-span-1 pl-5">วัน</span>
             </div>
 
-            <div className="grid grid-cols-8 pt-10 ">
+            <div className="grid grid-cols-8 pt-10">
               <span className="col-span-2 "></span>
               <button
                 className="col-span-3 w-[80%] bg-[#31AB31] h-10 rounded-md text-white hover:bg-[#2a7e2d] transition duration-300"
@@ -384,10 +399,20 @@ export function Outbound() {
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
             </div>
+
+            <div className="grid grid-cols-8 pt-[122px]">
+              <button
+                className="col-span-3 w-[80%] bg-blue-500 h-10 rounded-md text-white hover:bg-blue-600 transition duration-300 ml-[390px]"
+                onClick={() => setShowModalDiscount(true)}
+              >
+                <i className="fa-solid fa-file-invoice mr-2"></i>กรอกข้อมูลเพิ่มเติม
+              </button>
+            </div>
+
           </div>
         </div>
 
-        <div className="col-span-3 grid grid-rows-10 h-[700px]">
+        <div className="col-span-3 grid grid-rows-10 h-[755px]">
           <div className="row-span-9 grid grid-rows-4 border border-gray-500 rounded-lg">
             <div className="row-span-1 grid grid-cols-3 grid-rows-6 pl-4 pr-4 pt-3 ">
               <span className="col-span-1 grid justify-start items-center ">
@@ -500,25 +525,25 @@ export function Outbound() {
 
                             {/* แสดงรายการย่อยสำหรับ item_merge */}
                             {mergetable.length > 0 ? (
-                              mergetable.map((item , key) =>(
+                              mergetable.map((item, key) => (
                                 <tr key={key}>
-                                  <td>{key+1}</td>
+                                  <td>{key + 1}</td>
                                   <td>{item.code.map((subitem) => (
                                     <ul key={key}>
                                       <li>{subitem}</li>
                                     </ul>
                                   ))}
-                                    
+
                                   </td>
-                                  <td>{item.size.map((subitem) =>(
+                                  <td>{item.size.map((subitem) => (
                                     <ul key={key}>
-                                    <li>{subitem}</li>
+                                      <li>{subitem}</li>
                                     </ul>
-                                  ) )}</td>
+                                  ))}</td>
                                   <td>เช่า</td>
                                   <td>{item.quantity_assemble}</td>
                                   <td>{item.price}</td>
-                                  <td>{Number(item.quantity_assemble)* Number(item.price)}</td>
+                                  <td>{Number(item.quantity_assemble) * Number(item.price)}</td>
                                 </tr>
                               ))
 
@@ -544,7 +569,7 @@ export function Outbound() {
                 <span className="col-span-3 grid justify-end">
                   รวมรายการสินค้าที่ส่งออกทั้งหมด
                 </span>
-                <span className="col-span-1 grid justify-center">1</span>
+                <span className="col-span-1 grid justify-center">{quantitySum}</span>
                 <span className="col-span-1 grid justify-start">รายการ</span>
               </span>
               <span className="col-span-3 row-span-3 grid grid-cols-4 ">
@@ -566,12 +591,12 @@ export function Outbound() {
                 <span className="col-span-1 grid justify-end p-1">
                   {hasVat
                     ? (
-                        confirmitem.reduce(
-                          (total, item) =>
-                            total + (item.price * item.amount || 0),
-                          0
-                        ) * 0.07
-                      ).toFixed(2)
+                      confirmitem.reduce(
+                        (total, item) =>
+                          total + (item.price * item.amount || 0),
+                        0
+                      ) * 0.07
+                    ).toFixed(2)
                     : "0.00"}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
@@ -598,6 +623,7 @@ export function Outbound() {
                 onChange={handleVatChange}
               />
               มีภาษีมูลค่าเพิ่ม
+
               <input
                 type="radio"
                 name="vat"
@@ -607,6 +633,16 @@ export function Outbound() {
                 onChange={handleVatChange}
               />
               ไม่มีภาษีมูลค่าเพิ่ม
+
+              <input
+                type="radio"
+                name="vat"
+                value="false"
+                className="ml-3 mr-2"
+                checked={!hasVat}
+                onChange={handleVatChange}
+              />
+              หัก ณ ที่จ่าย
             </div>
 
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white mt-5">

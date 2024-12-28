@@ -11,8 +11,8 @@ export function ReturnItem() {
     const [filterReceipt, setFilterReceipt] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [dataMenuReturn, setDataMenuReturn] = useState([]);
-    
-    
+
+
     const filteredData = dataMenuReturn.filter(item =>
         item.receip_number.toLowerCase().includes(filterReceipt.toLowerCase()) &&
         item.created_at.includes(filterDate)
@@ -44,7 +44,7 @@ export function ReturnItem() {
         }).then((res) => {
             if (res.status === 200) {
                 setDataMenuReturn(res.data.data)
-                console.log("dot",res.data.data);
+                console.log("dot", res.data.data);
             }
         })
 
@@ -67,15 +67,15 @@ export function ReturnItem() {
     const closeModalYellow = () => {
         setShowmodalYellow(false);
     };
-    const [dataGreen,setDataGreen] = useState([])
-    const [dataRed,setDataRed] = useState([])
-    const [dataYellow,setDataYellow] = useState([])
+    const [dataGreen, setDataGreen] = useState([])
+    const [dataRed, setDataRed] = useState([])
+    const [dataYellow, setDataYellow] = useState([])
 
 
     const handleOpenModal = (id, modalType) => {
         setSelectedReceipt(id); // เก็บค่า id
         console.log('Selected Receipt:', id); // log ค่า
-    
+
         // เปิด modal ตามประเภท
         if (modalType === 'green') {
             setShowmodalGreen(true);
@@ -84,7 +84,7 @@ export function ReturnItem() {
         } else if (modalType === 'yellow') {
             setShowmodalYellow(true);
         }
-    
+
         // เรียก API ด้วย id
         const token = localStorage.getItem('token');
         axios
@@ -110,17 +110,17 @@ export function ReturnItem() {
 
     const formatThaiDate = (dateString) => {
         if (!dateString) return ""; // ตรวจสอบว่ามีข้อมูลวันที่หรือไม่
-    
+
         const [year, month, day] = dateString.split(" ")[0].split("-"); // แยกปี เดือน และวันจากวันที่
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"
         ];
         const thaiYear = parseInt(year, 10) + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
-    
+
         return ` ${parseInt(day, 10)} ${thaiMonthsShort[parseInt(month, 10) - 1]} ${thaiYear}`; // คืนค่าที่จัดรูปแบบ
     };
-    
+
 
     return (
         <div className='w-full h-[90%]  grid grid-rows-12'>
@@ -129,10 +129,10 @@ export function ReturnItem() {
                 <Modal_ReturnGreen close={closeModalGreen} data={[dataGreen]} />
             ) : null}
             {showmodalRed ? (
-                <Modal_ReturnRed close={closeModalRed} data={[dataRed]}/>
+                <Modal_ReturnRed close={closeModalRed} data={[dataRed]} />
             ) : null}
             {showmodalYellow ? (
-                <Modal_ReturnYellow close={closeModalYellow} data={[dataYellow]}/>
+                <Modal_ReturnYellow close={closeModalYellow} data={[dataYellow]} />
             ) : null}
 
             <div className='row-span-1 '>
@@ -187,7 +187,7 @@ export function ReturnItem() {
                                 <td className="text-center border-l-2 px-4 py-2">{items.receip_number}</td>
                                 <td className="text-center border-l-2 px-4 py-2">{formatThaiDate(items.created_at)}</td>
                                 <td className="text-start border-l-2 px-4 py-2">{items.customer_name}</td>
-                                <td className="text-center border-l-2 px-4 py-2">{items.type}</td>
+                                <td className="text-center border-l-2 px-4 py-2">{items.type === 'hire' ? 'กำลังเช่า' : items.type === 'late' ? 'เลยกำหนด' : items.type === 'continue' ? 'เช่าต่อ' : items.type}</td>
                                 <td className={`text-center border-l-2 px-4 py-2 
                                         ${items.status === 'late' ? 'text-red-500' : 'text-green-500'}`}>
                                     {items.status === 'late' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
@@ -195,12 +195,12 @@ export function ReturnItem() {
                                 <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
                                     {items.status === 'late' ? (
                                         <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
-                                        onClick={() => handleOpenModal(items.id, 'red')}
+                                            onClick={() => handleOpenModal(items.id, 'red')}
                                         >เลยกำหนด</button>
                                     ) : items.status === 'hire' || items.status === 'continue' ? (
                                         <>
                                             <button className="bg-green-500 pt-2 pb-2 w-24 mx-3 rounded-lg text-white  "
-                                               onClick={() => handleOpenModal(items.id, 'green')}
+                                                onClick={() => handleOpenModal(items.id, 'green')}
                                             >ส่งคืน</button>
                                             <button className="bg-yellow-300 pt-2 pb-2 w-24 mx-3 rounded-lg  "
                                                 onClick={() => handleOpenModal(items.id, 'yellow')}
