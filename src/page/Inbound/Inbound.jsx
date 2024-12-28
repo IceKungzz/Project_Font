@@ -130,13 +130,13 @@ export function Inbound() {
     };
 
     return (
-        <div className='w-full h-[90%]  mt-5'>
+        <div className='w-full h-[90%] mt-5'>
 
             {showmodal ? (
                 <Modal_Inbound close={closeModal} confirm={handleConfirm} />
             ) : null}
             
-            <div className='w-full h-[100%] grid grid-cols-5  overflow-auto no-scrollbar '>
+            <div className='w-full h-[100%] grid grid-cols-5  overflow-auto no-scrollbar overflow-y-hidden'>
 
                 <div className=" col-span-2  grid grid-rows-6 ">
 
@@ -187,7 +187,7 @@ export function Inbound() {
                             <span className='col-span-1  grid justify-end items-center '>{formattedDate}</span>
                         </div>
 
-                        <div className='row-span-10  grid grid-rows-3 mt-4 h-[600px] '>
+                        <div className='row-span-10  grid grid-rows-3 mt-4 h-[580px] '>
                             <div className=' row-span-3 overflow-auto no-scrollbar  border-b-4 flex justify-center items-start mr-3 ml-3'>
                                 <table className="w-full table-auto text-center border-collapse ">
                                     <thead className="font-bold  bg-blue-200 text-sky-800 sticky top-0 ">

@@ -68,14 +68,14 @@ export default function Sidebar() {
                 <span className="hidden md:block xl:text-md 2xl:text-[20px]  text-center text-[#133E87] font-bold">
                   {f_name}
                 </span>
-                <span className="hidden text-[#608BC1] text-[20px] xl:block mt-1">
+                <span className="hidden text-[#608BC1] text-[15px] xl:block ">
                   {position}
                 </span>
               </div>
             </div>
           </div>
 
-                    {/* รายการเมนู */}
+          {/* รายการเมนู */}
           {isSidebarOpen && !isHomePage && (
             <>
               <NavLink
@@ -89,7 +89,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-house-chimney w-10 mr-2"></i>
                 <span>หน้าแรก</span>
               </NavLink>
-          
+
               <NavLink
                 to="/inbound"
                 className={({ isActive }) =>
@@ -100,7 +100,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-file w-10 mr-2"></i>
                 <span>นำเข้าสินค้า</span>
               </NavLink>
-          
+
               <NavLink
                 to="/outbound"
                 className={({ isActive }) =>
@@ -111,7 +111,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-file-import w-10 mr-2"></i>{" "}
                 <span>ส่งออกสินค้า</span>
               </NavLink>
-          
+
               <NavLink
                 to="/status"
                 className={({ isActive }) =>
@@ -122,7 +122,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-list-check w-10 mr-2"></i>
                 <span>สถานะสินค้า</span>
               </NavLink>
-          
+
               <NavLink
                 to="/returnitem"
                 className={({ isActive }) =>
@@ -133,7 +133,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-recycle w-10 mr-2"></i>
                 <span>คืนสินค้า</span>
               </NavLink>
-          
+
               <NavLink
                 to="/stock"
                 className={({ isActive }) =>
@@ -144,7 +144,7 @@ export default function Sidebar() {
                 <i className="fa-solid fa-store w-10 mr-2"></i>
                 <span>สินค้าคงคลัง</span>
               </NavLink>
-          
+
               <NavLink
                 to="/allptc"
                 className={({ isActive }) =>
@@ -161,7 +161,7 @@ export default function Sidebar() {
         </div>
 
         <div className="text-xl text-[#608BC1] h-1/6 w-full flex items-center justify-center">
-          <div className="bg-[#133E87] w-3/4 p-1 text-sm cursor-pointer xl:p-2 rounded-md xl:text-md text-center" onClick={logout}>
+          <div className="bg-[#133E87] w-3/4 p-1 text-sm cursor-pointer xl:p-2 rounded-md xl:text-lg text-center" onClick={logout}>
             <span className="text-white">
               <i className="text-[#ffffff] fa-solid fa-right-from-bracket mt-1 mr-1"></i> ออกจากระบบ
             </span>
