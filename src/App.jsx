@@ -28,6 +28,7 @@ function App() {
     { title: 'คืนสินค้า', route: '/returnitem' },
     { title: 'สถานะสินค้า', route: '/status' },
     { title: 'คลังสินค้า', route: '/stock' },
+    { title: 'รายการทั้งหมด', route: '/allptc' },
   ];
 
   // เปรียบเทียบและดึงข้อมูลจาก route ปัจจุบัน

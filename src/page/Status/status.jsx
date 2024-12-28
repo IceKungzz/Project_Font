@@ -528,8 +528,23 @@ const Modal = ({ isModalOpen, onClose, itemId , status}) => {
           </>
           )}
         </button>
-        
       </div>
+      <button
+          onClick={() => setShowPreview(!showPreview)}
+          className="absolute bottom-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          {showPreview ? (
+          <>
+            <span className="text-lg">📄</span> {/* Printer Icon */}
+            <span>Hide</span>
+          </>
+        ) : (
+          <>
+            <span className="text-lg">🖨️</span> {/* Document Icon */}
+            <span>ยืนยันชำระเงิน(กดเพื่อออกใบส่งออก)</span>
+          </>
+          )}
+        </button>
     </div>
   );
 };
