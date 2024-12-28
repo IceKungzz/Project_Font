@@ -192,7 +192,7 @@ export function Inbound() {
                                 <table className="w-full table-auto text-center border-collapse ">
                                     <thead className="font-bold  bg-blue-200 text-sky-800 sticky top-0 ">
                                         <tr >
-                                            <th className="px-4 py-2">ลำดับ</th>
+                                            <th className="px-4 py-2 rounded-tl-lg border-white">ลำดับ</th>
                                             <th className="px-4 py-2">รหัสสินค้า</th>
                                             <th className="px-4 py-2">ชื่อสินค้า</th>
                                             <th className="px-4 py-2">ขนาด</th>
@@ -200,7 +200,7 @@ export function Inbound() {
                                             <th className="px-4 py-2">เซนติเมตร</th>
                                             <th className="px-4 py-2">จำนวน</th>
                                             <th className="px-4 py-2">หน่วย</th>
-                                            <th className="px-4 py-2"></th>
+                                            <th className="px-4 py-2 rounded-tr-lg"></th>
                                         </tr>
                                     </thead>
                                     <tbody>

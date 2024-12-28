@@ -163,16 +163,22 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
+  const handlePrice3DChange = (index, value) => {
+    const updatedConfirmItem = [...confirmitem];
+    updatedConfirmItem[index].price3D = value === '' ? "" : value.toString();
+    console.log(value);
+    setConfirmitem(updatedConfirmItem);
+  };
+
   const confirm_order = async () => {
 
     if (
-
       !name ||
       !workside ||
       !address ||
       !day_length ||
       confirmitem.length === 0 ||
-      confirmitem.some((item) => !item.price)
+      confirmitem.some((item) => !item.price && !item.price3D)
 
     ) {
 
@@ -193,7 +199,7 @@ export function Outbound() {
           acc.code.push(item.code);
           acc.product_id.push(String(item.id));
           acc.size.push(item.size);
-          acc.price.push(item.price);
+          acc.price.push(item.type === 'ขาย' ? item.price : (item.price3D || "").toString());
           acc.quantity.push(String(item.amount));
           acc.type.push(item.type === "เช่า" ? "0" : "1");
           return acc;
@@ -223,6 +229,7 @@ export function Outbound() {
       proponent_name: "bossinwza007",
       average_price: 0,
     };
+
     console.log("Sending new order1:", formData);
     console.log("Sending new order:", newOrder);
 
@@ -423,7 +430,7 @@ export function Outbound() {
               </span>
               <span className="col-span-1 "></span>
               <span className="col-span-1 grid justify-start items-center">
-                สาขา: ชลบุรี
+                สาขา: {branch}
               </span>
               <span className="col-span-1 grid justify-end items-center">
                 {formattedDate}
@@ -452,16 +459,16 @@ export function Outbound() {
             <div className="row-span-3 grid grid-rows-3 ">
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
                 <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
-                  <table className="w-full table-auto text-center border-collapse border-t-2">
+                  <table className="w-full table-auto text-center border-collapse border-t-2 border-white">
                     <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2">
                       <tr>
-                        <th className="px-4 py-2">ลำดับ</th>
+                        <th className="px-4 py-2 rounded-tl-lg">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>
                         <th className="px-4 py-2">ขนาด</th>
                         <th className="px-4 py-2">รูปแบบ</th>
                         <th className="px-4 py-2">จำนวน</th>
                         <th className="px-4 py-2">ราคา</th>
-                        <th className="px-4 py-2">รวม</th>
+                        <th className="px-4 py-2 rounded-tr-lg">รวม</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -494,7 +501,7 @@ export function Outbound() {
                                   }
                                 >
                                   <option value="เช่า">เช่า</option>
-                                  <option value="ซื้อ">ซื้อ</option>
+                                  <option value="ขาย">ขาย</option>
                                 </select>
                               </td>
                               <td className="px-4 py-2">
@@ -510,16 +517,28 @@ export function Outbound() {
                               </td>
                               <td className="px-4 py-2">
                                 <input
-                                  type="price"
+                                  type="text"
                                   className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
                                   required
-                                  onChange={(e) =>
-                                    handlePriceChange(index, e.target.value)
-                                  }
+                                  value={item.type === "ขาย" ? item.price || '' : item.price3D || ''}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/^0+/, '');
+
+                                    if (item.type === "ขาย") {
+                                      handlePriceChange(index, value === '' ? "" : value.toString());
+
+                                    } else if (item.type === "เช่า") {
+                                      handlePrice3DChange(index, value === '' ? "" : value.toString());
+                                    }
+                                  }}
+                                  disabled={item.type === "เช่า"}
                                 />
                               </td>
+
                               <td className="px-4 py-2">
-                                {item.price * item.amount || 0}
+                                {item.type === "ขาย"
+                                  ? (item.price || 0) * (item.amount || 0)
+                                  : (item.price3D || 0) * (item.amount || 0)}
                               </td>
                             </tr>
 
@@ -626,7 +645,7 @@ export function Outbound() {
 
               <input
                 type="radio"
-                name="vat"
+                name="nvat"
                 value="false"
                 className="ml-3 mr-2"
                 checked={!hasVat}
@@ -634,15 +653,15 @@ export function Outbound() {
               />
               ไม่มีภาษีมูลค่าเพิ่ม
 
-              <input
+              {/* <input
                 type="radio"
-                name="vat"
+                name="ovat"
                 value="false"
                 className="ml-3 mr-2"
                 checked={!hasVat}
                 onChange={handleVatChange}
               />
-              หัก ณ ที่จ่าย
+              หัก ณ ที่จ่าย */}
             </div>
 
             <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white mt-5">

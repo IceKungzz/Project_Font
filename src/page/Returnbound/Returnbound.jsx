@@ -161,65 +161,61 @@ export function ReturnItem() {
 
             </div>
 
+            {filteredData.length === 0 ? (
+                <p className="text-center text-2xl mt-4">ไม่พบรายการสินค้า</p>
+            ) : (
+                <div className='row-span-11 overflow-auto no-scrollbar '>
 
-
-            <div className='row-span-11 overflow-auto no-scrollbar '>
-
-
-                <table className="table-auto w-full border-collapse ">
-                    <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg '>
-                        <tr>
-                            <th className=" px-4 border-l-2  py-2">ลำดับ</th>
-                            <th className=" px-4 border-l-2  py-2">สาขา</th>
-                            <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
-                            <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
-                            <th className=" px-4 border-l-2 py-2">นามลูกค้า/ชื่อบริษัท</th>
-                            <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
-                            <th className=" px-4 border-l-2 py-2">สถานะ</th>
-                            <th className=" px-4 border-l-2 py-2">เพิ่มเติม</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredData.map((items, index) => (
-                            <tr key={index} className='  border-2'>
-                                <td className="text-center border-l-2 px-4 py-2 ">{index + 1}</td>
-                                <td className="text-center border-l-2 px-4 py-2 ">{items.branch_name}</td>
-                                <td className="text-center border-l-2 px-4 py-2">{items.receip_number}</td>
-                                <td className="text-center border-l-2 px-4 py-2">{formatThaiDate(items.created_at)}</td>
-                                <td className="text-start border-l-2 px-4 py-2">{items.customer_name}</td>
-                                <td className="text-center border-l-2 px-4 py-2">{items.type === 'hire' ? 'กำลังเช่า' : items.type === 'late' ? 'เลยกำหนด' : items.type === 'continue' ? 'เช่าต่อ' : items.type}</td>
-                                <td className={`text-center border-l-2 px-4 py-2 
-                                        ${items.status === 'late' ? 'text-red-500' : 'text-green-500'}`}>
-                                    {items.status === 'late' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
-                                </td>
-                                <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
-                                    {items.status === 'late' ? (
-                                        <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
-                                            onClick={() => handleOpenModal(items.id, 'red')}
-                                        >เลยกำหนด</button>
-                                    ) : items.status === 'hire' || items.status === 'continue' ? (
-                                        <>
-                                            <button className="bg-green-500 pt-2 pb-2 w-24 mx-3 rounded-lg text-white  "
-                                                onClick={() => handleOpenModal(items.id, 'green')}
-                                            >ส่งคืน</button>
-                                            <button className="bg-yellow-300 pt-2 pb-2 w-24 mx-3 rounded-lg  "
-                                                onClick={() => handleOpenModal(items.id, 'yellow')}
-                                            >เช่าต่อ</button>
-                                        </>
-                                    ) : null}
-                                </td>
+                    <table className="table-auto w-full border-collapse ">
+                        <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg '>
+                            <tr>
+                                <th className=" px-4 border-l-2  py-2 rounded-tl-lg border-white">ลำดับ</th>
+                                <th className=" px-4 border-l-2  py-2">สาขา</th>
+                                <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
+                                <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
+                                <th className=" px-4 border-l-2 py-2">นามลูกค้า/ชื่อบริษัท</th>
+                                <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
+                                <th className=" px-4 border-l-2 py-2">สถานะ</th>
+                                <th className=" px-4 border-l-2 py-2 rounded-tr-lg">เพิ่มเติม</th>
                             </tr>
-                        ))}
+                        </thead>
+                        <tbody>
+                            {filteredData.map((items, index) => (
+                                <tr key={index} className='  border-2'>
+                                    <td className="text-center border-l-2 px-4 py-2 ">{index + 1}</td>
+                                    <td className="text-center border-l-2 px-4 py-2 ">{items.branch_name}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{items.receip_number}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{formatThaiDate(items.created_at)}</td>
+                                    <td className="text-start border-l-2 px-4 py-2">{items.customer_name}</td>
+                                    <td className="text-center border-l-2 px-4 py-2">{items.type === 'hire' ? 'กำลังเช่า' : items.type === 'both' ? 'ขาย/เช่า' : items.type === 'sell' ? 'ขาย' : items.type}</td>
+                                    <td className={`text-center border-l-2 px-4 py-2 
+                                        ${items.status === 'late' ? 'text-red-500' : 'text-green-500'}`}>
+                                        {items.status === 'late' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
+                                    </td>
+                                    <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
+                                        {items.status === 'late' ? (
+                                            <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
+                                                onClick={() => handleOpenModal(items.id, 'red')}
+                                            >เลยกำหนด</button>
+                                        ) : items.status === 'hire' || items.status === 'continue' ? (
+                                            <>
+                                                <button className="bg-green-500 pt-2 pb-2 w-24 mx-3 rounded-lg text-white  "
+                                                    onClick={() => handleOpenModal(items.id, 'green')}
+                                                >ส่งคืน</button>
+                                                <button className="bg-yellow-300 pt-2 pb-2 w-24 mx-3 rounded-lg  "
+                                                    onClick={() => handleOpenModal(items.id, 'yellow')}
+                                                >เช่าต่อ</button>
+                                            </>
+                                        ) : null}
+                                    </td>
+                                </tr>
+                            ))}
 
 
-                    </tbody>
-                </table>
-
-
-
-
-
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
         </div>
 

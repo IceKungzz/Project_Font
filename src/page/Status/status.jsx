@@ -5,6 +5,7 @@ import { da, th } from 'date-fns/locale';
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { data } from "autoprefixer";
+import Item from "antd/es/list/Item";
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
@@ -15,6 +16,7 @@ const StatusProduct = () => {
   const [branchName, setBranchName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [reserveId, setReserveId] = useState(0);
 
   useEffect(() => {
 
@@ -46,7 +48,7 @@ const StatusProduct = () => {
         }
 
       } catch (error) {
-        setError(error.message);
+        console.error('Fetch error:', error);
       }
     };
 
@@ -145,6 +147,7 @@ const StatusProduct = () => {
         }
 
       } else {
+
         if (receiptNumber === "" || transactionDate === "") {
           const url = "http://192.168.195.75:5000/v1/product/status/status";
 
@@ -170,7 +173,7 @@ const StatusProduct = () => {
     }
   };
 
-  const openModal = (id) => {
+  const openModal = (id, reserve_id) => {
 
     if (!id) {
       console.error("ID is undefined");
@@ -178,11 +181,11 @@ const StatusProduct = () => {
     }
     setSelectedProductId(id);
     setIsModalOpen(true);
+    setReserveId(reserve_id);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedProductId(null);
   };
 
   const formatDate = (dateString) => {
@@ -232,47 +235,52 @@ const StatusProduct = () => {
           </button>
         </div>
 
-        <div className="row-span-11 overflow-auto no-scrollbar">
-          <table className="table-auto w-full border-collapse">
-            <thead className="bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
-              <tr>
-                <th className="px-4 border-l-2  py-2">สาขา</th>
-                <th className="px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
-                <th className="px-4 border-l-2  py-2">วันที่ทำรายการ</th>
-                <th className="px-4 border-l-2  py-2">นามลูกค้า/ชื่อบริษัท</th>
-                <th className="px-4 border-l-2  py-2">รูปแบบ</th>
-                <th className="px-4 border-l-2  py-2">สถานะ</th>
-                <th className="px-4 border-l-2  py-2">เพิ่มเติม</th>
-              </tr>
-            </thead>
-            <tbody>
-              {status.map((item, index) => (
-                <tr key={index} className='  border-2'>
-                  <td className="text-center border-l-2 px-4 py-2">{item.branch_name}</td>
-                  <td className="text-center border-l-2 px-4 py-2">{item.export_number}</td>
-                  <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
-                  <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
-                  <td className="text-center border-l-2 px-4 py-2">
-                    {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
-                  </td>
-                  <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
-                  <td className="text-center border-l-2 px-4 py-2">
-                    <button
-                      onClick={() => openModal(item.id)}
-                      className="text-blue-500 w-[100px] bg-[#FFFFFF] h-8 rounded-md border border-[#133E87] items-center justify-between px-2"
-                    >
-                      ดูข้อมูล<i className="fa-solid fa-angle-right mr-2"></i>
-                    </button>
-                  </td>
+        {status.length === 0 ? (
+          <p className="text-center text-2xl mt-10">ไม่พบรายการสินค้า</p>
+        ) : (
+          <div className="row-span-11 overflow-auto no-scrollbar">
+            <table className="table-auto w-full border-collapse">
+              <thead className="bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
+                <tr>
+                  <th className="px-4 border-l-2  py-2 rounded-tl-lg border-white">สาขา</th>
+                  <th className="px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
+                  <th className="px-4 border-l-2  py-2">วันที่ทำรายการ</th>
+                  <th className="px-4 border-l-2  py-2">นามลูกค้า/ชื่อบริษัท</th>
+                  <th className="px-4 border-l-2  py-2">รูปแบบ</th>
+                  <th className="px-4 border-l-2  py-2">สถานะ</th>
+                  <th className="px-4 border-l-2  py-2 rounded-tr-lg">เพิ่มเติม</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {status.map((item, index) => (
+                  <tr key={index} className='  border-2'>
+                    <td className="text-center border-l-2 px-4 py-2">{item.branch_name}</td>
+                    <td className="text-center border-l-2 px-4 py-2">{item.export_number}</td>
+                    <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
+                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
+                    </td>
+                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
+                    <td className="text-center border-l-2 px-4 py-2">
+                      <button
+                        onClick={() => openModal(item.id, item.reserve_id)}
+                        className="text-blue-500 w-[100px] bg-[#FFFFFF] h-8 rounded-md border border-[#133E87] items-center justify-between px-2"
+                      >
+                        ดูข้อมูล<i className="fa-solid fa-angle-right mr-2"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         <Modal
           isModalOpen={isModalOpen}
           onClose={closeModal}
           itemId={selectedProductId}
+          reserveId={reserveId}
           status={status}
         />
       </div>
@@ -280,7 +288,7 @@ const StatusProduct = () => {
   );
 };
 
-const Modal = ({ isModalOpen, onClose, itemId, status }) => {
+const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [modalProductDetails, setModalProductDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [itemData, setItemData] = useState(null);
@@ -289,10 +297,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
   const navigate = useNavigate();
   const [vatPaid, setVatPaid] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [productData, setProductData] = useState([]);
-  const [dataProduct, setDataProduct] = useState([]);
-  const [productTrue, setProductTrue] = useState(false);
-  const [dataProductTrue, setDataProductTrue] = useState(false);
   const [payMent, setPayment] = useState(0);
 
   useEffect(() => {
@@ -305,9 +309,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
 
           setIsLoading(true);
           const token = localStorage.getItem("token");
-          if (!token) {
-            throw new Error("Token not found");
-          }
+          if (!token) throw new Error("Token not found");
 
           const url = `http://192.168.195.75:5000/v1/product/status/status-one/${itemId}`;
 
@@ -316,20 +318,19 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
               Authorization: token,
               "Content-Type": "application/json",
               "x-api-key": "1234567890abcdef",
-            }
+            },
           });
 
           if (response.data.code === 200) {
-            setItemData(response.data.data);
             setModalProductDetails(response.data.data);
 
           } else {
-
             throw new Error(response.data.message);
           }
+
         } catch (error) {
           console.error("Error fetching item data:", error);
-          setError(error.message);
+
         } finally {
           setIsLoading(false);
         }
@@ -341,106 +342,82 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
 
   if (!isModalOpen) return null;
 
-  const handlePreview = () => {
-    navigate("/preorder");
-  };
-
   const handleExportClick = async () => {
 
-    if (!showAlert) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'โปรดจ่ายเงินก่อน',
-        text: 'กรุณาจ่ายเงินก่อนทำการส่งออก!',
-      });
+    if (!modalProductDetails || !modalProductDetails.products) {
+      console.error("ไม่พบข้อมูลสินค้า");
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Token not found");
-      }
+      if (!token) throw new Error("Token not found");
 
-      const url = `http://192.168.195.75:5000/v1/product/outbound/reserve/${itemId}`;
-
+      const url = `http://192.168.195.75:5000/v1/product/outbound/reserve/${reserveId}`;
       const response = await axios.get(url, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
           "x-api-key": "1234567890abcdef",
-        }
+        },
       });
 
       if (response.data.code === 200) {
-        setProductData(response.data.data);
-        setDataProduct(response.data.data.product);
-        setProductTrue(true);
-        setDataProductTrue(true);
 
-      } else {
-        throw new Error(response.data.message);
-      }
+        const productData = response.data.data;
+        const dataProduct = response.data.data.product;
+        const assemble = response.data.data.product.assemble_product
 
-    } catch (error) {
-      console.error("Error exporting data:", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'ผิดพลาด',
-        text: error.message,
-      });
-    }
-
-  };
-
-  if (productTrue && dataProductTrue) {
-
-    const newOutbound = {
-      customer_name: productData?.customer_name || "",
-      place_name: productData?.place_name || "",
-      address: productData?.address || "",
-      date: productData?.date || "",
-      vat: productData?.vat || "",
-      total_price: productData?.total_price_out?.toString() || "0",
-      reserve_id: itemId || "",
-      payment: payMent || "",
-      outbound: [{
-        code: dataProduct?.code || [],
-        product_id: dataProduct?.product_id || [],
-        price: dataProduct?.price || [],
-        quantity: dataProduct?.quantity || [],
-        type: dataProduct?.type || [],
-        size: dataProduct?.size || [],
-        meter: dataProduct?.meter || [],
-        centimeter: dataProduct?.centimeter || []
-      }]
-    };
-
-
-    try {
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Token not found");
-      }
-
-      const url = `http://192.168.195.75:5000/v1/product/outbound/outbound`;
-
-      const response = axios.post(url, newOutbound, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+        let assemble_status = false;
+        if (Array.isArray(assemble) && assemble.length > 0) {
+          assemble_status = true;
         }
-      });
-      
-      if (response.data.code === 201) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'ส่งออกสินค้าเรียบร้อย!',
+        console.log(assemble_status)
+        const newOutbound = {
+          customer_name: productData?.customer_name || "",
+          place_name: productData?.place_name || "",
+          address: productData?.address || "",
+          date: productData?.date || "",
+          vat: productData?.vat || "",
+          total_price: productData?.total_price_out?.toString() || "0",
+          reserve_id: reserveId || "",
+          payment: payMent || 0,
+          assemble_status: assemble_status,
+          outbound: [
+            {
+              code: dataProduct?.code || [],
+              product_id: dataProduct?.product_id || [],
+              price: dataProduct?.price || [],
+              quantity: dataProduct?.quantity || [],
+              type: dataProduct?.type || [],
+              size: dataProduct?.size || [],
+              meter: dataProduct?.meter || [],
+              centimeter: dataProduct?.centimeter || [],
+            }
+          ]
+        };
+
+        const outboundUrl = `http://192.168.195.75:5000/v1/product/outbound/outbound`;
+        const outboundResponse = await axios.post(outboundUrl, newOutbound, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
         });
 
+        if (outboundResponse.data.code === 201) {
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'ส่งออกสินค้าเรียบร้อย!',
+          });
+          onClose();
+
+        } else {
+          throw new Error(outboundResponse.data.message);
+        }
+
       } else {
         throw new Error(response.data.message);
       }
@@ -449,17 +426,21 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
       console.error("Error exporting data:", error);
       Swal.fire({
         icon: 'error',
-        title: 'ผิดพลาด',
+        title: 'เกิดข้อผิดพลาด',
         text: error.message,
       });
     }
+  };
 
-  }
 
   const handleShowAlert = () => {
     setShowAlert(true);
     setPayment(1);
   }
+
+  const handlePreview = () => {
+    navigate("/preorder");
+  };
 
   const currentStatus = status.find((item) => item.id === itemId)?.status;
 
@@ -583,7 +564,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status }) => {
               className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
             >
               <span className="fa-solid fa-print"></span>
-              <span> Preview</span>
+              <span> ดูใบเสนอราคา</span>
             </button>
 
             <button

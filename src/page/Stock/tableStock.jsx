@@ -91,7 +91,7 @@ export function TableItem({
         <table className="w-full table-auto border-collapse border shadow-sm">
           <thead className="bg-blue-200 text-blue-900">
             <tr>
-              <th className="border p-2 rounded-tl-md">ลำดับที่</th>
+              <th className="border p-2 rounded-tl-md border-white">ลำดับที่</th>
               <th className="border p-2">สาขา</th>
               <th className="border p-2">รหัสสินค้า</th>
               <th className="border p-2">ชื่อสินค้า</th>
