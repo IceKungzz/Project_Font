@@ -391,25 +391,21 @@ export function Outbound() {
               <span className="col-span-1 pl-5">วัน</span>
             </div>
 
-            <div className="grid grid-cols-8 pt-10">
-              <span className="col-span-2 "></span>
+            <div className="flex justify-center space-x-4 pt-10">
               <button
-                className="col-span-3 w-[80%] bg-[#31AB31] h-10 rounded-md text-white hover:bg-[#2a7e2d] transition duration-300"
+                className="w-[170px] bg-[#31AB31] h-10 rounded-md text-white hover:bg-[#2a7e2d] transition duration-300"
                 onClick={() => setShowmodal(true)}
               >
                 <i className="fa-solid fa-plus mr-2"></i>จองสินค้า
               </button>
               <button
-                className="col-span-3 w-[80%] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300"
+                className="w-[170px] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300"
                 onClick={status_modal_create}
               >
                 <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
               </button>
-            </div>
-
-            <div className="grid grid-cols-8 pt-[122px]">
               <button
-                className="col-span-3 w-[80%] bg-blue-500 h-10 rounded-md text-white hover:bg-blue-600 transition duration-300 ml-[390px]"
+                className="w-[170px] bg-blue-500 h-10 rounded-md text-white hover:bg-blue-600 transition duration-300"
                 onClick={() => setShowModalDiscount(true)}
               >
                 <i className="fa-solid fa-file-invoice mr-2"></i>กรอกข้อมูลเพิ่มเติม
