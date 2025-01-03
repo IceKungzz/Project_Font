@@ -1,77 +1,23 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 
+export function Modal_ReturnItem({ close, data }) {
 
-export function Modal_ReturnItem({ close, confirmRed }) {
-    const today = new Date();
-    const options = { day: "numeric", month: "long", year: "numeric" };
-    const formattedDate = today.toLocaleDateString("th-TH", options);
+    
+    const [dataitem,setDataitem] = useState([])
+    
+     useEffect(() => {
 
-    const [hasVat, setHasVat] = useState(true);
+        setDataitem(data[0].products,)
+        console.log(data[0].products,"Item");
+     },[])
 
-    const handleVatChange = (e) => {
-        setHasVat(e.target.value === "true");
-    };
-    const dataMenuReturn = [
-        { branch: 'ชลบุรี', receipt: '00032', date: '26 พฤศจิกายน 2567', name: 'นาย A', type: 'เช่า/ซื้อ', status: 'A' },
-        { branch: 'ชลบุรี', receipt: '00342', date: '26 พฤศจิกายน 2567', name: 'นาย A', type: 'เช่า/ซื้อ', status: 'B' },
-        { branch: 'ชลบุรี', receipt: '00032', date: '26 พฤศจิกายน 2567', name: 'นาย A', type: 'เช่า/ซื้อ', status: 'A' },
-        { branch: 'ชลบุรี', receipt: '00342', date: '26 พฤศจิกายน 2567', name: 'นาย A', type: 'เช่า/ซื้อ', status: 'B' },
-        
-
-
-    ];
-    const [formData, setFormData] = useState({
-        code: "",
-        name: "",
-        size: "",
-        meter: "",
-        centimeter: "",
-        price3D: "",
-        price30D: "",
-        price_sell: "",
-        price_damage: "",
-        unit: "",
-        remark: "",
-    });
-
-    // ฟังก์ชัน handleChange สำหรับอัปเดตข้อมูลฟอร์ม
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
-    // ตรวจสอบว่า field ที่มีดอกจันทั้งหมดถูกกรอกครบหรือไม่
-    const isFormValid = () => {
-        const requiredFields = [
-            "code",
-            "name",
-            "price3D",
-            "price30D",
-            "price_sell",
-            "price_damage",
-        ];
-        return requiredFields.every((field) => formData[field].trim() !== "");
-    };
-
-    const confirm_item = () => {
-        // if (isFormValid()) {
-        //   console.log(formData);
-        //   confirm(formData);
-        //   close();
-        // }
-        console.log(formData);
-        confirmRed(formData);
-        close();
-    };
+     console.log(dataitem,'data')
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">
-            <div className="  w-[950px] h-[600px] rounded-lg shadow-2xl overflow-hidden flex flex-col bg-white border-cyan-800 border-2">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50">
+            <div className="w-[950px] h-[500px] rounded-3xl shadow-2xl overflow-hidden flex flex-col bg-white border-cyan-800 border-2">
                 {/* Header */}
-                <div className="flex justify-between items-center px-6 py-4  text-cyan-800">
+                <div className="flex justify-between items-center px-6 py-4 text-cyan-800">
                     <div></div>
                     <h2 className="text-3xl font-bold">รายการเช่าต่อ</h2>
                     <button
@@ -83,60 +29,58 @@ export function Modal_ReturnItem({ close, confirmRed }) {
                 </div>
 
                 {/* Form Section */}
-                <div className=" overflow-y-auto flex-grow">
-                    <div className="grid grid-cols-3 gap-x-6 gap-y-6  ">
-
-                        <div className=" col-span-3  ">
-                            <table className="table-auto w-full border-collapse ">
-                                <thead className='bg-slate-200 border-l-2  h-14 text-indigo-800 text-xl sticky top-0 rounded-lg '>
-                                    <tr className='' >
-                                        <th className=" px-4 border-l-2  py-2">สาขา</th>
-                                        <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
-                                        <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
-                                        <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
-                                        <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
-                                        <th className=" px-4 border-l-2 py-2">สถานะ</th>
-                                        <th className=" px-4 border-l-2 py-2">เพิ่มเติม</th>
+                <div className="overflow-y-auto flex-grow">
+                    <div className="grid grid-cols-3 gap-x-6 gap-y-6">
+                        <div className="col-span-3 px-10">
+                            <table className="table-auto w-full border-collapse">
+                                <thead className="bg-slate-200 border-l-2 h-14 text-indigo-800 text-xl sticky top-0 rounded-lg">
+                                    <tr>
+                                        <th className="px-4 border-l-2 py-2">เลขที่สินค้า</th>
+                                        <th className="px-4 border-l-2 py-2">ชื่อสินค้า</th>
+                                        <th className="px-4 border-l-2 py-2">ขนาด</th>
+                                        <th className="px-4 border-l-2 py-2">จำนวน</th>
+                                        <th className="px-4 border-l-2 py-2"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {dataMenuReturn.map((items, index) => (
-                                        <tr key={index} className='  border-2'>
-                                            <td className="text-center border-l-2 px-4 py-2 ">{items.branch}</td>
-                                            <td className="text-center border-l-2 px-4 py-2">{items.receipt}</td>
-                                            <td className="text-center border-l-2 px-4 py-2">{items.date}</td>
-                                            <td className="text-start border-l-2 px-4 py-2">{items.name}</td>
-                                            <td className="text-center border-l-2 px-4 py-2">{items.type}</td>
-                                            <td className={`text-center border-l-2 px-4 py-2 
-                                        ${items.status === 'A' ? 'text-red-500' : 'text-green-500'}`}>
-                                                {items.status === 'A' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
+                                    {dataitem.map((item, index) => (
+                                        <tr key={index} className="border-2">
+                                            <td className="text-center border-l-2 px-4 py-2">{item.code}</td>
+                                            <td className="text-center border-l-2 px-4 py-2">{item.name}</td>
+                                            <td className="text-center border-l-2 px-4 py-2">{item.size}</td>
+                                            <td className="text-center border-l-2 py-2">
+                                                <input
+                                                    type="number"
+                                                    value={item.quantity}
+                                                    className="border-2 w-20 rounded-lg h-9 pl-2"
+                                                    readOnly
+                                                />
                                             </td>
-                                            <td className="text-center border-l-2 px-4 py-2"><input type='checkbox'/></td>
+                                            <td className="text-center border-l-2 px-4 py-2">
+                                                <input type="checkbox" className="w-4 h-4" />
+                                            </td>
                                         </tr>
                                     ))}
-
-
                                 </tbody>
                             </table>
                         </div>
-
-
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-6  flex justify-center ">
-                    <button
-                        className={`px-6 py-3 text-white rounded-md text-lg font-medium transition w-1/6 ${isFormValid()
-                            ? "bg-[#31AB31] hover:bg-green-600 active:bg-green-700"
-                            : "bg-gray-400 cursor-not-allowed"
-                            }`}
-                        onClick={confirm_item}
-                        disabled={!isFormValid()} // ปุ่มจะถูก disable ถ้าไม่ valid
-                    >
-                        ตกลง
-                    </button>
-
+                <div className="col-span-3 pt-6 pb-6 text-center">
+                    <label className="text-xl text-slate-400">
+                        กรุณาเลือกสินค้าที่จะ <span className="text-yellow-500">"เช่าต่อ"</span>
+                    </label>
+                </div>
+                <div className="w-full flex justify-center items-center">
+                    <div className="w-96 border-t-2 flex justify-center items-center p-4">
+                        <button
+                            className="px-6 py-2 text-white rounded-md text-lg font-medium transition w-2/6 bg-[#31AB31] hover:bg-green-600"
+                        >
+                            ตกลง
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

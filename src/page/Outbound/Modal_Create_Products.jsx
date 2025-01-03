@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export function Modal_Create_Products({ close, datadefault }) {
+export function Modal_Create_Products({ close, datadefault, createitem }) {
   const [products, setProducts] = useState([]);
   const [products_search, setProducts_search] = useState([]);
   const [keysearchItem, setkeysearchItem] = useState("");
@@ -93,7 +93,6 @@ export function Modal_Create_Products({ close, datadefault }) {
       (acc, item) => {
         acc.code.push(String(item.code));
         acc.product_id.push(String(item.id) || "");
-        acc.price.push(String(item.price));
         acc.quantity.push(String(item.amount));
         acc.size.push(String(item.size) || "");
         acc.centimeter.push(item.centimeter || '');
@@ -104,7 +103,6 @@ export function Modal_Create_Products({ close, datadefault }) {
       {
         code: [],
         product_id: [],
-        price: [],
         quantity: [],
         size: [],
         centimeter: [],
@@ -113,15 +111,12 @@ export function Modal_Create_Products({ close, datadefault }) {
       }
     );
   
-    const itemsuccess = [{ 
-      itemmerge: {...item_merge},
-      assemble_name: newitemname,
-      pricenewproduct: newpriceitem,
-      quantitynewproduct: newItemQuantity,
+    const itemsuccess = { 
+      merge: [{...item_merge,assemble_name: newitemname, quantity_assemble: newItemQuantity, price: parseInt(newpriceitem),}],
       customer_name:datadefault.name,
       place_name:datadefault.workside,
       address:datadefault.address,
-      date:datadefault.sell_date,
+      date:datadefault.day_length,
       reserver:[],
       status_assemble:true,
       vat:"vat",
@@ -129,12 +124,26 @@ export function Modal_Create_Products({ close, datadefault }) {
       shipping_cost: 2500,
       move_price: 1000,
       guarantee_price: 0,
-      proponent_name: "bossinwza007",
       average_price: 0,
+      assemble_status:true,
     }   
-      ]
-    console.log(itemsuccess);
-    
+    const mock = itemsuccess.merge[0]
+    const token = localStorage.getItem("token");
+    axios.post(
+            "http://192.168.195.75:5000/v1/product/outbound/merge",
+            mock,
+            {
+              headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+                "x-api-key": "1234567890abcdef",
+              },
+            }
+          ).then((res) =>{
+            //console.log(res);
+  })
+
+    createitem(itemsuccess);
   
     close();
   };
@@ -219,7 +228,7 @@ export function Modal_Create_Products({ close, datadefault }) {
                 <th className="px-4 py-2">ขนาด</th>
                 <th className="px-4 py-2">คงเหลือ</th>
                 <th className="px-4 py-2">จำนวน</th>
-                <th className="px-4 py-2">ราคา</th>
+
               </tr>
             </thead>
             <tbody>
@@ -241,17 +250,7 @@ export function Modal_Create_Products({ close, datadefault }) {
                         }
                       />
                     </td>
-                    <td className="px-4 py-2">
-                      <input
-                        type="number"
-                        min={0}
-                        name="price"
-                        className="w-[100px] p-2 text-center border border-black rounded-md"
-                        onChange={(e) =>
-                          select_Item(item, e.target.value, "price")
-                        }
-                      />
-                    </td>
+                   
                   </tr>
                 )
               )}
