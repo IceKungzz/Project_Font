@@ -115,6 +115,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
               <th className="border p-3 text-center rounded-tl-md">รหัสสินค้า</th>
               <th className="border p-3 text-center">ชื่อสินค้า</th>
               <th className="border p-3 text-center rounded-tr-md">ขนาดสินค้า</th>
+              <th className="border p-3 text-center rounded-tr-md">จำนวนสินค้า</th>
             </tr>
           </thead>
           <tbody>
@@ -122,6 +123,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
               <td className="border p-3">{product_samutsakhon.code || "-"}</td>
               <td className="border p-3">{product_samutsakhon.name || "-"}</td>
               <td className="border p-3">{product_samutsakhon.size || "-"}</td>
+              <td className="border p-3">{product_samutsakhon.quantity || "-"}</td>
             </tr>
           </tbody>
         </table>
@@ -145,7 +147,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
             onClick={handleClose}
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
           >
-            ปิด
+            ปิ
           </button>
         </div>
       </div>

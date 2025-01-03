@@ -15,7 +15,7 @@ export default function Quotation() {
     const token = localStorage.getItem("token");
 
     axios
-      .get("http://192.168.195.75:5000/v1/product/status/status-one/63", {
+      .get("http://192.168.195.75:5000/v1/product/status/status-one/439", {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",

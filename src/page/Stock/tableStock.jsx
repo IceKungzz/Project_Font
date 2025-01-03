@@ -89,17 +89,17 @@ export function TableItem({
       <h3 className="text-lg font-semibold text-gray-700 mb-4">รายการสินค้า</h3>
       <div className="overflow-x-auto max-h-[calc(100vh-250px)]">
         <table className="w-full table-auto border-collapse border shadow-sm">
-          <thead className="bg-blue-200 text-blue-900">
+          <thead className="bg-blue-200 text-blue-900 w-96 h-14">
             <tr>
-              <th className="border p-2 rounded-tl-md border-white">ลำดับที่</th>
-              <th className="border p-2">สาขา</th>
-              <th className="border p-2">รหัสสินค้า</th>
-              <th className="border p-2">ชื่อสินค้า</th>
-              <th className="border p-2">ขนาด</th>
-              <th className="border p-2">จำนวนทั้งหมด</th>
-              <th className="border p-2">จำนวนยอดจอง</th>
-              <th className="border p-2 ">เปรียบเทียบสินค้า</th>
-              <th className="border p-2 rounded-tr-md">เพิ่มสินค้า</th>
+              <th className="border p-2 text-center ">ลำดับที่</th>
+              <th className="border p-2 text-center">สาขา</th>
+              <th className="border p-2 text-center">รหัสสินค้า</th>
+              <th className="border p-2 text-center">ชื่อสินค้า</th>
+              <th className="border p-2 text-center">ขนาด</th>
+              <th className="border p-2 text-center">จำนวนทั้งหมด</th>
+              <th className="border p-2 text-center">จำนวนยอดจอง</th>
+              <th className="border p-2 text-center">เปรียบเทียบสินค้า</th>
+              <th className="border p-2 text-center">เพิ่มสินค้า</th>
             </tr>
           </thead>
           <tbody>
@@ -112,16 +112,16 @@ export function TableItem({
             ) : (
               productDetails.map((product, index) => (
                 <tr key={`${product.id}-${index}`}>
-                  <td className="border p-2">{index + 1}</td>
-                  <td className="border p-2">{getBranchName(product.branch_id)}</td>
-                  <td className="border p-2">{product.code || "-"}</td>
-                  <td className="border p-2">{product.name || "-"}</td>
-                  <td className="border p-2">{product.size || "-"}</td>
-                  <td className="border p-2">{product.quantity || 0}</td>
-                  <td className="border p-2 text-red-700">
+                  <td className="border p-2 text-center">{index + 1}</td>
+                  <td className="border p-2 text-center">{getBranchName(product.branch_id)}</td>
+                  <td className="border p-2 text-center">{product.code || "-"}</td>
+                  <td className="border p-2 text-center">{product.name || "-"}</td>
+                  <td className="border p-2 text-center">{product.size || "-"}</td>
+                  <td className="border p-2 text-center">{product.quantity || 0}</td>
+                  <td className="border p-2 text-center text-red-700">
                     {product.reserve_quantity || 0}
                   </td>
-                  <td className="flex justify-center items-center border p-1">
+                  <td className="border p-2 text-center">
                     <button
                       className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600"
                       onClick={() => onSelectProduct(product.id)}
@@ -134,7 +134,7 @@ export function TableItem({
                       className="bg-gray-500 text-white px-2 py-1 rounded-md hover:bg-gray-800"
                       onClick={() => openModal(product.id)}
                     >
-                      เพิ่ม  <i class="fa-solid fa-prescription-bottle-medical"></i>
+                      เพิ่ม <i className="fa-solid fa-prescription-bottle-medical"></i>
                     </button>
                   </td>
                 </tr>

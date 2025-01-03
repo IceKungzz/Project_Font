@@ -177,7 +177,7 @@ export function Modal_ReturnGreen({ close, data }) {
                                     value="true"
                                     onChange={handleVatChange}
                                 />
-                                <label>มีตำหนิ</label>
+                                <label>ปกติ</label>
                                 <input
                                     type="radio"
                                     className="mr-2 ml-2"
@@ -185,7 +185,7 @@ export function Modal_ReturnGreen({ close, data }) {
                                     value="false"
                                     onChange={handleVatChange}
                                 />
-                                <label>ไม่มีตำหนิ</label>
+                                <label>เสียหาย</label>
                             </div>
 
                             {/* Remarks */}

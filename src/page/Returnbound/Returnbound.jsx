@@ -173,6 +173,7 @@ export function ReturnItem() {
                                 <th className=" px-4 border-l-2  py-2">สาขา</th>
                                 <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
                                 <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
+                                
                                 <th className=" px-4 border-l-2 py-2">นามลูกค้า/ชื่อบริษัท</th>
                                 <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
                                 <th className=" px-4 border-l-2 py-2">สถานะ</th>
