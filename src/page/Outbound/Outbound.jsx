@@ -303,6 +303,33 @@ export function Outbound() {
 
   }, []);
 
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("outboundFormData"));
+    if (storedData) {
+      setBranch(storedData.branch);
+      setProducts(storedData.products);
+      setName(storedData.name);
+      setComName(storedData.comName);
+      setAddress(storedData.address);
+      setPhone(storedData.phone);
+      setWorkside(storedData.workside);
+      setSell_date(storedData.sell_date);
+      setDay_Length(storedData.day_length);
+      setItems(storedData.items);
+      setNetPrice(storedData.netPrice);
+      setConfirmitem(storedData.confirmitem);
+      setConfirmItem_Create(storedData.confirmitem_create);
+      setHasVat(storedData.hasVat);
+      setHasVat1(storedData.hasVat1);
+      setItem_sendto_database(storedData.Item_sendto_database);
+      setValidateModalInput(storedData.validateModalInput);
+      setAlldata_default(storedData.alldata_default);
+      setMergetable(storedData.mergetable);
+      setFormData(storedData.formData);
+      setQuantitySum(storedData.quantitySum);
+    }
+  }, []);
+
   const inputs = [name, address, workside, sell_date, day_length];
 
   useEffect(() => {
@@ -357,6 +384,29 @@ export function Outbound() {
     };
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
+    localStorage.setItem("outboundFormData", JSON.stringify({
+      branch,
+      products,
+      name,
+      comName,
+      address,
+      phone,
+      workside,
+      sell_date,
+      day_length,
+      items,
+      netPrice,
+      confirmitem,
+      confirmitem_create,
+      hasVat,
+      hasVat1,
+      Item_sendto_database,
+      validateModalInput,
+      alldata_default,
+      mergetable,
+      formData,
+      quantitySum
+    }));
     navigate("/preoutbound");
   };
 
@@ -442,14 +492,6 @@ export function Outbound() {
                 </span>
                 <input
                   type={item.type}
-                  value={
-                    item.title === "ชื่อผู้มาติดต่อ :" ? name :
-                      item.title === "ชื่อบริษัท :" ? comName :
-                        item.title === "ชื่อไซต์งาน :" ? workside :
-                          item.title === "ที่อยู่ลูกค้า :" ? address :
-                            item.title === "วันที่เสนอ :" ? sell_date :
-                              item.title === "เบอร์โทรศัพท์ :" ? phone : ""
-                  }
                   onChange={
                     item.title === "ชื่อผู้มาติดต่อ :"
                       ? (e) => setName(e.target.value)
@@ -464,6 +506,21 @@ export function Outbound() {
                               : item.title === "เบอร์โทรศัพท์ :"
                                 ? (e) => setPhone(e.target.value)
                                 : null
+                  }
+                  value={
+                    item.title === "ชื่อผู้มาติดต่อ :"
+                      ? name
+                      : item.title === "ชื่อบริษัท :"
+                        ? comName
+                        : item.title === "วันที่เสนอ :"
+                          ? sell_date
+                        : item.title === "ชื่อไซต์งาน :"
+                          ? workside
+                          : item.title === "ที่อยู่ลูกค้า :"
+                            ? address
+                            : item.title === "เบอร์โทรศัพท์ :"
+                              ? phone
+                              : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
