@@ -12,7 +12,9 @@ export function Outbound() {
   const [branch, setBranch] = useState("");
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
+  const [comName, setComName] = useState("");
   const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [workside, setWorkside] = useState("");
   const [sell_date, setSell_date] = useState("");
   const [day_length, setDay_Length] = useState("");
@@ -25,6 +27,7 @@ export function Outbound() {
   const [confirmitem, setConfirmitem] = useState([]);
   const [confirmitem_create, setConfirmItem_Create] = useState([]);
   const [hasVat, setHasVat] = useState(true);
+  const [hasVat1, setHasVat1] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
   const [validateModalInput, setValidateModalInput] = useState(false)
   const [alldata_default, setAlldata_default] = useState([{}]);
@@ -34,10 +37,12 @@ export function Outbound() {
   const navigate = useNavigate();
 
   const menu = [
-    { title: "นามลูกค้า/ชื่อบริษัท :", type: "text" },
+    { title: "ชื่อผู้มาติดต่อ :", type: "text" },
+    { title: "ชื่อบริษัท :", type: "text" },
     { title: "ชื่อไซต์งาน :", type: "text" },
     { title: "ที่อยู่ลูกค้า :", type: "text" },
     { title: "วันที่เสนอ :", type: "date" },
+    { title: "เบอร์โทรศัพท์ :", type: "text" }
   ];
 
   const today = new Date();
@@ -48,16 +53,19 @@ export function Outbound() {
     setHasVat(e.target.value === "true");
   };
 
-  useEffect(() => {
+  const handleVatChange1 = (e) => {
+    setHasVat(e.target.value === "true");
+  };
 
+  useEffect(() => {
     const totalPrice = confirmitem.reduce(
-      (total, item) => total + (item.price * item.amount || 0),
+      (total, item) =>
+        total + ((item.price || item.price3D || 0) * (item.amount || 0)),
       0
     );
 
     const vat = hasVat ? totalPrice * 0.07 : 0;
     setNetPrice(totalPrice + vat);
-
   }, [confirmitem, hasVat]);
 
   const handleConfirm = (items) => {
@@ -170,6 +178,12 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
+  const handleDeleteItem = (index) => {
+    const updatedConfirmItem = [...confirmitem];
+    updatedConfirmItem.splice(index, 1);
+    setConfirmitem(updatedConfirmItem);
+  };
+
   const confirm_order = async () => {
 
     if (
@@ -219,7 +233,9 @@ export function Outbound() {
 
     const newOrder = {
       customer_name: name,
+      company_name: comName,
       place_name: workside,
+      phone: phone,
       address,
       date: day_length,
       reserve: reserve,
@@ -309,6 +325,7 @@ export function Outbound() {
   };
 
   return (
+
     <div className="w-full h-[90%] mt-5">
       <HelmetProvider>
         <Helmet>
@@ -364,15 +381,19 @@ export function Outbound() {
                 <input
                   type={item.type}
                   onChange={
-                    item.title === "นามลูกค้า/ชื่อบริษัท :"
+                    item.title === "ชื่อผู้มาติดต่อ :"
                       ? (e) => setName(e.target.value)
-                      : item.title === "วันที่เสนอ :"
-                        ? (e) => handleDateChange(e.target.value)
-                        : item.title === "ชื่อไซต์งาน :"
-                          ? (e) => setWorkside(e.target.value)
-                          : item.title === "ที่อยู่ลูกค้า :"
-                            ? (e) => setAddress(e.target.value)
-                            : null
+                      : item.title === "ชื่อบริษัท :"
+                        ? (e) => setComName(e.target.value)
+                        : item.title === "วันที่เสนอ :"
+                          ? (e) => handleDateChange(e.target.value)
+                          : item.title === "ชื่อไซต์งาน :"
+                            ? (e) => setWorkside(e.target.value)
+                            : item.title === "ที่อยู่ลูกค้า :"
+                              ? (e) => setAddress(e.target.value)
+                              : item.title === "เบอร์โทรศัพท์ :"
+                                ? (e) => setPhone(e.target.value)
+                                : null
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />
@@ -432,7 +453,10 @@ export function Outbound() {
                 {formattedDate}
               </span>
               <span className="col-span-3 grid justify-start items-center">
-                นามลูกค้า/ชื่อบริษัท: {name}
+                ชื่อผู้มาติดต่อ: {name}
+              </span>
+              <span className="col-span-3 grid justify-start items-center">
+                ชื่อบริษัท: {comName}
               </span>
               <span className="col-span-1 grid justify-start items-center">
                 ชื่อไซต์งาน: {workside}
@@ -446,17 +470,17 @@ export function Outbound() {
               <span className="col-span-2 row-span-2 grid grid-cols-7">
                 <span className="col-span-1">ที่อยู่ลูกค้า:</span>
                 <span className="col-span-6">{address}</span>
-              </span>
+                ฺ </span>
               <span className="col-span-1 grid justify-end items-center">
                 ระยะเวลาเช่า: {day_length} วัน
               </span>
             </div>
 
-            <div className="row-span-3 grid grid-rows-3 ">
-              <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3">
-                <div className="overflow-y-auto no-scrollbar max-h-80 w-full">
+            <div className="row-span-3 grid grid-rows-3">
+              <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3 ">
+                <div className="overflow-y-auto no-scrollbar max-h-[calc(70vh-200px)] w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2 border-white">
-                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2">
+                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2 ">
                       <tr>
                         <th className="px-4 py-2 rounded-tl-lg">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>
@@ -464,7 +488,8 @@ export function Outbound() {
                         <th className="px-4 py-2">รูปแบบ</th>
                         <th className="px-4 py-2">จำนวน</th>
                         <th className="px-4 py-2">ราคา</th>
-                        <th className="px-4 py-2 rounded-tr-lg">รวม</th>
+                        <th className="px-4 py-2">รวม</th>
+                        <th className="px-4 py-2 rounded-tr-lg">เลือก</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -536,6 +561,9 @@ export function Outbound() {
                                   ? (item.price || 0) * (item.amount || 0)
                                   : (item.price3D || 0) * (item.amount || 0)}
                               </td>
+
+                              <button className="fa-solid fa-trash py-6" onClick={handleDeleteItem}></button>
+
                             </tr>
 
                             {/* แสดงรายการย่อยสำหรับ item_merge */}
@@ -593,7 +621,8 @@ export function Outbound() {
                 <span className="col-span-1 grid justify-end p-1">
                   {confirmitem
                     .reduce(
-                      (total, item) => total + (item.price * item.amount || 0),
+                      (total, item) =>
+                        total + ((item.price || item.price3D || 0) * (item.amount || 0)),
                       0
                     )
                     .toFixed(2)}
@@ -608,7 +637,7 @@ export function Outbound() {
                     ? (
                       confirmitem.reduce(
                         (total, item) =>
-                          total + (item.price * item.amount || 0),
+                          total + ((item.price || item.price3D || 0) * (item.amount || 0)),
                         0
                       ) * 0.07
                     ).toFixed(2)
@@ -649,32 +678,46 @@ export function Outbound() {
               />
               ไม่มีภาษีมูลค่าเพิ่ม
 
-              {/* <input
+              <input
                 type="radio"
                 name="ovat"
                 value="false"
                 className="ml-3 mr-2"
-                checked={!hasVat}
-                onChange={handleVatChange}
+                checked={!hasVat1}
+                onChange={handleVatChange1}
               />
-              หัก ณ ที่จ่าย */}
+              หัก ณ ที่จ่าย
             </div>
 
-            <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white mt-5">
-              <span className="col-span-1 flex  justify-end pr-16">
+            <div className="row-span-1 items-center justify-end grid grid-cols-3 text-white mt-5 w-full ml-auto">
+              <span className="col-span-1 flex justify-center">
                 <button
-                  className=" bg-[#133E87] w-2/6 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"
+                  className="bg-[#133E87] w-1/2 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"
                   onClick={confirm_order}
                 >
                   <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก
                 </button>
               </span>
-              <span className="col-span-1 flex  justify-start pl-16">
-                <button className="bg-[#A62628] w-2/6 p-2 rounded-md hover:bg-[#762324] transition duration-300">
+
+              <span className="col-span-1 flex justify-center">
+                <button
+                  className="bg-[#A62628] w-1/2 p-2 rounded-md hover:bg-[#762324] transition duration-300"
+                  onClick={''}
+                >
                   <i className="fa-solid fa-x mr-2"></i>ยกเลิก
                 </button>
               </span>
+
+              <span className="col-span-1 flex justify-center">
+                <button
+                  className="bg-[#828485] w-1/2 p-2 rounded-md hover:bg-[#6f7071] transition duration-300"
+                  onClick={() => navigate("/preoutbound")}
+                >
+                  <i className="fa-solid fa-file-export mr-2"></i>preview
+                </button>
+              </span>
             </div>
+
           </div>
         </div>
       </div>
