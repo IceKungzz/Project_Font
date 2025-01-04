@@ -56,24 +56,46 @@ export function Modal_ReturnGreen({ close, data }) {
             setIsSubmitting(false);
         }
     };
+    const calToThaiDate = (actualOut, daysToAdd) => {
+        if(!actualOut){
+            return "วันที่ไม่พร้อมใช้งาน";
+        }
+        const actualOutDate = new Date(actualOut);
+        const tempDate = new Date(actualOut);
+        tempDate.setDate(tempDate.getDate() + parseInt(daysToAdd, 10));
 
+        const thaiMonthsShort = [
+            "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
+            "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา",
+        ];
+        const oldDay = actualOutDate.getDate();
+        const oldMonth = thaiMonthsShort[actualOutDate.getMonth()];
+        const oldYear = actualOutDate.getFullYear() + 543;
+        return `${oldDay} ${oldMonth} ${oldYear}`;
+    };
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
             return "วันที่ไม่พร้อมใช้งาน";
         }
 
         const actualOutDate = new Date(actualOut);
-        actualOutDate.setDate(actualOutDate.getDate() + parseInt(daysToAdd, 10));
+        const tempDate = new Date(actualOut);
+        tempDate.setDate(tempDate.getDate() + parseInt(daysToAdd, 10) + 1); // เพิ่ม 1 วัน
 
         const thaiMonthsShort = [
             "มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา",
             "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา",
         ];
-        const day = actualOutDate.getDate();
-        const month = thaiMonthsShort[actualOutDate.getMonth()];
-        const year = actualOutDate.getFullYear() + 543;
 
-        return `${day} ${month} ${year}`;
+        const oldDay = actualOutDate.getDate();
+        const oldMonth = thaiMonthsShort[actualOutDate.getMonth()];
+        const oldYear = actualOutDate.getFullYear() + 543;
+
+        const newDay = tempDate.getDate();
+        const newMonth = thaiMonthsShort[tempDate.getMonth()];
+        const newYear = tempDate.getFullYear() + 543;
+
+        return `${newDay} ${newMonth} ${newYear}`;
     };
 
     const today = new Date();
@@ -134,8 +156,18 @@ export function Modal_ReturnGreen({ close, data }) {
                                     {items.customer_name}
                                 </label>
                             </div>
-
+                            <div className="col-span-1">
+                                <label className="text-xl font-bold text-gray-600 h-full flex items-center justify-end">
+                                    วันที่ส่งของ :
+                                </label>
+                            </div>
+                            <div className="col-span-2">
+                                <label className="text-xl text-gray-600 h-full flex items-center justify-start">
+                                {items.actual_out ? calToThaiDate(items.actual_out, 0) : "ไม่มีวันที่ส่งของ"}
+                            </label>
+                            </div>
                             {/* Rental Dates */}
+                            
                             <div className="col-span-1">
                                 <label className="text-xl font-bold text-gray-600 h-full flex items-center justify-end">
                                     วันที่เริ่มเช่า:
@@ -154,7 +186,7 @@ export function Modal_ReturnGreen({ close, data }) {
                             {/* Return Date */}
                             <div className="col-span-1">
                                 <label className="text-xl font-bold text-gray-600 h-full flex items-center justify-end">
-                                    วันที่ส่งคืนจริง:
+                                    วันที่ลูกค้าคืนของ :
                                 </label>
                             </div>
                             <div className="col-span-2">
