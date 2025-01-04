@@ -19,6 +19,13 @@ export default function Quotation() {
       setData(storedOutboundData.data);
       setProducts(storedOutboundData.data.products);
       setExpiryDate(storedOutboundData.expiryDate);
+
+      if (storedOutboundData.sell_date) {
+        setOutboundData(prevState => ({
+          ...prevState,
+          sell_date: storedOutboundData.sell_date
+        }));
+      }
     }
   }, []);
 
@@ -128,25 +135,13 @@ export default function Quotation() {
             วันที่เสนอราคา :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            {outboundData.sell_date
-              ? new Date(outboundData.sell_date).toLocaleDateString('th-TH', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })
-              : ''}
+            {outboundData.sell_date}
           </p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             วันที่หมดอายุ :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            {expiryDate
-              ? new Date(expiryDate).toLocaleDateString('th-TH', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })
-              : ''}
+            {expiryDate}
           </p>
           <p className="col-span-1 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             เงื่อนไขการชำระเงิน :
@@ -271,7 +266,7 @@ export default function Quotation() {
           </>
         )}
 
-        <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
+        <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
         <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price ? (data.guarantee_price).toFixed(2) : (0).toFixed(2)}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
