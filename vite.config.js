@@ -12,7 +12,7 @@ export default defineConfig({
     include: ['moment', 'moment-timezone']
   },
   server: {
-    host: '192.168.195.154', // กำหนด IP ที่ต้องการให้เซิร์ฟเวอร์ฟัง
-    port: 3000, // กำหนดพอร์ตที่ต้องการ
+    host: '0.0.0.0', // Listen on all available network interfaces
+    port: 3000, // Specify the port
   }
 })
