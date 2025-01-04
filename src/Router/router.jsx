@@ -7,6 +7,7 @@ import { Inbound } from "../page/Inbound/Inbound";
 import { ReturnItem } from "../page/Returnbound/Returnbound";
 import { Home } from "../page/Home/Home";
 import Preorder from "../page/Preorder/Preorder";
+import PreOutbound from "../page/Preoutbound/PreOutbound";
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound";
 import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products";
 import StatusProduct from "../page/status/status";
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
         ],
       },
       { path: "preorder", element: <Preorder /> },
+      { path: "preoutbound", element: <PreOutbound /> },
     ],
   },
   { path: "/login", element: <Login /> },
