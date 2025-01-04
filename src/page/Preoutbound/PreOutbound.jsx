@@ -239,11 +239,11 @@ export default function Quotation() {
         <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมเงิน</span>
         <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{calculateTotalPrice()}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าขนส่งสินค้าไป-กลับ</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.shipping_cost ? (data.shipping_cost).toFixed(2) : (0).toFixed(2)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.shipping_cost}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าบริการเคลื่อนย้ายสินค้า</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.move_price ? (data.move_price).toFixed(2) : (0).toFixed(2)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.move_price}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ส่วนลด</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount ? (data.discount).toFixed(2) : (0).toFixed(2)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount}</span>
 
         <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:p-1 print:text-[10px]">
           <u className="font-sarabun">หมายเหตุ :</u>
@@ -267,7 +267,7 @@ export default function Quotation() {
         )}
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price ? (data.guarantee_price).toFixed(2) : (0).toFixed(2)}</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
         <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPriceWithVat()}</span>
