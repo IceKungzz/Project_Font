@@ -300,6 +300,7 @@ export function Outbound() {
           setBranch(res.data.data.branch_name);
         }
       });
+
   }, []);
 
   const inputs = [name, address, workside, sell_date, day_length];
@@ -322,6 +323,67 @@ export function Outbound() {
       });
       setShowmodal_create_product(false);
     }
+  };
+
+  const handlePreview = () => {
+    const outboundData = {
+      name,
+      comName,
+      address,
+      phone,
+      workside,
+      sell_date,
+      day_length,
+      data: {
+        products: confirmitem.map(item => ({
+          ...item,
+          amount: item.amount || 0,
+          price: item.type === "ขาย" ? item.price || '' : item.price3D || '',
+          total: item.type === "ขาย"
+            ? (item.price || 0) * (item.amount || 0)
+            : (item.price3D || 0) * (item.amount || 0)
+        })),
+        reserve_out: sell_date,
+        total_price_out: netPrice,
+        shipping_cost: formData.shipping_cost,
+        move_price: formData.move_price,
+        discount: formData.discount,
+        final_price: netPrice - formData.discount,
+        total_vat: hasVat ? netPrice * 0.07 : 0,
+        guarantee_price: formData.guarantee_price,
+        vat: hasVat ? "vat" : "nvat",
+      },
+      expiryDate: calculateEndDate(sell_date, day_length),
+    };
+
+    localStorage.setItem("outboundData", JSON.stringify(outboundData));
+    navigate("/preoutbound");
+  };
+
+  const resetForm = () => {
+    setProducts([]);
+    setName("");
+    setComName("");
+    setAddress("");
+    setPhone("");
+    setWorkside("");
+    setSell_date("");
+    setDay_Length("");
+    setItems([]);
+    setNetPrice(0);
+    setShowmodal(false);
+    setShowModalDiscount(false);
+    setShowmodal_create_product(false);
+    setConfirmitem([]);
+    setConfirmItem_Create([]);
+    setHasVat(true);
+    setHasVat1(true);
+    setItem_sendto_database([]);
+    setValidateModalInput(false);
+    setAlldata_default([{}]);
+    setMergetable([]);
+    setFormData({});
+    setQuantitySum(0);
   };
 
   return (
@@ -380,6 +442,14 @@ export function Outbound() {
                 </span>
                 <input
                   type={item.type}
+                  value={
+                    item.title === "ชื่อผู้มาติดต่อ :" ? name :
+                      item.title === "ชื่อบริษัท :" ? comName :
+                        item.title === "ชื่อไซต์งาน :" ? workside :
+                          item.title === "ที่อยู่ลูกค้า :" ? address :
+                            item.title === "วันที่เสนอ :" ? sell_date :
+                              item.title === "เบอร์โทรศัพท์ :" ? phone : ""
+                  }
                   onChange={
                     item.title === "ชื่อผู้มาติดต่อ :"
                       ? (e) => setName(e.target.value)
@@ -407,6 +477,7 @@ export function Outbound() {
               <input
                 type="number"
                 className="col-span-2 h-10 rounded-lg border border-gray-500 p-2"
+                value={day_length}
                 onChange={(e) => setDay_Length(e.target.value)}
               />
               <span className="col-span-1 pl-5">วัน</span>
@@ -702,7 +773,7 @@ export function Outbound() {
               <span className="col-span-1 flex justify-center">
                 <button
                   className="bg-[#A62628] w-1/2 p-2 rounded-md hover:bg-[#762324] transition duration-300"
-                  onClick={''}
+                  onClick={resetForm}
                 >
                   <i className="fa-solid fa-x mr-2"></i>ยกเลิก
                 </button>
@@ -711,7 +782,7 @@ export function Outbound() {
               <span className="col-span-1 flex justify-center">
                 <button
                   className="bg-[#828485] w-1/2 p-2 rounded-md hover:bg-[#6f7071] transition duration-300"
-                  onClick={() => navigate("/preoutbound")}
+                  onClick={handlePreview}
                 >
                   <i className="fa-solid fa-file-export mr-2"></i>preview
                 </button>
