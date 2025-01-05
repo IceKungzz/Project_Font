@@ -208,11 +208,12 @@ export default function Quotation() {
         {/* ข้อมูลในตาราง */}
 
       </div>
-      <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[150px]">
+
+      {/* <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[150px]">
         <span className="underline font-sarabun block print:text-[9px] ml-2">ช่องทางการชำระเงิน :</span>
         <span className="font-sarabun block print:text-[9px] ml-2">ธ.กสิกรไทย / หจก.ภัทรชัย เเบบเหล็ก</span>
         <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964</span>
-      </div>
+      </div> */}
 
       {/* ส่วนเงื่อนไข */}
       <div className=" grid grid-cols-10 grid-rows-14 h-[300px] text-[9px]">
