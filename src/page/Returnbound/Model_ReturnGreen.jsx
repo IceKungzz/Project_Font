@@ -26,13 +26,13 @@ export function Modal_ReturnGreen({ close, data }) {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token not found");
 
-            const url = `http://192.168.195.75:5000/v1/product/return/return-status`;
+            const url = `http://localhost:8000/v1/product/return/return-status`;
             const response = await axios.post(
                 url,
                 {
                     receipt_number: data[0].receip_number,
                     has_defects: hasVat,
-                    remarks: remarks,
+                    description: remarks,
                 },
                 {
                     headers: {

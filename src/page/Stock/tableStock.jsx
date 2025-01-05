@@ -13,6 +13,7 @@ export function TableItem({
   const [isModalOpen, setIsModalOpen] = useState(false); // State สำหรับ Modal
   const [isModalOpen1, setIsModalOpen1] = useState(false); // State สำหรับ Modal
   const [selectedProductId, setSelectedProductId] = useState(null); // ID สินค้าที่เลือก
+  const [selectedBranchId, setSelectedBranchId] = useState(null); // ID สินค้าที่เลือก
 
   const fetchProductDetails = async (branchId) => {
     setIsLoading(true);
@@ -66,9 +67,12 @@ export function TableItem({
     }
   };
 
-  const openModal = (productId) => {
+  const openModal = (productId, branchId) => {
     setSelectedProductId(productId);
+    setSelectedBranchId(branchId)
     setIsModalOpen1(true);
+    console.log(productId, branchId);
+    
   };
 
   const closeModal = () => {
@@ -132,11 +136,14 @@ export function TableItem({
                   <td className="border p-2 text-center">
                     <button
                       className="bg-gray-500 text-white px-2 py-1 rounded-md hover:bg-gray-800"
-                      onClick={() => openModal(product.id)}
+                      onClick={() => openModal(product.id, product.branch_id)} // ส่ง branch_id ไปพร้อม productId
                     >
                       เพิ่ม <i className="fa-solid fa-prescription-bottle-medical"></i>
+                      
                     </button>
+                    
                   </td>
+
                 </tr>
               ))
             )}
@@ -153,6 +160,7 @@ export function TableItem({
         isModalOpen={isModalOpen1}
         handleClose={closeModal}
         id={selectedProductId}
+        branch_id={selectedBranchId}
       />
     </div>
   );
