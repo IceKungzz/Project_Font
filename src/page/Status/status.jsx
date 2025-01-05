@@ -258,10 +258,10 @@ const StatusProduct = () => {
                     <td className="text-center border-l-2 px-4 py-2">{item.export_number}</td>
                     <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
                     <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
-                    <td className="text-center border-l-2 px-4 py-2">
+                    <td className="text-center border-l-2 px-4 py-2 ">
                       {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
+                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'กำลังเช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status === 'return' ? 'ส่งคืนเเล้ว' : item.status}</td>
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
                         onClick={() => openModal(item.id, item.reserve_id)}
