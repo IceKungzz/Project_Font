@@ -18,6 +18,7 @@ export function Outbound() {
   const [workside, setWorkside] = useState("");
   const [sell_date, setSell_date] = useState("");
   const [day_length, setDay_Length] = useState("");
+  const [recipeNumber, setRecipeNumber] = useState("");
   //------------------------------------------------------
   const [items, setItems] = useState([]);
   const [netPrice, setNetPrice] = useState(0);
@@ -42,7 +43,8 @@ export function Outbound() {
     { title: "ชื่อไซต์งาน :", type: "text" },
     { title: "ที่อยู่ลูกค้า :", type: "text" },
     { title: "วันที่เสนอ :", type: "date" },
-    { title: "เบอร์โทรศัพท์ :", type: "text" }
+    { title: "เบอร์โทรศัพท์ :", type: "text" },
+    { title: "เลขที่ใบเสนอ :", type: "text" }
   ];
 
   const today = new Date();
@@ -51,6 +53,7 @@ export function Outbound() {
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
+    console.log(hasVat)
   };
 
   const handleVatChange1 = (e) => {
@@ -238,6 +241,7 @@ export function Outbound() {
       phone: phone,
       address,
       date: day_length,
+      recipe_number: recipeNumber,
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
@@ -303,33 +307,6 @@ export function Outbound() {
 
   }, []);
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("outboundFormData"));
-    if (storedData) {
-      setBranch(storedData.branch);
-      setProducts(storedData.products);
-      setName(storedData.name);
-      setComName(storedData.comName);
-      setAddress(storedData.address);
-      setPhone(storedData.phone);
-      setWorkside(storedData.workside);
-      setSell_date(storedData.sell_date);
-      setDay_Length(storedData.day_length);
-      setItems(storedData.items);
-      setNetPrice(storedData.netPrice);
-      setConfirmitem(storedData.confirmitem);
-      setConfirmItem_Create(storedData.confirmitem_create);
-      setHasVat(storedData.hasVat);
-      setHasVat1(storedData.hasVat1);
-      setItem_sendto_database(storedData.Item_sendto_database);
-      setValidateModalInput(storedData.validateModalInput);
-      setAlldata_default(storedData.alldata_default);
-      setMergetable(storedData.mergetable);
-      setFormData(storedData.formData);
-      setQuantitySum(storedData.quantitySum);
-    }
-  }, []);
-
   const inputs = [name, address, workside, sell_date, day_length];
 
   useEffect(() => {
@@ -353,6 +330,7 @@ export function Outbound() {
   };
 
   const handlePreview = () => {
+    console.log(day_length)
     const outboundData = {
       name,
       comName,
@@ -361,6 +339,7 @@ export function Outbound() {
       workside,
       sell_date,
       day_length,
+      recipeNumber,
       data: {
         products: confirmitem.map(item => ({
           ...item,
@@ -384,12 +363,14 @@ export function Outbound() {
     };
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
+
     localStorage.setItem("outboundFormData", JSON.stringify({
       branch,
       products,
       name,
       comName,
       address,
+      recipeNumber,
       phone,
       workside,
       sell_date,
@@ -407,7 +388,13 @@ export function Outbound() {
       formData,
       quantitySum
     }));
-    navigate("/preoutbound");
+
+    if (hasVat === true) {
+      navigate("/preoutbound-vat");
+    } else {
+      navigate("/preoutbound-nvat");
+    }
+
   };
 
   const resetForm = () => {
@@ -419,6 +406,7 @@ export function Outbound() {
     setWorkside("");
     setSell_date("");
     setDay_Length("");
+    setRecipeNumber("");
     setItems([]);
     setNetPrice(0);
     setShowmodal(false);
@@ -505,7 +493,9 @@ export function Outbound() {
                               ? (e) => setAddress(e.target.value)
                               : item.title === "เบอร์โทรศัพท์ :"
                                 ? (e) => setPhone(e.target.value)
-                                : null
+                                : item.title === "เลขที่ใบเสนอ :"
+                                  ? (e) => setRecipeNumber(e.target.value)
+                                  : null
                   }
                   value={
                     item.title === "ชื่อผู้มาติดต่อ :"
@@ -514,13 +504,15 @@ export function Outbound() {
                         ? comName
                         : item.title === "วันที่เสนอ :"
                           ? sell_date
-                        : item.title === "ชื่อไซต์งาน :"
-                          ? workside
-                          : item.title === "ที่อยู่ลูกค้า :"
-                            ? address
-                            : item.title === "เบอร์โทรศัพท์ :"
-                              ? phone
-                              : ""
+                          : item.title === "ชื่อไซต์งาน :"
+                            ? workside
+                            : item.title === "ที่อยู่ลูกค้า :"
+                              ? address
+                              : item.title === "เบอร์โทรศัพท์ :"
+                                ? phone
+                                : item.title === "เลขที่ใบเสนอ :"
+                                  ? recipeNumber
+                                  : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                 />

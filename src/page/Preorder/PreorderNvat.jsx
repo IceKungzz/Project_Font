@@ -8,10 +8,10 @@ export default function Quotation() {
   const location = useLocation();
   const { id } = location.state || {};
 
-  const [data, setData] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [note, setNote] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
+  const [data, setData] = useState([])
+  const [products, setProducts] = useState([])
+  const [note, setNote] = useState('')
+  const [expiryDate, setExpiryDate] = useState('')
   const [lesseeName, setLesseeName] = useState('');
   const [lessorName, setLessorName] = useState('');
   const [lesseeNameOne, setLesseeNameOne] = useState('');
@@ -33,7 +33,7 @@ export default function Quotation() {
       .then((res) => {
         if (res.status === 200) {
           setData(res.data.data);
-          setProducts(res.data.data.products);
+          setProducts(res.data.data.products)
 
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
@@ -60,23 +60,25 @@ export default function Quotation() {
     return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
+
   return (
     <div className="w-screen h-auto p-2 mt-10 font-sarabun">
       <div className="grid grid-cols-5 border-b-4 pb-2 print:mb-0 print:p-0">
         <div className="col-span-3 flex">
           <img
-            src="img/logo1.jpg"
+            src="img/logo2.png"
             alt="logo"
             className="w-40 h-34 object-contain"
           />
           <div className="text-md print:text-[11.5px] w-full">
-            <h1 className="text-lg font-bold whitespace-nowrap font-sarabun">ห้างหุ้นส่วนจำกัด ภัทรชัย เเบบเหล็ก (สำนักงานใหญ่)</h1>
-            <h1 className="text-sm font-bold whitespace-nowrap font-sarabun">PATTARACHAI BABLEK PART.,LTD.(HEAD OFFICE)</h1>
-            <p className="font-sarabun">12/8 หมู่ที่ 7 ต.โคกขาม อ.เมืองสมุทรสาคร จ.สมุทรสาคร 74000</p>
-            <p className="whitespace-nowrap font-sarabun">โทร : 034-133093</p>
-            <p className="whitespace-nowrap font-sarabun">เลขประจำตัวผู้เสียภาษีอากร : 0-1335-62000-93-5</p>
-            <p className="font-sarabun">
-              สาขา: โคกขาม 084-1571097 / นพวงศ์ 084-1571094 / ชลบุรี 083-1653979
+            <h1 className="text-lg font-bold whitespace-nowrap font-sarabun">ร้านภัทรชัย เเบบเหล็ก</h1>
+            <p className="font-sarabun">รับผลิต จำหน่ายเเละให้เช่า</p>
+            <p className="font-sarabun">เเบบคาน , เเบบเสา , เเบบหล่องานถนน , ฟุตติ้ง</p>
+            <p className="font-sarabun">นั่งร้าน , ยูเเจ็ค , เเจ็คเบส , ฉาก , ป๊อปค้ำยัน</p>
+            <p className="font-sarabun">เเบบฐานเสาไฟ เเละเเบบพิเศษสั่งทำทุกชนิด</p>
+            <p className="font-sarabun">095-5862149 , 085-3806974</p>
+            <p className="whitespace-nowrap font-sarabun">
+              สาขา: โคกขาม 081-1571097 / นพวงศ์ 081-1571094 / ชลบุรี 083-1653979
             </p>
           </div>
         </div>
@@ -113,7 +115,7 @@ export default function Quotation() {
             <span className="font-bold font-sarabun">เลขประจำตัวผู้เสียภาษีอากร :</span>
             <input
               type="text"
-              className="ml-2 font-sarabun w-1/2"
+              className="ml-2 font-sarabun"
               placeholder="กรอกเลขประจำตัวผู้เสียภาษี"
             />
           </p>
@@ -192,7 +194,7 @@ export default function Quotation() {
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">ค่าปรับสินค้า/ชิ้น</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(product.price_damage ? product.price_damage : 0)}.00</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{formatNumber(product.price_damage)}</span>
           ))}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
@@ -205,10 +207,11 @@ export default function Quotation() {
 
       </div>
 
-      <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[150px]">
+      <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[215px]">
         <span className="underline font-sarabun block print:text-[9px] ml-2">ช่องทางการชำระเงิน :</span>
-        <span className="font-sarabun block print:text-[9px] ml-2">ธ.กสิกรไทย / หจก.ภัทรชัย เเบบเหล็ก</span>
-        <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964</span>
+        <span className="font-sarabun block print:text-[9px] ml-2">ธ.ทหารไทยธนชาต (ttb)</span>
+        <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964 / นางสาวกรวรรณ กองจันทึก</span>
+        <span className="font-sarabun block print:text-[9px] text-red-500 ml-2">ยอดค่าเช่าเฉลี่ย / วัน: 10 บาท</span>
       </div>
 
       {/* ส่วนเงื่อนไข */}
@@ -241,7 +244,7 @@ export default function Quotation() {
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ส่วนลด</span>
         <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.discount)}</span>
 
-        <div className="col-span-7 row-span-4 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
+        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
           <u className="font-sarabun">หมายเหตุ :</u>
           <textarea
             value={note}
@@ -255,11 +258,8 @@ export default function Quotation() {
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมหลังหักส่วนลด</span>
         <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_discount)}</span>
 
-        <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ภาษีมูลค่าเพิ่ม / vat7%</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_vat)}</span>
-
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-black border-r-2 flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.guarantee_price)}</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.guarantee_price)}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
         <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.final_price)}</span>
@@ -297,6 +297,6 @@ export default function Quotation() {
           พิมพ์ใบเสนอราคา
         </button>
       </div>
-    </div >
+    </div>
   );
 }

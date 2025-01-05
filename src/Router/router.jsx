@@ -7,7 +7,9 @@ import { Inbound } from "../page/Inbound/Inbound";
 import { ReturnItem } from "../page/Returnbound/Returnbound";
 import { Home } from "../page/Home/Home";
 import Preorder from "../page/Preorder/Preorder";
-import PreOutbound from "../page/Preoutbound/PreOutbound";
+import PreorderNvat from "../page/Preorder/PreorderNvat";
+import PreOutboundNvat from "../page/Preoutbound/PreOutboundNvat";
+import PreOutboundVat from "../page/Preoutbound/PreOutboundVat";
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound";
 import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products";
 import StatusProduct from "../page/status/status";
@@ -29,11 +31,13 @@ const router = createBrowserRouter([
           { path: "returnitem", element: <ReturnItem /> },
           { path: "status", element: <StatusProduct /> },
           { path: "stock", element: <StockItem /> },
-          { path: "allptc", element: <ListItems /> }, // เรียกใช้งาน Component ที่ import มา
+          { path: "allptc", element: <ListItems /> }, 
         ],
       },
       { path: "preorder", element: <Preorder /> },
-      { path: "preoutbound", element: <PreOutbound /> },
+      { path: "preorder-nvat", element: <PreorderNvat /> },
+      { path: "preoutbound-nvat", element: <PreOutboundNvat /> },
+      { path: "preoutbound-vat", element: <PreOutboundVat /> },
     ],
   },
   { path: "/login", element: <Login /> },

@@ -298,6 +298,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [vatPaid, setVatPaid] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [payMent, setPayment] = useState(0);
+  const [vat, setVat] = useState(false);
 
   useEffect(() => {
 
@@ -323,6 +324,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
+           
+            if (response.data.data.vat === 'vat') {
+              setVat(true)
+             
+            } else if (response.data.data.vat === 'nvat') {
+              setVat(false)
+              
+            }
 
           } else {
             throw new Error(response.data.message);
@@ -369,10 +378,11 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         const assemble = response.data.data.product.assemble_product
 
         let assemble_status = false;
+
         if (Array.isArray(assemble) && assemble.length > 0) {
           assemble_status = true;
         }
-        console.log(assemble_status)
+
         const newOutbound = {
           customer_name: productData?.customer_name || "",
           place_name: productData?.place_name || "",
@@ -438,8 +448,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
     setPayment(1);
   }
 
-  const handlePreview = () => {
-    navigate("/preorder");
+  const handlePreview = (id) => {
+    
+    if (vat === true) {
+      navigate("/preorder", { state: { id } });
+    } else if (vat === false) {
+      navigate("/preorder-nvat", { state: { id } });
+    }
+
   };
 
   const currentStatus = status.find((item) => item.id === itemId)?.status;
@@ -560,7 +576,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         {currentStatus === 'reserve' && (
           <div className="mt-4 flex justify-around">
             <button
-              onClick={handlePreview}
+              onClick={() => handlePreview(itemId)}
               className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
             >
               <span className="fa-solid fa-print"></span>

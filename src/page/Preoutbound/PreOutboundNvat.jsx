@@ -11,6 +11,10 @@ export default function Quotation() {
   const [expiryDate, setExpiryDate] = useState('')
   const [outboundData, setOutboundData] = useState({}); // New state for outbound data
   const [confirmitem, setConfirmItem] = useState([]); // New state for confirmed items
+  const [lesseeName, setLesseeName] = useState('');
+  const [lessorName, setLessorName] = useState('');
+  const [lesseeNameOne, setLesseeNameOne] = useState('');
+  const [lessorNameTwo, setLessorNameTwo] = useState('');
 
   useEffect(() => {
     const storedOutboundData = JSON.parse(localStorage.getItem("outboundData"));
@@ -65,23 +69,31 @@ export default function Quotation() {
     return (totalPriceDiscount + vat + guaranteePrice).toFixed(2);
   };
 
+  const formatNumber = (value) => {
+    if (isNaN(Number(value)) || value === null || value === undefined) {
+      return 'Invalid input';
+    }
+    return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
     <div className="w-screen h-auto p-2 mt-10 font-sarabun">
       <div className="grid grid-cols-5 border-b-4 pb-2 print:mb-0 print:p-0">
         <div className="col-span-3 flex">
           <img
-            src="img/logo1.jpg"
+            src="img/logo2.png"
             alt="logo"
             className="w-40 h-34 object-contain"
           />
           <div className="text-md print:text-[11.5px] w-full">
-            <h1 className="text-lg font-bold whitespace-nowrap font-sarabun">ห้างหุ้นส่วนจำกัด ภัทรชัย เเบบเหล็ก (สำนักงานใหญ่)</h1>
-            <h1 className="text-sm font-bold whitespace-nowrap font-sarabun">PATTARACHAI BABLEK PART.,LTD.(HEAD OFFICE)</h1>
-            <p className="font-sarabun">12/8 หมู่ที่ 7 ต.โคกขาม อ.เมืองสมุทรสาคร จ.สมุทรสาคร 74000</p>
-            <p className="whitespace-nowrap font-sarabun">โทร : 034-133093</p>
-            <p className="whitespace-nowrap font-sarabun">เลขประจำตัวผู้เสียภาษีอากร : 0-1335-62000-93-5</p>
-            <p className="font-sarabun">
-              สาขา: โคกขาม 084-1571097 / นพวงศ์ 084-1571094 / ชลบุรี 083-1653979
+            <h1 className="text-lg font-bold whitespace-nowrap font-sarabun">ร้านภัทรชัย เเบบเหล็ก</h1>
+            <p className="font-sarabun">รับผลิต จำหน่ายเเละให้เช่า</p>
+            <p className="font-sarabun">เเบบคาน , เเบบเสา , เเบบหล่องานถนน , ฟุตติ้ง</p>
+            <p className="font-sarabun">นั่งร้าน , ยูเเจ็ค , เเจ็คเบส , ฉาก , ป๊อปค้ำยัน</p>
+            <p className="font-sarabun">เเบบฐานเสาไฟ เเละเเบบพิเศษสั่งทำทุกชนิด</p>
+            <p className="font-sarabun">095-5862149 , 085-3806974</p>
+            <p className="whitespace-nowrap font-sarabun">
+              สาขา: โคกขาม 081-1571097 / นพวงศ์ 081-1571094 / ชลบุรี 083-1653979
             </p>
           </div>
         </div>
@@ -129,7 +141,7 @@ export default function Quotation() {
             เลขที่ :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            -
+            {outboundData.recipeNumber}
           </p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             วันที่เสนอราคา :
@@ -175,7 +187,7 @@ export default function Quotation() {
         <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center ">
           <span className="  border-b-2 border-t-2 border-black font-bold font-sarabun">ราคาเช่า/วัน</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(product.price || product.price3D).toFixed(2)}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(formatNumber(product.price) || formatNumber(product.price3D))}</span>
           ))}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
@@ -185,35 +197,25 @@ export default function Quotation() {
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">ค่าปรับสินค้า/ชิ้น</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{product.price_damage ? (product.price_damage).toFixed(2) : (0).toFixed(2)}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{product.price_damage ? formatNumber(product.price_damage) : formatNumber(0)}</span>
           ))}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">จำนวนเงินรวม</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(product.total * outboundData.day_length).toFixed(2)}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(formatNumber((product.total) * outboundData.day_length))}</span>
           ))}
         </div>
         {/* ข้อมูลในตาราง */}
 
       </div>
 
-      {data.vat === 'vat' && (
-        <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[150px]">
-          <span className="underline font-sarabun block print:text-[9px] ml-2">ช่องทางการชำระเงิน :</span>
-          <span className="font-sarabun block print:text-[9px] ml-2">ธ.กสิกรไทย / หจก.ภัทรชัย เเบบเหล็ก</span>
-          <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964</span>
-        </div>
-      )}
-
-      {data.vat === 'nvat' && (
-        <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[215px]">
-          <span className="underline font-sarabun block print:text-[9px] ml-2">ช่องทางการชำระเงิน :</span>
-          <span className="font-sarabun block print:text-[9px] ml-2">ธ.ทหารไทยธนชาต (ttb)</span>
-          <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964 / นางสาวกรวรรณ กองจันทึก</span>
-          <span className="font-sarabun block print:text-[9px] text-red-500 ml-2">ยอดค่าเช่าเฉลี่ย / วัน: 10 บาท</span>
-        </div>
-      )}
+      <div className="col-span-3 row-span-3 border-l-2 border-t-2 border-r-2 border-black w-[215px]">
+        <span className="underline font-sarabun block print:text-[9px] ml-2">ช่องทางการชำระเงิน :</span>
+        <span className="font-sarabun block print:text-[9px] ml-2">ธ.ทหารไทยธนชาต (ttb)</span>
+        <span className="font-sarabun block print:text-[9px] ml-2">เลขบัญชี: 125-8-290964 / นางสาวกรวรรณ กองจันทึก</span>
+        <span className="font-sarabun block print:text-[9px] text-red-500 ml-2">ยอดค่าเช่าเฉลี่ย / วัน: 10 บาท</span>
+      </div>
 
       {/* ส่วนเงื่อนไข */}
       <div className=" grid grid-cols-10 grid-rows-14 h-[300px] text-[9px]">
@@ -239,35 +241,28 @@ export default function Quotation() {
         <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมเงิน</span>
         <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{calculateTotalPrice()}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าขนส่งสินค้าไป-กลับ</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.shipping_cost}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.shipping_cost ? formatNumber(data.shipping_cost) : formatNumber(0)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าบริการเคลื่อนย้ายสินค้า</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.move_price}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.move_price ? formatNumber(data.move_price) : formatNumber(0)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ส่วนลด</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount ? formatNumber(data.discount) : formatNumber(0)}</span>
 
-        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:p-1 print:text-[10px]">
+        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
           <u className="font-sarabun">หมายเหตุ :</u>
-          <input
-            type="text"
-            value={note || '-'}
+          <textarea
+            value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="กรอกหมายเหตุ"
-            className="w-2/3 border-none p-1 font-sarabun"
+            className="w-2/3 border-none font-sarabun resize-none ml-2 mt-3"
+            rows="3"
           />
         </div>
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมหลังหักส่วนลด</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPrice()}</span>
-
-        {data.vat === 'vat' && (
-          <>
-            <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ภาษีมูลค่าเพิ่ม / vat7%</span>
-            <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateVAT()}</span>
-          </>
-        )}
+        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPrice()}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price}</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price ? formatNumber(data.guarantee_price) : formatNumber(0)}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
         <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPriceWithVat()}</span>
@@ -279,30 +274,33 @@ export default function Quotation() {
       </div>
 
       <div className="grid grid-cols-10 h-[70px] border-b-2 border-r-2 border-l-2 border-black text-[9px] font-sarabun">
+        
         <div className=" col-span-5 border-r-2 border-black flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
           <div>
-            <p className="font-sarabun">ลงชื่อ  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  ผู้เช่า</p>
-          </div>
-          <div>
-            <p className="font-sarabun">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
+            <p className="font-sarabun w-[300px] ml-6">ลงชื่อ  <input type="text" value={lesseeName} onChange={(e) => setLesseeName(e.target.value)} className="w-4/5 bg-blue-300" />  ผู้เช่า</p>
+            <p className="font-sarabun ml-12 mt-[-12px]">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
+            <p className="font-sarabun w-[300px] ml-12"><input type="text" value={lesseeNameOne} onChange={(e) => setLesseeNameOne(e.target.value)} className="w-4/5 bg-red-300" /></p>
+            <p className="font-sarabun ml-12 mt-[-12px]">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
           </div>
         </div>
 
-        <div className=" col-span-5 border-black flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
+        <div className=" col-span-5 border-black flex flex-col p-4 justify-around items-center h-[70px]">
           <div>
-            <p className="font-sarabun">ลงชื่อ  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  ผู้ให้เช่า</p>
-          </div>
-          <div>
-            <p className="font-sarabun mr-2">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
+            <p className="font-sarabun w-[300px] ml-3">ลงชื่อ  <input type="text" value={lessorName} onChange={(e) => setLessorName(e.target.value)} className="w-4/5 bg-blue-300" />  ผู้ให้เช่า</p>
+            <p className="font-sarabun ml-9 mt-[-12px]">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
+            <p className="font-sarabun w-[300px] ml-9"><input type="text" value={lessorNameTwo} onChange={(e) => setLessorNameTwo(e.target.value)} className="w-4/5 bg-red-300" /></p>
+            <p className="font-sarabun ml-9 mt-[-12px]">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</p>
           </div>
         </div>
+
       </div>
 
       <div className="flex justify-center mt-4">
         <button className='bg-blue-500 w-1/4 p-2 print:hidden text-[16px] rounded-md shadow-md hover:bg-blue-600 transition duration-200 text-white' onClick={window.print}>
-          พิมพ์ใบเสนอราคา
+          print
         </button>
       </div>
+
     </div>
   );
 }
