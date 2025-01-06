@@ -261,7 +261,7 @@ const StatusProduct = () => {
                     <td className="text-center border-l-2 px-4 py-2">
                       {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'เช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}</td>
+                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'กำลังเช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status === 'return' ? 'ส่งคืนเเล้ว' : item.status}</td>
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
                         onClick={() => openModal(item.id, item.reserve_id)}
@@ -299,6 +299,15 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [payMent, setPayment] = useState(0);
   const [vat, setVat] = useState(false);
+  const [lesseeName, setLesseeName] = useState('');
+  const [lessorName, setLessorName] = useState('');
+  const [lesseeNameOne, setLesseeNameOne] = useState('');
+  const [lessorNameTwo, setLessorNameTwo] = useState('');
+
+  const formatDateModal = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd MMM yy', { locale: th });
+  };
 
   useEffect(() => {
 
@@ -324,13 +333,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
-           
+
             if (response.data.data.vat === 'vat') {
               setVat(true)
-             
+
             } else if (response.data.data.vat === 'nvat') {
               setVat(false)
-              
+
             }
 
           } else {
@@ -449,7 +458,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   }
 
   const handlePreview = (id) => {
-    
+
     if (vat === true) {
       navigate("/preorder", { state: { id } });
     } else if (vat === false) {
@@ -468,7 +477,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <h2 className="text-2xl font-semibold text-gray-800 text-center">
             {currentStatus === 'reserve' ? 'จองสินค้า'
               : currentStatus === 'late' ? 'เลยกำหนดคืนสินค้า'
-                : currentStatus === 'hire' ? 'เช่าสินค้า'
+                : currentStatus === 'hire' ? 'ใบส่งของ'
                   : currentStatus === 'continue' ? 'เช่าต่อ'
                     : currentStatus}
           </h2>
@@ -491,17 +500,30 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 <strong className="text-gray-700">สาขา : </strong>{" "}
                 {modalProductDetails.branch_name}
               </p>
-              <p>
-                <strong className="text-gray-700">เลขที่ใบเสร็จ : </strong>{" "}
-                {modalProductDetails.export_number}
-              </p>
+              {currentStatus === 'hire' && (
+                <p>
+                  <strong className="text-gray-700">Po : </strong>{" "}
+                  <input
+                    type="text"
+                    placeholder="กรอก Po"
+                  ></input>
+                </p>
+              )}
               <p>
                 <strong className="text-gray-700">นามลูกค้า/ชื่อบริษัท : </strong>{" "}
                 {modalProductDetails.customer_name}
               </p>
               <p>
-                <strong className="text-gray-700">วันที่สร้าง : </strong>{" "}
-                {modalProductDetails.reserve_out}
+                <strong className="text-gray-700">เลขที่ใบเสร็จ : </strong>{" "}
+                {modalProductDetails.export_number}
+              </p>
+              <p>
+                <strong className="text-gray-700">วันที่ : </strong>{" "}
+                {formatDateModal(modalProductDetails.reserve_out)}
+              </p>
+              <p>
+                <strong className="text-gray-700">จำนวนวันที่เช่า : </strong>{" "}
+                {modalProductDetails.date + " วัน " + formatDateModal(modalProductDetails.reserve_out) + " - " + formatDateModal(new Date(new Date(modalProductDetails.reserve_out).getTime() + (modalProductDetails.date * 24 * 60 * 60 * 1000)))}
               </p>
             </div>
 
@@ -513,13 +535,9 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 <table className="w-full border-collapse border shadow-sm">
                   <thead className="bg-blue-300 text-gray-700">
                     <tr>
-                      <th className="border p-2">รหัสสินค้า</th>
-                      <th className="border p-2">ชื่อสินค้า</th>
                       <th className="border p-2">จำนวน</th>
-                      <th className="border p-2">ราคาเช่าต่อวัน</th>
-                      <th className="border p-2">จำนวนวัน</th>
-                      <th className="border p-2">ค่าปรับ</th>
-                      <th className="border p-2">จำนวนรวม</th>
+                      <th className="border p-2">ชื่อสินค้า</th>
+                      <th className="border p-2">ขนาด</th>
                     </tr>
                   </thead>
                   <tbody className="overflow-y-auto max-h-64">
@@ -529,29 +547,30 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                         className="hover:bg-gray-50 transition duration-200"
                       >
                         <td className="border p-2 text-center">
-                          {product.code}
-                        </td>
-                        <td className="border p-2">{product.product_name}</td>
-                        <td className="border p-2 text-center">
                           {product.quantity} {product.unit}
                         </td>
-                        <td className="border p-2 text-right">
-                          {product.price}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {modalProductDetails.date}
-                        </td>
+                        <td className="border p-2 text-center">{product.name}</td>
                         <td className="border p-2 text-center">
-                          {product.price_damage}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {product.amount_price}
+                          {product.size}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              {currentStatus === 'hire' && (<div className="grid grid-cols-10 h-[70px] border-b-2 border-r-2 border-l-2 border-gray text-[9px] font-sarabun">
+
+                <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
+                  <p className="font-sarabun text-[11px] w-[400px] ml-14">ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้ส่งของ</p>
+                </div>
+
+                <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
+                  <p className="font-sarabun text-[11px] w-[400px] ml-10">ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้รับของ</p>
+                </div>
+
+              </div>)}
+
             </div>
             {currentStatus === 'reserve' && (
               <div className="mt-4">

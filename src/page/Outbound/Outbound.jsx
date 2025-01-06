@@ -37,6 +37,35 @@ export function Outbound() {
   const [quantitySum, setQuantitySum] = useState(0);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const savedData = localStorage.getItem("outboundFormData");
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      setBranch(parsedData.branch);
+      setProducts(parsedData.products);
+      setName(parsedData.name);
+      setComName(parsedData.comName);
+      setAddress(parsedData.address);
+      setPhone(parsedData.phone);
+      setWorkside(parsedData.workside);
+      setSell_date(parsedData.sell_date);
+      setDay_Length(parsedData.day_length);
+      setRecipeNumber(parsedData.recipeNumber);
+      setItems(parsedData.items);
+      setNetPrice(parsedData.netPrice);
+      setConfirmitem(parsedData.confirmitem);
+      setConfirmItem_Create(parsedData.confirmitem_create);
+      setHasVat(parsedData.hasVat);
+      setHasVat1(parsedData.hasVat1);
+      setItem_sendto_database(parsedData.Item_sendto_database);
+      setValidateModalInput(parsedData.validateModalInput);
+      setAlldata_default(parsedData.alldata_default);
+      setMergetable(parsedData.mergetable);
+      setFormData(parsedData.formData);
+      setQuantitySum(parsedData.quantitySum);
+    }
+  }, []);
+
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
     { title: "ชื่อบริษัท :", type: "text" },
@@ -422,6 +451,7 @@ export function Outbound() {
     setMergetable([]);
     setFormData({});
     setQuantitySum(0);
+    localStorage.removeItem("outboundFormData");
   };
 
   return (
