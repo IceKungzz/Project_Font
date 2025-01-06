@@ -1,37 +1,48 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import thaiBahtText from 'thai-baht-text';
 
 export default function Quotation() {
+  const location = useLocation();
+  const { id } = location.state || {};
 
   const [data, setData] = useState([])
   const [products, setProducts] = useState([])
   const [note, setNote] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
-  const [outboundData, setOutboundData] = useState({}); // New state for outbound data
-  const [confirmitem, setConfirmItem] = useState([]); // New state for confirmed items
   const [lesseeName, setLesseeName] = useState('');
   const [lessorName, setLessorName] = useState('');
   const [lesseeNameOne, setLesseeNameOne] = useState('');
   const [lessorNameTwo, setLessorNameTwo] = useState('');
 
   useEffect(() => {
-    const storedOutboundData = JSON.parse(localStorage.getItem("outboundData"));
-    if (storedOutboundData) {
-      setOutboundData(storedOutboundData);
-      setData(storedOutboundData.data);
-      setProducts(storedOutboundData.data.products);
-      setExpiryDate(storedOutboundData.expiryDate);
+    if (!id) return;
 
-      if (storedOutboundData.sell_date) {
-        setOutboundData(prevState => ({
-          ...prevState,
-          sell_date: storedOutboundData.sell_date
-        }));
-      }
-    }
-  }, []);
+    const token = localStorage.getItem("token");
+
+    axios
+      .get(`http://192.168.195.75:5000/v1/product/status/status-one/${id}`, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef",
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setData(res.data.data);
+          setProducts(res.data.data.products)
+
+          const createDate = new Date(res.data.data.reserve_out);
+          const expiryDate = new Date(createDate);
+          expiryDate.setDate(createDate.getDate() + 7);
+          setExpiryDate(expiryDate.toISOString().split("T")[0]);
+        }
+      });
+
+  }, [id]);
 
   const num = [1, 2, 3, 4, 5, 6];
 
@@ -42,39 +53,13 @@ export default function Quotation() {
     return thaiBahtText(Number(value));
   };
 
-  const calculateTotalPrice = () => {
-    return products.reduce((total, product) => {
-      const price = product.price || product.price3D || 0;
-      return total + (price * (product.amount || 0) * (outboundData.day_length || 1));
-    }, 0).toFixed(2);
-  };
-
-  const calculateFinalPrice = () => {
-    const totalPrice = parseFloat(calculateTotalPrice());
-    const shippingCost = parseFloat(data.shipping_cost || 0);
-    const movePrice = parseFloat(data.move_price || 0);
-    const discount = parseFloat(data.discount || 0);
-    return (totalPrice + shippingCost + movePrice - discount).toFixed(2);
-  };
-
-  const calculateVAT = () => {
-    const finalPrice = parseFloat(calculateFinalPrice());
-    return ((finalPrice / 100) * 7).toFixed(2);
-  };
-
-  const calculateFinalPriceWithVat = () => {
-    const totalPriceDiscount = parseFloat(calculateFinalPrice());
-    const vat = data.vat === 'vat' ? parseFloat(calculateVAT()) : 0;
-    const guaranteePrice = parseFloat(data.guarantee_price || 0);
-    return (totalPriceDiscount + vat + guaranteePrice).toFixed(2);
-  };
-
   const formatNumber = (value) => {
     if (isNaN(Number(value)) || value === null || value === undefined) {
       return 'Invalid input';
     }
     return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
+
 
   return (
     <div className="w-screen h-auto p-2 mt-10 font-sarabun">
@@ -110,27 +95,27 @@ export default function Quotation() {
       <div className="mb-2 grid grid-cols-3">
         <div className="col-span-2 border-2 border-black print:col-span-2 print:text-[12px] text-md p-2 print:p-2 flex flex-col justify-around">
           <p>
-            <span className="font-bold font-sarabun">ชื่อผู้ติดต่อ :</span><span className="ml-2 font-sarabun">{" " + outboundData.name}</span>
+            <span className="font-bold font-sarabun">ชื่อผู้ติดต่อ :</span><span className="ml-2 font-sarabun">{" " + data.customer_name}</span>
           </p>
           <p>
-            <span className="font-bold font-sarabun">ชื่อบริษัท :</span><span className="ml-[17.5px] font-sarabun">{outboundData.comName}</span>
+            <span className="font-bold font-sarabun">ชื่อบริษัท :</span><span className="ml-[17.5px] font-sarabun">{data.place_name}</span>
           </p>
           <p>
-            <span className="font-bold font-sarabun">ที่อยู่ :</span><span className="ml-10 font-sarabun">{outboundData.address}</span>
+            <span className="font-bold font-sarabun">ที่อยู่ :</span><span className="ml-10 font-sarabun">{data.address}</span>
           </p>
           <p>
             <span className="font-bold "></span>
-            <span className="ml-[69px] text-red-500 underline font-sarabun">{'หน้างาน - '}{outboundData.workside}</span>
+            <span className="ml-[69px] text-red-500 underline font-sarabun">{'หน้างาน - '}{data.place_name}</span>
           </p>
 
           <p>
-            <span className="font-bold font-sarabun">โทร :</span><span className="ml-11 font-sarabun">{outboundData.phone}</span>
+            <span className="font-bold font-sarabun">โทร :</span><span className="ml-11 font-sarabun">099-999-9999</span>
           </p>
           <p>
             <span className="font-bold font-sarabun">เลขประจำตัวผู้เสียภาษีอากร :</span>
             <input
               type="text"
-              className="ml-2 font-sarabun w-1/2"
+              className="ml-2 font-sarabun"
               placeholder="กรอกเลขประจำตัวผู้เสียภาษี"
             />
           </p>
@@ -141,19 +126,31 @@ export default function Quotation() {
             เลขที่ :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            {outboundData.recipeNumber}
+            {data.export_number}
           </p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             วันที่เสนอราคา :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            {outboundData.sell_date}
+            {data.reserve_out
+              ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+              : ''}
           </p>
           <p className="col-span-1 border-b-2 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             วันที่หมดอายุ :
           </p>
           <p className="border-b-2 border-black text-center flex justify-center items-center h-full font-sarabun">
-            {expiryDate}
+            {expiryDate
+              ? new Date(expiryDate).toLocaleDateString('th-TH', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+              : ''}
           </p>
           <p className="col-span-1 border-r-2 border-black text-center flex justify-center items-center h-full font-sarabun">
             เงื่อนไขการชำระเงิน :
@@ -181,29 +178,29 @@ export default function Quotation() {
         <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center ">
           <span className="  border-b-2 border-t-2 border-black font-bold font-sarabun">จำนวน</span>
           {products.map((product, index) => (
-            <span key={index} className="font-sarabun">{product.amount} {product.unit}</span>
+            <span key={index} className="font-sarabun">{product.quantity} {product.unit}</span>
           ))}
         </div>
         <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center ">
           <span className="  border-b-2 border-t-2 border-black font-bold font-sarabun">ราคาเช่า/วัน</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(formatNumber(product.price) || formatNumber(product.price3D))}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{product.price}.00</span>
           ))}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black  text-center font-bold font-sarabun">จำนวนวัน</span>
-          <span className='print:text-[10px] font-sarabun'>{outboundData.day_length}</span>
+          <span className='print:text-[10px] font-sarabun'>{data.date}</span>
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">ค่าปรับสินค้า/ชิ้น</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{product.price_damage ? formatNumber(product.price_damage) : formatNumber(0)}</span>
+            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{formatNumber(product.price_damage)}</span>
           ))}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">จำนวนเงินรวม</span>
           {products.map((product, index) => (
-            <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(formatNumber((product.total) * outboundData.day_length))}</span>
+            <span className='mr-2 text-end print:text-[10px] font-sarabun'>{formatNumber((product.quantity * product.price) * data.date)}</span>
           ))}
         </div>
         {/* ข้อมูลในตาราง */}
@@ -239,16 +236,16 @@ export default function Quotation() {
         <div className="border-r-2 col-span-1 row-span-7 border-black"></div>
         <div className="border-r-2 col-span-1 row-span-7 border-black"></div>
         <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมเงิน</span>
-        <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{calculateTotalPrice()}</span>
+        <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_price_out)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าขนส่งสินค้าไป-กลับ</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.shipping_cost ? formatNumber(data.shipping_cost) : formatNumber(0)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.shipping_cost)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าบริการเคลื่อนย้ายสินค้า</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.move_price ? formatNumber(data.move_price) : formatNumber(0)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.move_price)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ส่วนลด</span>
-        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount ? formatNumber(data.discount) : formatNumber(0)}</span>
+        <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.discount)}</span>
 
-        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px] bg-blue-300">
-          <u className="font-sarabun text-red-500 bg-green-500">หมายเหตุ :</u>
+        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
+          <u className="font-sarabun text-red-500">หมายเหตุ :</u>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -259,16 +256,16 @@ export default function Quotation() {
         </div>
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมหลังหักส่วนลด</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPrice()}</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_discount)}</span>
 
-        <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{data.guarantee_price ? formatNumber(data.guarantee_price) : formatNumber(0)}</span>
+        <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.guarantee_price)}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
-        <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPriceWithVat()}</span>
+        <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.final_price)}</span>
 
         <div className="col-span-11 row-span-2 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black print:text-[12px] font-sarabun">
-          {formatThaiBahtText(calculateFinalPriceWithVat())}
+          {formatThaiBahtText(data.final_price)}
         </div>
 
       </div>
@@ -297,10 +294,9 @@ export default function Quotation() {
 
       <div className="flex justify-center mt-4">
         <button className='bg-blue-500 w-1/4 p-2 print:hidden text-[16px] rounded-md shadow-md hover:bg-blue-600 transition duration-200 text-white' onClick={window.print}>
-          print
+          พิมพ์ใบเสนอราคา
         </button>
       </div>
-
     </div>
   );
 }
