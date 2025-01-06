@@ -303,7 +303,8 @@ export function Modal_ReturnGreen({ close, data }) {
                   setIsModalOpen(true); // เปิด modal
                 }
               }}
-              className="px-6 py-3 w-full text-white rounded-md text-lg font-semibold transition-all duration-300 transform bg-[#7766d3] hover:bg-blue-400 active:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg hover:scale-105 disabled:opacity-50"
+              
+              className="px-6 py-3 w-full text-white rounded-md text-lg font-semibold transition-all duration-300 transform bg-red-500 hover:bg-red-700 active:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg disabled:opacity-50"
               disabled={isSubmitting}
             >
               {isSubmitting
@@ -329,4 +330,6 @@ export function Modal_ReturnGreen({ close, data }) {
       </div>
     </div>
   );
+
 }
+

@@ -60,6 +60,13 @@ export default function ProductReturn({ id }) {
     }));
   };
 
+  // Function to check if any product has been selected for return
+  const isAnyProductSelected = () => {
+    return Object.values(returnData).some(
+      (product) => product.return_quantity > 0 || product.return_all
+    );
+  };
+
   // ส่งข้อมูลคืนสินค้าไปยัง API
   const handleReturnSubmit = async () => {
     try {
@@ -67,12 +74,12 @@ export default function ProductReturn({ id }) {
 
       const payload = {
         outbound_id: outboundId,
-        branch_id: 1,
+        // branch_id: 1,
         returns: Object.keys(returnData).map((productId) => ({
           product_id: parseInt(productId),
           return_quantity: parseInt(returnData[productId].return_quantity),
           return_all: returnData[productId].return_all,
-        })),
+        }))
       };
 
       const response = await axios.post(
@@ -124,7 +131,7 @@ export default function ProductReturn({ id }) {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-semibold text-center mb-6">รายละเอียดสินค้า</h1>
+      <h1 className="text-xl font-semibold text-center mb-6">รายละเอียดสินค้า</h1>
       <table className="min-w-full table-auto border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -172,7 +179,10 @@ export default function ProductReturn({ id }) {
       <div className="mt-6 text-center">
         <button
           onClick={handleReturnSubmit}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-all"
+          className={`px-6 py-2 text-white rounded-lg transition-all ${
+            isAnyProductSelected() ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"
+          }`}
+          disabled={!isAnyProductSelected()}
         >
           คืนสินค้า
         </button>
@@ -180,3 +190,4 @@ export default function ProductReturn({ id }) {
     </div>
   );
 }
+
