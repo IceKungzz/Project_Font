@@ -69,9 +69,6 @@ export default function ProductReturn({ id }) {
 
   // ส่งข้อมูลคืนสินค้าไปยัง API
   const handleReturnSubmit = async () => {
-
-
-
     try {
       const token = localStorage.getItem("token");
 
@@ -193,3 +190,4 @@ export default function ProductReturn({ id }) {
     </div>
   );
 }
+
