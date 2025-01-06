@@ -245,12 +245,12 @@ export default function Quotation() {
         <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.discount)}</span>
 
         <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
-          <u className="font-sarabun">หมายเหตุ :</u>
+          <u className="font-sarabun text-red-500">หมายเหตุ :</u>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="กรอกหมายเหตุ"
-            className="w-2/3 border-none font-sarabun resize-none ml-2 mt-3"
+            className="w-2/3 border-none font-sarabun resize-none ml-2 mt-3 text-red-500"
             rows="3"
           />
         </div>
