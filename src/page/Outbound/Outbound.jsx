@@ -454,6 +454,13 @@ export function Outbound() {
     localStorage.removeItem("outboundFormData");
   };
 
+  const formatNumber = (value) => {
+    if (isNaN(Number(value)) || value === null || value === undefined) {
+      return 'Invalid input';
+    }
+    return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
 
     <div className="w-full h-[90%] mt-5">
@@ -708,8 +715,8 @@ export function Outbound() {
 
                               <td className="px-4 py-2">
                                 {item.type === "ขาย"
-                                  ? (item.price || 0) * (item.amount || 0)
-                                  : (item.price3D || 0) * (item.amount || 0)}
+                                  ? formatNumber((item.price || 0) * (item.amount || 0))
+                                  : formatNumber((item.price3D || 0) * (item.amount || 0))}
                               </td>
 
                               <button className="fa-solid fa-trash py-6" onClick={handleDeleteItem}></button>
@@ -769,13 +776,13 @@ export function Outbound() {
                 <span className="col-span-1 "></span>
                 <span className="col-span-1 grid justify-end p-1">ราคารวม</span>
                 <span className="col-span-1 grid justify-end p-1">
-                  {confirmitem
+                  {formatNumber(confirmitem
                     .reduce(
                       (total, item) =>
                         total + ((item.price || item.price3D || 0) * (item.amount || 0)),
                       0
-                    )
-                    .toFixed(2)}
+                    ))
+                  }
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
 
@@ -784,13 +791,13 @@ export function Outbound() {
                 </span>
                 <span className="col-span-1 grid justify-end p-1">
                   {hasVat
-                    ? (
+                    ? formatNumber(
                       confirmitem.reduce(
                         (total, item) =>
                           total + ((item.price || item.price3D || 0) * (item.amount || 0)),
                         0
                       ) * 0.07
-                    ).toFixed(2)
+                    )
                     : "0.00"}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
@@ -799,7 +806,7 @@ export function Outbound() {
                   ราคาสุทธิ
                 </span>
                 <span className="col-span-1 grid justify-end p-1 underline">
-                  {netPrice.toFixed(2)}
+                  {formatNumber(netPrice)}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
               </span>
