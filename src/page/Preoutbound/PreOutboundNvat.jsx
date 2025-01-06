@@ -247,13 +247,13 @@ export default function Quotation() {
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ส่วนลด</span>
         <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{data.discount ? formatNumber(data.discount) : formatNumber(0)}</span>
 
-        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px]">
-          <u className="font-sarabun">หมายเหตุ :</u>
+        <div className="col-span-7 row-span-3 border-r-2 border-l-2 border-b-2 border-black print:text-[10px] bg-blue-300">
+          <u className="font-sarabun text-red-500 bg-green-500">หมายเหตุ :</u>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="กรอกหมายเหตุ"
-            className="w-2/3 border-none font-sarabun resize-none ml-2 mt-3"
+            className="w-2/3 border-none font-sarabun resize-none ml-2 mt-3 text-red-500"
             rows="3"
           />
         </div>
