@@ -169,7 +169,7 @@ export function Outbound() {
   };
 
   const closeModal = (data) => {
-    setQuantitySum(data);  // รับเป็นตัวเลข
+    setQuantitySum(data); 
     setShowmodal(false);
   };
 
@@ -218,20 +218,12 @@ export function Outbound() {
 
   const confirm_order = async () => {
 
-    if (
-      !name ||
-      !workside ||
-      !address ||
-      !day_length ||
-      confirmitem.length === 0 ||
-      confirmitem.some((item) => !item.price && !item.price3D)
-
-    ) {
+    if (!name || !workside || !address || !day_length || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)) {
 
       Swal.fire({
         icon: "warning",
         text: "กรุณากรอกข้อมูลให้ครบถ้วน",
-        confirmButtonText: "ตกลง",
+        confirmButtonText: "ตกลง"
       });
       return;
 

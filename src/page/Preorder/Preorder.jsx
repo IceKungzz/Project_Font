@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import thaiBahtText from 'thai-baht-text';
+import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 export default function Quotation() {
   const location = useLocation();
@@ -58,6 +60,118 @@ export default function Quotation() {
       return 'Invalid input';
     }
     return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const exportToExcel = () => {
+
+    const headerData = [
+      ["", "", "", "", "ห้างหุ้นส่วนจำกัด ภัทรชัย เเบบเหล็ก (สำนักงานใหญ่)"],
+      ["", "", "", "", "PATTARACHAI BABLEK PART.,LTD.(HEAD OFFICE)"],
+      ["", "", "", "", "12/8 หมู่ที่ 7 ต.โคกขาม อ.เมืองสมุทรสาคร จ.สมุทรสาคร 74000"],
+      ["", "", "", "", "โทร : 034-133093 เลขประจำตัวผู้เสียภาษีอากร : 0-1335-62000-93-5"],
+      ["", "", "", "", "สาขา: โคกขาม 084-1571097 / นพวงศ์ 084-1571094 / ชลบุรี 083-1653979"]
+    ];
+
+    const productData = products.map((product, index) => ([
+      index + 1,
+      `${product.name} ${product.size}`,
+      `${product.quantity} ${product.unit}`,
+      product.price,
+      data.date,
+      product.price_damage ? product.price_damage : 0,
+      (product.quantity * product.price) * data.date
+    ]));
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Quotation');
+
+    worksheet.getColumn(1).width = 6;
+    worksheet.getColumn(2).width = 4;
+    worksheet.getColumn(3).width = 8;
+    worksheet.getColumn(4).width = 5;
+    worksheet.getColumn(5).width = 8;
+    worksheet.getColumn(6).width = 8;
+    worksheet.getColumn(7).width = 7;
+    worksheet.getColumn(8).width = 8;
+    worksheet.getColumn(9).width = 5;
+    worksheet.getColumn(10).width = 13;
+    worksheet.getColumn(11).width = 7;
+    worksheet.getColumn(12).width = 10;
+    worksheet.getColumn(13).width = 12;
+
+    worksheet.addRows(headerData);
+
+    worksheet.getRow(1).height = 29;
+    worksheet.getRow(2).height = 23;
+    worksheet.getRow(3).height = 21;
+    worksheet.getRow(4).height = 21;
+    worksheet.getRow(5).height = 18;
+    worksheet.getRow(6).height = 20;
+
+    worksheet.getRow(1).font = { size: 24, bold: true, name: 'Angsana New' };
+    worksheet.getRow(2).font = { size: 20, bold: true, name: 'Angsana New' };
+    worksheet.getRow(3).font = { size: 16, bold: true, name: 'Angsana New' };
+    worksheet.getRow(4).font = { size: 16, bold: true, name: 'Angsana New' };
+    worksheet.getRow(5).font = { size: 14, bold: true, name: 'Angsana New' };
+
+    worksheet.mergeCells('K3:M5');
+    const cell = worksheet.getCell('K3');
+    cell.value = "ใบเสนอราคา-เช่า / ใบเเจ้งหนี้";
+    cell.alignment = { vertical: 'middle', horizontal: 'center' };  
+    cell.font = { size: 20, bold: true, name: 'Angsana New' };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '05b8f5' }  
+    };
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+
+    const imagePath = "img/logo1.jpg";
+    fetch(imagePath)
+      .then((response) => response.blob())
+      .then((imageBlob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const buffer = reader.result;
+          const imageId = workbook.addImage({
+            buffer: buffer,
+            extension: 'jpeg',
+          });
+
+          worksheet.addImage(imageId, {
+            tl: { col: 0, row: 0 },
+            ext: { width: 185, height: 150 }
+          });
+
+          // worksheet.addRows(productData);
+
+          productData.forEach((row, index) => {
+            const rowIndex = index + 11;
+            worksheet.getRow(rowIndex).font = { size: 10, name: 'Angsana New' };
+          });
+
+          workbook.xlsx.writeBuffer().then((buffer) => {
+            const blob = new Blob([buffer], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ใบเสนอราคา-เลขที่-${data.export_number}.xlsx`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }).catch((error) => {
+            console.error("Error while generating Excel file:", error);
+          });
+        };
+        reader.readAsArrayBuffer(imageBlob);
+      })
+      .catch((error) => {
+        console.error("Error fetching image:", error);
+      });
   };
 
   return (
@@ -256,7 +370,7 @@ export default function Quotation() {
         <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_discount)}</span>
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ภาษีมูลค่าเพิ่ม / vat7%</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_vat)}</span>
+        <span className="col-span-1 row-span-1 border-b-2 border-black border-r-2 flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.total_vat)}</span>
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
         <span className="col-span-1 row-span-1 border-b-2 border-black border-r-2 flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.guarantee_price)}</span>
@@ -293,8 +407,8 @@ export default function Quotation() {
       </div>
 
       <div className="flex justify-center mt-4">
-        <button className='bg-blue-500 w-1/4 p-2 print:hidden text-[16px] rounded-md shadow-md hover:bg-blue-600 transition duration-200 text-white' onClick={window.print}>
-          พิมพ์ใบเสนอราคา
+        <button className='bg-blue-500 w-1/4 p-2 print:hidden text-[16px] rounded-md shadow-md hover:bg-blue-600 transition duration-200 text-white' onClick={exportToExcel}>
+          Export to Excel
         </button>
       </div>
     </div >

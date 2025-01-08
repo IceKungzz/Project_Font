@@ -1,16 +1,15 @@
 import React from "react";
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
 export function Modal_Outbound({ close, confirm, ititialData }) {
-
-  const [products, setProducts] = useState([])
-  const [products_search, setProducts_search] = useState([])
-  const [keysearchItem, setkeysearchItem] = useState('')
-  const [confirm_items, setConfirm_item] = useState(ititialData || [])
-
+  const [products, setProducts] = useState([]);
+  const [products_search, setProducts_search] = useState([]);
+  const [keysearchItem, setkeysearchItem] = useState('');
+  const [confirm_items, setConfirm_item] = useState(ititialData || []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     axios.get('http://192.168.195.75:5000/v1/product/outbound/product', {
       headers: {
         "Authorization": token,
@@ -19,28 +18,24 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
       },
     }).then((res) => {
       if (res.status === 200) {
-        setProducts(res.data.data)
-
+        setProducts(res.data.data);
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   const filteritem_Search = () => {
-    const itemFilter = products.filter(item => item.code.includes(keysearchItem))
-    setProducts_search(itemFilter)
-  }
+    const itemFilter = products.filter(item => item.code.includes(keysearchItem));
+    setProducts_search(itemFilter);
+  };
 
   const select_Item = (item, amount) => {
     const parsedAmount = parseInt(amount) || 0;
 
     setConfirm_item((prevItems) => {
-      // ถ้าจำนวนเป็น 0 ลบตัวนั้นออกจากรายการ
       if (parsedAmount === 0) {
         return prevItems.filter((i) => i.code !== item.code);
       }
 
-      // ถ้าไม่ใช่ 0 ให้เพิ่มหรืออัปเดตตัวนั้นในรายการ
       const existingItemIndex = prevItems.findIndex((i) => i.code === item.code);
 
       if (existingItemIndex !== -1) {
@@ -53,14 +48,12 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
     });
   };
 
-
   const confirm_item = () => {
     console.log('confirm modal = ', confirm_items);
     const itemsToConfirm = confirm_items.length > 0 ? confirm_items : ititialData;
-    const datalength = itemsToConfirm.length;
-    confirm(confirm_items ? confirm_items : []);
-    close(datalength ? datalength : 0);
-  }
+    confirm(confirm_items);
+    close(itemsToConfirm.length);
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-20 z-50">
@@ -69,7 +62,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
         <div className=" w-full flex justify-between items-center p-4">
           <div></div>
           <h2 className="text-2xl font-semibold">เลือกสินค้า </h2>
-          <button className="text-gray-500 hover:text-gray-700 text-[24px]" onClick={close}>X</button>
+          <button className="text-gray-500 hover:text-gray-700 text-[24px]" onClick={() => close(0)}>X</button>
         </div>
 
         {/* Search */}
@@ -141,7 +134,6 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
                           ititialData.find((i) => i.code === item.code)?.amount ||
                           ''
                         }
-
                       />
                     </td>
                   </tr>
