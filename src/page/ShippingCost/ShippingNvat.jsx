@@ -1404,7 +1404,7 @@ export default function Quotation() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ใบเสนอราคา-เลขที่-${data.export_number}.xlsx`;
+            a.download = `ใบส่งของ-เลขที่-${data.export_number}.xlsx`;
             a.click();
             URL.revokeObjectURL(url);
           }).catch((error) => {
