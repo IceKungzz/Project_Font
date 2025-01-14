@@ -477,6 +477,15 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
     }
   };
 
+  const handleShippingCost = (id) => {
+    console.log(vat)
+    if (vat === true) {
+      navigate("/shipping-vat", { state: { id } });
+    } else if (vat === false) {
+      navigate("/shipping-nvat", { state: { id } });
+    }
+  };
+
   const currentStatus = status.find((item) => item.id === itemId)?.status;
 
   return (
@@ -606,7 +615,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <div className="mt-4 flex justify-around">
             <button
               onClick={() => handlePreview(itemId)}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-gray-700 transition duration-200"
             >
               <span className="fa-solid fa-print"></span>
               <span> ดูใบเสนอราคา</span>
@@ -614,10 +623,22 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
             <button
               onClick={handleExportClick}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-blue-700 transition duration-200"
             >
               <span className="fa-solid fa-file-export"></span>
               <span> ส่งออกสินค้า</span>
+            </button>
+          </div>
+        )}
+
+        {currentStatus === "hire" && (
+          <div className="mt-12 flex justify-around">
+            <button
+              onClick={() => handleShippingCost(itemId)}
+              className="bg-green-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-green-700 transition duration-200"
+            >
+              <span className="fa-solid fa-print"></span>
+              <span> พิมพ์ใบส่งของ</span>
             </button>
           </div>
         )}
