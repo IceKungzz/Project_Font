@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal_Outbound } from "./Modal_Outbound";
+import { Modal_Assemble } from "./Modal_Assemble";
+
 import { ModalDiscount } from "./Modal_Discount";
 import { Modal_Create_Products } from "./Modal_Create_Products";
 import axios from "axios";
@@ -15,14 +17,17 @@ export function Outbound() {
   const [comName, setComName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [customer_tel, setcustomer_tel] = useState("");
   const [workside, setWorkside] = useState("");
   const [sell_date, setSell_date] = useState("");
   const [day_length, setDay_Length] = useState("");
-  const [recipeNumber, setRecipeNumber] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   //------------------------------------------------------
   const [items, setItems] = useState([]);
   const [netPrice, setNetPrice] = useState(0);
   const [showmodal, setShowmodal] = useState(false);
+  const [showmodalASM, setShowmodalASM] = useState(false);
+  const [confirmitemASM, setConfirmitemASM] = useState([]);
   const [showModalDiscount, setShowModalDiscount] = useState(false);
   const [showmodal_create_product, setShowmodal_create_product] = useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
@@ -32,10 +37,26 @@ export function Outbound() {
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
   const [validateModalInput, setValidateModalInput] = useState(false)
   const [alldata_default, setAlldata_default] = useState([{}]);
-  const [mergetable, setMergetable] = useState([])
+
   const [formData, setFormData] = useState({});
   const [quantitySum, setQuantitySum] = useState(0);
   const navigate = useNavigate();
+  const combinedItems = [
+    ...confirmitem.map((item) => ({
+      ...item,
+      isAssemble: false,
+    })),
+    ...confirmitemASM.map((item) => ({
+      ...item,
+      id_asm: item.id_asm, // ใช้ id_asm แทน id
+      isAssemble: true,
+    })),
+  ];
+
+
+
+
+
 
   useEffect(() => {
     const savedData = localStorage.getItem("outboundFormData");
@@ -50,17 +71,18 @@ export function Outbound() {
       setWorkside(parsedData.workside);
       setSell_date(parsedData.sell_date);
       setDay_Length(parsedData.day_length);
-      setRecipeNumber(parsedData.recipeNumber);
+      setcustomer_tel(parsedData.customer_tel)
       setItems(parsedData.items);
       setNetPrice(parsedData.netPrice);
       setConfirmitem(parsedData.confirmitem);
+      setConfirmitemASM(parsedData.confirmitemASM);
       setConfirmItem_Create(parsedData.confirmitem_create);
       setHasVat(parsedData.hasVat);
       setHasVat1(parsedData.hasVat1);
       setItem_sendto_database(parsedData.Item_sendto_database);
       setValidateModalInput(parsedData.validateModalInput);
       setAlldata_default(parsedData.alldata_default);
-      setMergetable(parsedData.mergetable);
+
       setFormData(parsedData.formData);
       setQuantitySum(parsedData.quantitySum);
     }
@@ -73,7 +95,8 @@ export function Outbound() {
     { title: "ที่อยู่ลูกค้า :", type: "text" },
     { title: "วันที่เสนอ :", type: "date" },
     { title: "เบอร์โทรศัพท์ :", type: "text" },
-    { title: "เลขที่ใบเสนอ :", type: "text" }
+    { title: "เบอร์ลูกค้า :", type: "text" }, // เพิ่มฟิลด์นี้
+
   ];
 
   const today = new Date();
@@ -107,6 +130,17 @@ export function Outbound() {
       price: 0,
     }));
     setConfirmitem(updatedItems);
+    updateQuantitySum();
+  };
+  const handleConfirmASM = (items) => {
+    const updatedItemsASM = items.map((item) => ({
+      ...item,
+      type: item.type || "เช่า", // ค่าเริ่มต้น
+      price: 0,                 // ค่าเริ่มต้น
+      isAssemble: true,         // เพิ่ม isAssemble: true
+    }));
+    setConfirmitemASM(updatedItemsASM); // ต้องเรียก setConfirmitemASM แทน
+    updateQuantitySum();
   };
 
   const handleConfirmDiscount = (items) => {
@@ -118,10 +152,6 @@ export function Outbound() {
     setConfirmitem(updatedItems);
   };
 
-  const handleConfirmItem_Create = (items) => {
-    setConfirmItem_Create(items)
-    setMergetable(items.merge)
-  };
 
   const handleDateChange = (dateValue) => {
     const date = new Date(dateValue);
@@ -168,9 +198,28 @@ export function Outbound() {
     return start.toLocaleDateString("th-TH", options);
   };
 
+  const updateQuantitySum = () => {
+    const totalItems = confirmitem.length + confirmitemASM.length;
+    console.log(confirmitemASM.length);
+    console.log(confirmitem.length);
+    // รวมจำนวนรายการสินค้าธรรมดาและ Assemble
+    setQuantitySum(totalItems);
+  };
+
+
+  // ฟังก์ชันปิด Modal สินค้าปกติ
   const closeModal = (data) => {
-    setQuantitySum(data); 
-    setShowmodal(false);
+    updateQuantitySum(); // อัปเดตจำนวนรายการ
+    setShowmodal(false); // ปิด modal
+  };
+
+  // ฟังก์ชันปิด Modal ASM
+  const closeModalASM = (data) => {
+    if (data) {
+      setFormData(data);
+    }
+    updateQuantitySum(); // อัปเดตจำนวนรายการ
+    setShowmodalASM(false); // ปิด modal ASM
   };
 
   const closeModalDiscount = (data) => {
@@ -191,11 +240,46 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
-  const handleAmountChange = (index, value) => {
-    const updatedConfirmItem = [...confirmitem];
-    updatedConfirmItem[index].amount = value;
-    setConfirmitem(updatedConfirmItem);
+  const handleAmountChange = (id, value, isAssemble = false) => {
+    const parsedValue = parseInt(value, 10) || 0; // แปลงค่า input เป็นจำนวนเต็ม
+    if (isAssemble) {
+      // สำหรับสินค้าประกอบ
+      const index = confirmitemASM.findIndex((item) => item.id_asm === id);
+      if (index !== -1) {
+        const updatedConfirmItemASM = [...confirmitemASM];
+        updatedConfirmItemASM[index] = {
+          ...updatedConfirmItemASM[index],
+          amountASM: parsedValue, // อัปเดตจำนวนสินค้า
+        };
+        setConfirmitemASM(updatedConfirmItemASM);
+      } else {
+        console.error("Invalid id_asm:", id);
+      }
+    } else {
+      // สำหรับสินค้าปกติ
+      const index = confirmitem.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        const updatedConfirmItem = [...confirmitem];
+
+        // เช็คเงื่อนไข 30 วัน และกำหนดราคา
+        const priceToUse =
+          day_length > 30
+            ? updatedConfirmItem[index].price30D || updatedConfirmItem[index].price || 0
+            : updatedConfirmItem[index].price || updatedConfirmItem[index].price3D || 0;
+
+        updatedConfirmItem[index] = {
+          ...updatedConfirmItem[index], // รักษาข้อมูลเดิม
+          amount: parsedValue, // อัปเดตจำนวนสินค้า
+          calculatedPrice: priceToUse, // กำหนดราคาที่เหมาะสม
+        };
+
+        setConfirmitem(updatedConfirmItem);
+      } else {
+        console.error("Invalid id:", id);
+      }
+    }
   };
+
 
   const handlePriceChange = (index, value) => {
     const updatedConfirmItem = [...confirmitem];
@@ -210,11 +294,22 @@ export function Outbound() {
     setConfirmitem(updatedConfirmItem);
   };
 
-  const handleDeleteItem = (index) => {
-    const updatedConfirmItem = [...confirmitem];
-    updatedConfirmItem.splice(index, 1);
-    setConfirmitem(updatedConfirmItem);
+  // ฟังก์ชันลบสินค้า
+  const handleDeleteItem = (isAssemble, id) => {
+    if (isAssemble) {
+      // ลบสินค้าประกอบ (ASM)
+      const updatedConfirmItemASM = confirmitemASM.filter((item) => item.id_asm !== id);
+      setConfirmitemASM(updatedConfirmItemASM);
+    } else {
+      // ลบสินค้าปกติ
+      const updatedConfirmItem = confirmitem.filter((item) => item.id !== id);
+      setConfirmitem(updatedConfirmItem);
+    }
+    updateQuantitySum();
   };
+
+
+
 
   const confirm_order = async () => {
 
@@ -232,14 +327,25 @@ export function Outbound() {
     console.log(confirmitem.price);
 
     const reserve = [
-      confirmitem.reduce(
+      combinedItems.reduce(
         (acc, item) => {
-          acc.code.push(item.code);
-          acc.product_id.push(String(item.id));
-          acc.size.push(item.size);
-          acc.price.push(item.type === 'ขาย' ? item.price : (item.price3D || "").toString());
-          acc.quantity.push(String(item.amount));
-          acc.type.push(item.type === "เช่า" ? "0" : "1");
+          if (item.isAssemble) {
+            acc.assemble.push(String(item.id_asm));
+            acc.assemble_quantity.push(String(item.amountASM || 0));
+            acc.assemble_price.push(String(item.assemble_price || 0));
+            acc.assemble_service_price.push(String(item.assemble_service_price || 0));
+          } else {
+            acc.code.push(item.code || "");
+            acc.product_id.push(String(item.id));
+            acc.price.push(
+              item.type === "ขาย"
+                ? String(item.price || 0)
+                : String(item.price3D || 0)
+            );
+            acc.quantity.push(String(item.amount || 0));
+            acc.size.push(item.size || "");
+            acc.type.push(item.type === "เช่า" ? "0" : "1");
+          }
           return acc;
         },
         {
@@ -248,12 +354,16 @@ export function Outbound() {
           price: [],
           quantity: [],
           size: [],
-          centimeter: [],
-          meter: [],
+          assemble: [],
+          assemble_quantity: [],
+          assemble_price: [],
+          assemble_service_price: [],
           type: [],
         }
-      )
+      ),
     ];
+
+
 
     const newOrder = {
       customer_name: name,
@@ -262,7 +372,7 @@ export function Outbound() {
       phone: phone,
       address,
       date: day_length,
-      recipe_number: recipeNumber,
+      customer_tel: customer_tel, // เพิ่ม customer_tel เพื่อให้ตรงกับ API
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
@@ -275,12 +385,11 @@ export function Outbound() {
     console.log("Sending new order:", newOrder);
 
     const token = localStorage.getItem("token");
-    const merge = confirmitem_create.merge
+
 
     try {
-
-      axios.post(
-        "http://192.168.195.75:5000/v1/product/outbound/reserve",
+      await axios.post(
+        "http://192.168.195.75:5000/v1/product/outbound/create-reserve",
         newOrder,
         {
           headers: {
@@ -289,26 +398,32 @@ export function Outbound() {
             "x-api-key": "1234567890abcdef",
           },
         }
-      ).then((res) => {
-        Swal.fire({
-          icon: "success",
-          text: "เพิ่มข้อมูลสำเร็จ",
-          confirmButton: "ok",
-        }).then(() => {
-          navigate("/status");
-        });
-        console.log('send success');
-
-      }).catch((err) => {
-        console.log(err);
+      );
+      Swal.fire({
+        icon: "success",
+        text: "เพิ่มข้อมูลสำเร็จ",
+        confirmButtonText: "ตกลง",
+      }).then(() => {
+        navigate("/status");
       });
-
+      console.log("send success");
     } catch (err) {
-      console.log(err);
+      console.error("Error sending order:", err);
+      Swal.fire({
+        icon: "error",
+        text: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        confirmButtonText: "ตกลง",
+      });
+    } finally {
+      setIsLoading(false); // ปิดสถานะกำลังโหลด
     }
-
+  
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
+  useEffect(() => {
+    updateQuantitySum(); // อัปเดตจำนวนเมื่อ confirmitem หรือ confirmitemASM เปลี่ยน
+  }, [confirmitem, confirmitemASM]);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -335,55 +450,72 @@ export function Outbound() {
     setValidateModalInput(allInputsValid);
   }, [inputs]);
 
-  const status_modal_create = () => {
-    if (validateModalInput) {
-      setShowmodal_create_product(true);
-      setAlldata_default({ name, address, workside, sell_date, day_length });
-    } else {
-      Swal.fire({
-        icon: "error",
-        text: "โปรดกรอกข้อมูลให้ครบ",
-        confirmButtonText: 'ตกลง',
-        scrollbarPadding: false
-      });
-      setShowmodal_create_product(false);
-    }
-  };
-
   const handlePreview = () => {
-    console.log(day_length)
-    const outboundData = {
-      name,
-      comName,
-      address,
-      phone,
-      workside,
-      sell_date,
-      day_length,
-      recipeNumber,
-      data: {
-        products: confirmitem.map(item => ({
-          ...item,
-          amount: item.amount || 0,
-          price: item.type === "ขาย" ? item.price || '' : item.price3D || '',
-          total: item.type === "ขาย"
-            ? (item.price || 0) * (item.amount || 0)
-            : (item.price3D || 0) * (item.amount || 0)
-        })),
-        reserve_out: sell_date,
-        total_price_out: netPrice,
-        shipping_cost: formData.shipping_cost,
-        move_price: formData.move_price,
-        discount: formData.discount,
-        final_price: netPrice - formData.discount,
-        total_vat: hasVat ? netPrice * 0.07 : 0,
-        guarantee_price: formData.guarantee_price,
-        vat: hasVat ? "vat" : "nvat",
-      },
-      expiryDate: calculateEndDate(sell_date, day_length),
+    const reserveData = {
+      code: [],
+      product_id: [],
+      price: [],
+      quantity: [],
+      size: [],
+      centimeter: [],
+      meter: [],
+      type: [],
+      assemble: [],
+      assemble_quantity: [],
+      assemble_price: [],
+      assemble_service_price: [],
     };
 
+    // รวมข้อมูลจาก combinedItems
+    combinedItems.forEach(item => {
+      if (item.isAssemble) {
+        // สำหรับสินค้า ASM
+        reserveData.assemble.push(item.id_asm || "");
+        reserveData.assemble_quantity.push(String(item.amountASM || 0));
+        reserveData.assemble_price.push(String(item.assemble_price || 0));
+        reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
+      } else {
+        // สำหรับสินค้าปกติ
+        reserveData.code.push(item.code || "");
+        reserveData.product_id.push(String(item.id || ""));
+        reserveData.price.push(
+          String(item.type === "ขาย" ? item.price || 0 : item.price3D || 0)
+        );
+        reserveData.quantity.push(String(item.amount || 0));
+        reserveData.size.push(item.size || "");
+        reserveData.centimeter.push(item.centimeter || "");
+        reserveData.meter.push(item.meter || "");
+        reserveData.type.push(item.type === "ขาย" ? "1" : "2");
+      }
+    });
+
+
+    const outboundData = {
+      customer_name: name,
+      place_name: workside,
+      address,
+      date: day_length,
+      vat: hasVat ? "vat" : "nvat",
+      shipping_cost: formData.shipping_cost || 0,
+      discount: formData.discount || 0,
+      move_price: formData.move_price || 0,
+      guarantee_price: formData.guarantee_price || 0,
+      company_name: comName,
+      phone,
+      customer_tel: phone,
+      reserve: [reserveData], // ใช้ข้อมูล reserve ที่สร้างจาก combinedItems
+    };
+
+    console.log("Preview Data:", outboundData);
+
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
+
+
+    console.log("Preview Data:", outboundData);
+
+    localStorage.setItem("outboundData", JSON.stringify(outboundData));
+
+
 
     localStorage.setItem("outboundFormData", JSON.stringify({
       branch,
@@ -391,7 +523,6 @@ export function Outbound() {
       name,
       comName,
       address,
-      recipeNumber,
       phone,
       workside,
       sell_date,
@@ -399,13 +530,14 @@ export function Outbound() {
       items,
       netPrice,
       confirmitem,
+      confirmitemASM,
       confirmitem_create,
       hasVat,
       hasVat1,
       Item_sendto_database,
       validateModalInput,
       alldata_default,
-      mergetable,
+
       formData,
       quantitySum
     }));
@@ -417,6 +549,32 @@ export function Outbound() {
     }
 
   };
+  const calculateTotalPrice = () => {
+    return combinedItems.reduce((total, item) => {
+      // เลือกใช้ราคาที่เหมาะสมสำหรับสินค้าปกติ
+      const priceToUse = day_length >= 30
+        ? item.price30D || item.price || 0 // ใช้ price30D หากมากกว่า 30 วัน
+        : item.price || item.price3D || 0; // ใช้ price หรือ price3D ในกรณีปกติ
+
+      // คำนวณรวมราคาสินค้า
+      const itemTotal = item.isAssemble
+        ? ((item.assemble_price || 0) * (item.amountASM || 0)) // ราคาสินค้าประกอบรวม service // ราคาสินค้าประกอบ
+        : priceToUse * (item.amount || 0); // ราคาสินค้าปกติ
+
+      return total + itemTotal;
+    }, 0);
+  };
+
+  const calculateVAT = (total) => {
+    return hasVat ? total * 0.07 : 0; // คำนวณ VAT 7% หากมีภาษี
+  };
+
+  const calculateNetPrice = () => {
+    const total = calculateTotalPrice();
+    const vat = calculateVAT(total);
+    return total + vat; // ราคาสุทธิ = ราคารวม + VAT
+  };
+
 
   const resetForm = () => {
     setProducts([]);
@@ -424,23 +582,24 @@ export function Outbound() {
     setComName("");
     setAddress("");
     setPhone("");
+    setcustomer_tel("");
     setWorkside("");
     setSell_date("");
     setDay_Length("");
-    setRecipeNumber("");
     setItems([]);
     setNetPrice(0);
     setShowmodal(false);
     setShowModalDiscount(false);
     setShowmodal_create_product(false);
     setConfirmitem([]);
+    setConfirmitemASM([]);
     setConfirmItem_Create([]);
     setHasVat(true);
     setHasVat1(true);
     setItem_sendto_database([]);
     setValidateModalInput(false);
     setAlldata_default([{}]);
-    setMergetable([]);
+
     setFormData({});
     setQuantitySum(0);
     localStorage.removeItem("outboundFormData");
@@ -455,7 +614,7 @@ export function Outbound() {
 
   return (
 
-    <div className="w-full h-[90%] mt-5">
+    <div className="w-full h-[100%] mt-5">
       <HelmetProvider>
         <Helmet>
           <title>ส่งออกสินค้า</title>
@@ -469,7 +628,13 @@ export function Outbound() {
           ititialData={confirmitem || []}
         />
       ) : null}
-
+      {showmodalASM ? (
+        <Modal_Assemble
+          close={closeModalASM}
+          confirm={handleConfirmASM}
+          ititialDataASM={confirmitemASM || []}
+        />
+      ) : null}
       {showmodal_create_product && validateModalInput ? (
         <Modal_Create_Products
           close={closeModal_Create}
@@ -522,8 +687,8 @@ export function Outbound() {
                               ? (e) => setAddress(e.target.value)
                               : item.title === "เบอร์โทรศัพท์ :"
                                 ? (e) => setPhone(e.target.value)
-                                : item.title === "เลขที่ใบเสนอ :"
-                                  ? (e) => setRecipeNumber(e.target.value)
+                                : item.title === "เบอร์ลูกค้า :"
+                                  ? (e) => setcustomer_tel(e.target.value)
                                   : null
                   }
                   value={
@@ -539,8 +704,8 @@ export function Outbound() {
                               ? address
                               : item.title === "เบอร์โทรศัพท์ :"
                                 ? phone
-                                : item.title === "เลขที่ใบเสนอ :"
-                                  ? recipeNumber
+                                : item.title === "เบอร์ลูกค้า :"
+                                  ? customer_tel
                                   : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
@@ -569,10 +734,10 @@ export function Outbound() {
                 <i className="fa-solid fa-plus mr-2"></i>จองสินค้า
               </button>
               <button
-                className="w-[170px] bg-[#909090] h-10 rounded-md text-white hover:bg-[#707070] transition duration-300"
-                onClick={status_modal_create}
+                className="w-[170px] bg-orange-400 h-10 rounded-md text-white hover:bg-orange-600 transition duration-300"
+                onClick={() => setShowmodalASM(true)}
               >
-                <i className="fa-solid fa-pen mr-2"></i>สร้างสินค้า
+                <i className="fa-solid fa-plus mr-2"></i>สินค้าประกอบ
               </button>
               <button
                 className="w-[170px] bg-blue-500 h-10 rounded-md text-white hover:bg-blue-600 transition duration-300"
@@ -629,7 +794,7 @@ export function Outbound() {
               <div className="row-span-3 no-scrollbar border-b-4 flex justify-center items-start mr-3 ml-3 ">
                 <div className="overflow-y-auto no-scrollbar max-h-[calc(70vh-200px)] w-full">
                   <table className="w-full table-auto text-center border-collapse border-t-2 border-white">
-                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2 ">
+                    <thead className="font-bold bg-blue-200 text-sky-800 sticky top-0 border-b-2">
                       <tr>
                         <th className="px-4 py-2 rounded-tl-lg">ลำดับ</th>
                         <th className="px-4 py-2">รายการ</th>
@@ -642,116 +807,85 @@ export function Outbound() {
                       </tr>
                     </thead>
                     <tbody>
-                      {confirmitem.length > 0 ? (
-                        confirmitem.map((item, index) => (
-                          <React.Fragment key={index}>
-                            {/* แสดงรายการหลัก */}
-                            <tr className="border-b-2">
-                              <td className="px-4 py-2">{index + 1}</td>
-                              {item.name === "item_merge" ? (
-                                <td className="px-4 py-2">
-                                  <input
-                                    type="text"
-                                    className="px-2 py-2 w-[100px] border border-black rounded-md"
-                                  />
-                                </td>
-                              ) : (
-                                <td className="px-4 py-2">{item.name}</td>
-                              )}
-                              <td className="px-4 py-2">
-                                {item.name === "item_merge" ? "-" : item.size}
-                              </td>
-                              <td className="px-4 py-2">
-                                <select
-                                  name="model"
-                                  className="px-4 py-2 text-center"
-                                  value={item.type || ""}
-                                  onChange={(e) =>
-                                    handleModelChange(index, e.target.value)
-                                  }
-                                >
-                                  <option value="เช่า">เช่า</option>
-                                  <option value="ขาย">ขาย</option>
-                                </select>
-                              </td>
-                              <td className="px-4 py-2">
-                                <input
-                                  type="number"
-                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  value={item.amount || 0}
-                                  required
-                                  onChange={(e) =>
-                                    handleAmountChange(index, e.target.value)
-                                  }
-                                />
-                              </td>
-                              <td className="px-4 py-2">
-                                <input
-                                  type="text"
-                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  required
-                                  value={item.type === "ขาย" ? item.price || '' : item.price3D || ''}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/^0+/, '');
+                      {combinedItems.length > 0 ? (
 
-                                    if (item.type === "ขาย") {
-                                      handlePriceChange(index, value === '' ? "" : value.toString());
+                        combinedItems.map((item, index) => (
+                          <tr
+                            key={`${item.isAssemble ? `asm-${item.id_asm}` : `prd-${item.id || index}`}`}
+                            className="border-b-2"
+                          >
+                            <td className="px-4 py-2">{index + 1}</td>
+                            <td className="px-4 py-2">{item.name || item.assemble_name}</td>
+                            <td className="px-4 py-2">{item.size || "-"}</td>
+                            <td className="px-4 py-2">
+                              <select
+                                name="model"
+                                className="px-4 py-2 text-center"
+                                value={item.type || ""}
+                                onChange={(e) => handleModelChange(index, e.target.value)}
+                              >
+                                <option value="เช่า">เช่า</option>
+                                <option value="ขาย">ขาย</option>
+                              </select>
+                            </td>
+                            <td className="px-4 py-2">
+                              <input
+                                type="number"
+                                className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                value={item.isAssemble ? item.amountASM || 0 : item.amount || 0} // ค่าเริ่มต้น
+                                onChange={(e) => {
+                                  console.log("Item Data:", item);
+                                  console.log("AmountASM:", item.amountASM);
 
-                                    } else if (item.type === "เช่า") {
-                                      handlePrice3DChange(index, value === '' ? "" : value.toString());
-                                    }
-                                  }}
-                                  disabled={item.type === "เช่า"}
-                                />
-                              </td>
+                                  handleAmountChange(
+                                    item.isAssemble ? item.id_asm : item.id,
+                                    e.target.value,
+                                    item.isAssemble
+                                  );
+                                }}
+                              />
+                            </td>
+                            <td className="px-4 py-2">
+                              {/* เลือกใช้ราคาที่เหมาะสมสำหรับสินค้าปกติและ assemble */}
+                              {item.isAssemble
+                                ? formatNumber(item.assemble_price || 0)// ราคาสำหรับสินค้าประกอบ
+                                : formatNumber(
+                                  day_length >= 30
+                                    ? item.price30D || item.price || 0 // ใช้ price30D หาก > 30 วัน
+                                    : item.price || item.price3D || 0 // ใช้ price หรือ price3D ในกรณีปกติ
+                                )}
+                            </td>
+                            <td className="px-4 py-2">
+                              {/* คำนวณรวมราคาต่อรายการ */}
+                              {item.isAssemble
+                                ? formatNumber(
+                                  ((item.assemble_price || 0) * (item.amountASM || 0) // ราคาสินค้าประกอบรวม service
+                                  ))
+                                : formatNumber(
+                                  ((day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)) *
+                                  (item.amount || 0) // ราคาสินค้าปกติ
+                                )}
+                            </td>
 
-                              <td className="px-4 py-2">
-                                {item.type === "ขาย"
-                                  ? formatNumber((item.price || 0) * (item.amount || 0))
-                                  : formatNumber((item.price3D || 0) * (item.amount || 0))}
-                              </td>
+                            <td className="px-4 py-2">
+                              <button
+                                className="fa-solid fa-trash py-6"
+                                onClick={() => handleDeleteItem(item.isAssemble, item.isAssemble ? item.id_asm : item.id)}
+                              ></button>
 
-                              <button className="fa-solid fa-trash py-6" onClick={handleDeleteItem}></button>
-
-                            </tr>
-
-                            {/* แสดงรายการย่อยสำหรับ item_merge */}
-                            {mergetable.length > 0 ? (
-                              mergetable.map((item, key) => (
-                                <tr key={key}>
-                                  <td>{key + 1}</td>
-                                  <td>{item.code.map((subitem) => (
-                                    <ul key={key}>
-                                      <li>{subitem}</li>
-                                    </ul>
-                                  ))}
-
-                                  </td>
-                                  <td>{item.size.map((subitem) => (
-                                    <ul key={key}>
-                                      <li>{subitem}</li>
-                                    </ul>
-                                  ))}</td>
-                                  <td>เช่า</td>
-                                  <td>{item.quantity_assemble}</td>
-                                  <td>{item.price}</td>
-                                  <td>{Number(item.quantity_assemble) * Number(item.price)}</td>
-                                </tr>
-                              ))
-
-
-                            ) : null}
-                          </React.Fragment>
+                            </td>
+                          </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="7" className="px-4 py-2 text-center">
+                          <td colSpan="8" className="px-4 py-2 text-center">
                             ไม่มีข้อมูล
                           </td>
                         </tr>
                       )}
                     </tbody>
                   </table>
+
                 </div>
               </div>
             </div>
@@ -764,41 +898,24 @@ export function Outbound() {
                 <span className="col-span-1 grid justify-center">{quantitySum}</span>
                 <span className="col-span-1 grid justify-start">รายการ</span>
               </span>
-              <span className="col-span-3 row-span-3 grid grid-cols-4 ">
-                <span className="col-span-1 "></span>
+              <span className="col-span-3 row-span-3 grid grid-cols-4">
+                <span className="col-span-1"></span>
                 <span className="col-span-1 grid justify-end p-1">ราคารวม</span>
                 <span className="col-span-1 grid justify-end p-1">
-                  {formatNumber(confirmitem
-                    .reduce(
-                      (total, item) =>
-                        total + ((item.price || item.price3D || 0) * (item.amount || 0)),
-                      0
-                    ))
-                  }
+                  {formatNumber(calculateTotalPrice())}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
 
-                <span className="col-span-2 grid justify-end p-1">
-                  ภาษีมูลค่าเพิ่ม (7%)
-                </span>
+                <span className="col-span-2 grid justify-end p-1">ภาษีมูลค่าเพิ่ม (7%)</span>
                 <span className="col-span-1 grid justify-end p-1">
-                  {hasVat
-                    ? formatNumber(
-                      confirmitem.reduce(
-                        (total, item) =>
-                          total + ((item.price || item.price3D || 0) * (item.amount || 0)),
-                        0
-                      ) * 0.07
-                    )
-                    : "0.00"}
+                  {formatNumber(calculateVAT(calculateTotalPrice()))}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
+
                 <span className="col-span-1"></span>
-                <span className="col-span-1 grid justify-end p-1">
-                  ราคาสุทธิ
-                </span>
+                <span className="col-span-1 grid justify-end p-1">ราคาสุทธิ</span>
                 <span className="col-span-1 grid justify-end p-1 underline">
-                  {formatNumber(netPrice)}
+                  {formatNumber(calculateNetPrice())}
                 </span>
                 <span className="col-span-1 grid justify-start p-1">บาท</span>
               </span>
@@ -841,10 +958,21 @@ export function Outbound() {
             <div className="row-span-1 items-center justify-end grid grid-cols-3 text-white mt-5 w-full ml-auto">
               <span className="col-span-1 flex justify-center">
                 <button
-                  className="bg-[#133E87] w-1/2 p-2 rounded-md hover:bg-[#172c4f] transition duration-300"
+                  className={`bg-[#133E87] w-1/2 p-2 rounded-md hover:bg-[#172c4f] transition duration-300 flex justify-center items-center ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   onClick={confirm_order}
+                  disabled={isLoading} // ปิดปุ่มเมื่อกำลังโหลด
                 >
-                  <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก
+                  {isLoading ? (
+                    <>
+                      <i className="fa-solid fa-spinner animate-spin mr-2"></i>
+                      กำลังโหลด...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-floppy-disk mr-2"></i>บันทึก
+                    </>
+                  )}
                 </button>
               </span>
 

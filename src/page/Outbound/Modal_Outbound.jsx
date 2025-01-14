@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 export function Modal_Outbound({ close, confirm, ititialData }) {
   const [products, setProducts] = useState([]);
@@ -40,20 +41,39 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
 
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex] = { ...item, amount: parsedAmount, price: item.price3D || 0 };
+        updatedItems[existingItemIndex] = { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false };
         return updatedItems;
       } else {
-        return [...prevItems, { ...item, amount: parsedAmount, price: item.price3D || 0 }];
+        return [...prevItems, { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false }];
       }
     });
   };
 
   const confirm_item = () => {
+    if (confirm_items.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนยืนยัน",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+  
     console.log('confirm modal = ', confirm_items);
     const itemsToConfirm = confirm_items.length > 0 ? confirm_items : ititialData;
+  
     confirm(confirm_items);
     close(itemsToConfirm.length);
+  
+    Swal.fire({
+      icon: "success",
+      title: "เพิ่มข้อมูลสำเร็จ",
+      text: "ข้อมูลสินค้าของคุณถูกเพิ่มเรียบร้อยแล้ว",
+      confirmButtonText: "ตกลง",
+    });
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-20 z-50">
