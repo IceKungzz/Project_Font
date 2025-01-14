@@ -166,7 +166,7 @@ export default function Quotation() {
     const cell = worksheet.getCell('K4');
     cell.value = "ใบเสนอราคา-เช่า / ใบเเจ้งหนี้";
     cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    cell.font = { size: 20, bold: true, name: 'Angsana New' };
+    cell.font = { size: 22, bold: true, name: 'Angsana New' };
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
