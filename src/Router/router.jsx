@@ -14,7 +14,10 @@ import { Modal_Outbound } from "../page/Outbound/Modal_Outbound";
 import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products";
 import StatusProduct from "../page/status/status";
 import { StockItem } from "../page/Stock/stock";
-import { ListItems } from "../page/allptc/listProduct"; // แก้ชื่อ Component ให้ถูกต้อง
+import { ListItems } from "../page/allptc/listProduct"; 
+import ShippingVat from "../page/ShippingCost/ShippingVat";
+import ShippingNVat from "../page/ShippingCost/ShippingNvat";
+
 
 const router = createBrowserRouter([
   {
@@ -38,6 +41,8 @@ const router = createBrowserRouter([
       { path: "preorder-nvat", element: <PreorderNvat /> },
       { path: "preoutbound-nvat", element: <PreOutboundNvat /> },
       { path: "preoutbound-vat", element: <PreOutboundVat /> },
+      { path: "shipping-vat", element: <ShippingVat /> },
+      { path: "shipping-nvat", element: <ShippingNVat /> },
     ],
   },
   { path: "/login", element: <Login /> },
