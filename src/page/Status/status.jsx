@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { format } from 'date-fns';
-import { da, th } from 'date-fns/locale';
+import { format } from "date-fns";
+import { da, th } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { data } from "autoprefixer";
 import Item from "antd/es/list/Item";
 
@@ -19,11 +19,8 @@ const StatusProduct = () => {
   const [reserveId, setReserveId] = useState(0);
 
   useEffect(() => {
-
     const fetchData = async () => {
-
       try {
-
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -37,18 +34,16 @@ const StatusProduct = () => {
             Authorization: token,
             "Content-Type": "application/json",
             "x-api-key": "1234567890abcdef",
-          }
+          },
         });
 
         if (response.data.code === 200) {
           setStatus(response.data.data["Status Product"]);
-
         } else {
           throw new Error(response.data.message);
         }
-
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       }
     };
 
@@ -56,11 +51,8 @@ const StatusProduct = () => {
   }, []);
 
   useEffect(() => {
-
     const fetchBranches = async () => {
-
       try {
-
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -74,7 +66,7 @@ const StatusProduct = () => {
             Authorization: token,
             "Content-Type": "application/json",
             "x-api-key": "1234567890abcdef",
-          }
+          },
         });
 
         if (response.data.code === 200) {
@@ -82,7 +74,6 @@ const StatusProduct = () => {
         } else {
           throw new Error(response.data.message);
         }
-
       } catch (error) {
         console.error("Error fetching branches:", error);
         setError(error.message);
@@ -92,11 +83,8 @@ const StatusProduct = () => {
     fetchBranches();
   }, []);
 
-
   const handleSearch = async () => {
-
     try {
-
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -104,8 +92,8 @@ const StatusProduct = () => {
       }
 
       if (receiptNumber !== "") {
-
-        const url = "http://192.168.195.75:5000/v1/product/status/search-status";
+        const url =
+          "http://192.168.195.75:5000/v1/product/status/search-status";
 
         const response = await axios.get(url, {
           params: { receiptNumber: receiptNumber },
@@ -113,19 +101,18 @@ const StatusProduct = () => {
             Authorization: token,
             "Content-Type": "application/json",
             "x-api-key": "1234567890abcdef",
-          }
+          },
         });
 
         if (response.data.code === 200) {
-          const filteredStatus = response.data.data
-            .filter((item) => (item.export_number.includes(receiptNumber)));
+          const filteredStatus = response.data.data.filter((item) =>
+            item.export_number.includes(receiptNumber)
+          );
           setStatus(filteredStatus);
         } else {
           throw new Error(response.data.message);
         }
-
       } else if (transactionDate !== "") {
-
         const url = "http://192.168.195.75:5000/v1/product/status/date";
 
         const response = await axios.get(url, {
@@ -134,31 +121,28 @@ const StatusProduct = () => {
             Authorization: token,
             "Content-Type": "application/json",
             "x-api-key": "1234567890abcdef",
-          }
+          },
         });
 
         if (response.data.code === 200) {
-          const filteredStatus = response.data.data['Status Product']
-            .filter((item) => (item.created_at.includes(transactionDate)));
+          const filteredStatus = response.data.data["Status Product"].filter(
+            (item) => item.created_at.includes(transactionDate)
+          );
           setStatus(filteredStatus);
-
         } else {
           throw new Error(response.data.message);
         }
-
       } else {
-
         if (receiptNumber === "" || transactionDate === "") {
           const url = "http://192.168.195.75:5000/v1/product/status/status";
 
-          const response = await axios.get(url,
-            {
-              headers: {
-                Authorization: token,
-                "Content-Type": "application/json",
-                "x-api-key": "1234567890abcdef",
-              }
-            });
+          const response = await axios.get(url, {
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+              "x-api-key": "1234567890abcdef",
+            },
+          });
 
           if (response.data.code === 200) {
             setStatus(response.data.data["Status Product"]);
@@ -167,14 +151,12 @@ const StatusProduct = () => {
           }
         }
       }
-
     } catch (error) {
       setError(error.message);
     }
   };
 
   const openModal = (id, reserve_id) => {
-
     if (!id) {
       console.error("ID is undefined");
       return;
@@ -190,13 +172,12 @@ const StatusProduct = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return format(date, 'd MMMM yyyy', { locale: th });
+    return format(date, "d MMMM yyyy", { locale: th });
   };
 
   return (
     <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
       <div className="w-full h-full flex flex-col gap-4">
-
         {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full flex items-start justify-start gap-4">
@@ -210,7 +191,9 @@ const StatusProduct = () => {
             </div>
           </div>
           <div className="flex items-center">
-            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">เลขที่ใบเสร็จ :</span>
+            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
+              เลขที่ใบเสร็จ :
+            </span>
             <input
               type="text"
               value={receiptNumber || ""}
@@ -220,7 +203,9 @@ const StatusProduct = () => {
             />
           </div>
           <div className="flex items-center">
-            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">วันที่ทำรายการ :</span>
+            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
+              วันที่ทำรายการ :
+            </span>
             <input
               type="date"
               value={transactionDate || ""}
@@ -230,7 +215,8 @@ const StatusProduct = () => {
           </div>
           <button
             onClick={handleSearch}
-            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md"
+          >
             ค้นหา
           </button>
         </div>
@@ -242,26 +228,58 @@ const StatusProduct = () => {
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
                 <tr>
-                  <th className="px-4 border-l-2  py-2 rounded-tl-lg border-white">สาขา</th>
+                  <th className="px-4 border-l-2  py-2 rounded-tl-lg border-white">
+                    สาขา
+                  </th>
                   <th className="px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
                   <th className="px-4 border-l-2  py-2">วันที่ทำรายการ</th>
-                  <th className="px-4 border-l-2  py-2">นามลูกค้า/ชื่อบริษัท</th>
+                  <th className="px-4 border-l-2  py-2">
+                    นามลูกค้า/ชื่อบริษัท
+                  </th>
                   <th className="px-4 border-l-2  py-2">รูปแบบ</th>
                   <th className="px-4 border-l-2  py-2">สถานะ</th>
-                  <th className="px-4 border-l-2  py-2 rounded-tr-lg">เพิ่มเติม</th>
+                  <th className="px-4 border-l-2  py-2 rounded-tr-lg">
+                    เพิ่มเติม
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {status.map((item, index) => (
-                  <tr key={index} className='  border-2'>
-                    <td className="text-center border-l-2 px-4 py-2">{item.branch_name}</td>
-                    <td className="text-center border-l-2 px-4 py-2">{item.export_number}</td>
-                    <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
-                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
-                    <td className="text-center border-l-2 px-4 py-2 ">
-                      {item.type === 'sell' ? 'ขาย' : item.type === 'hire' ? 'เช่า' : item.type === 'both' ? 'ขาย/เช่า' : item.type}
+                  <tr key={index} className="  border-2">
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {item.branch_name}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2">{item.status === 'reserve' ? 'จอง' : item.status === 'hire' ? 'กำลังเช่า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status === 'return' ? 'ส่งคืนเเล้ว' : item.status}</td>
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {item.export_number}
+                    </td>
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {formatDate(item.created_at)}
+                    </td>
+                    <td className="text-start border-l-2 px-4 py-2">
+                      {item.customer_name}
+                    </td>
+                    <td className="text-center border-l-2 px-4 py-2 ">
+                      {item.type === "sell"
+                        ? "ขาย"
+                        : item.type === "hire"
+                        ? "เช่า"
+                        : item.type === "both"
+                        ? "ขาย/เช่า"
+                        : item.type}
+                    </td>
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {item.status === "reserve"
+                        ? "จอง"
+                        : item.status === "hire"
+                        ? "กำลังเช่า"
+                        : item.status === "late"
+                        ? "เลยกำหนด"
+                        : item.status === "continue"
+                        ? "เช่าต่อ"
+                        : item.status === "return"
+                        ? "ส่งคืนเเล้ว"
+                        : item.status}
+                    </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
                         onClick={() => openModal(item.id, item.reserve_id)}
@@ -299,24 +317,20 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [payMent, setPayment] = useState(0);
   const [vat, setVat] = useState(false);
-  const [lesseeName, setLesseeName] = useState('');
-  const [lessorName, setLessorName] = useState('');
-  const [lesseeNameOne, setLesseeNameOne] = useState('');
-  const [lessorNameTwo, setLessorNameTwo] = useState('');
+  const [lesseeName, setLesseeName] = useState("");
+  const [lessorName, setLessorName] = useState("");
+  const [lesseeNameOne, setLesseeNameOne] = useState("");
+  const [lessorNameTwo, setLessorNameTwo] = useState("");
 
   const formatDateModal = (dateString) => {
     const date = new Date(dateString);
-    return format(date, 'dd MMM yy', { locale: th });
+    return format(date, "dd MMM yy", { locale: th });
   };
 
   useEffect(() => {
-
     if (isModalOpen) {
-
       const fetchData = async () => {
-
         try {
-
           setIsLoading(true);
           const token = localStorage.getItem("token");
           if (!token) throw new Error("Token not found");
@@ -334,21 +348,16 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
 
-            if (response.data.data.vat === 'vat') {
-              setVat(true)
-
-            } else if (response.data.data.vat === 'nvat') {
-              setVat(false)
-
+            if (response.data.data.vat === "vat") {
+              setVat(true);
+            } else if (response.data.data.vat === "nvat") {
+              setVat(false);
             }
-
           } else {
             throw new Error(response.data.message);
           }
-
         } catch (error) {
           console.error("Error fetching item data:", error);
-
         } finally {
           setIsLoading(false);
         }
@@ -361,7 +370,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   if (!isModalOpen) return null;
 
   const handleExportClick = async () => {
-
     if (!modalProductDetails || !modalProductDetails.products) {
       console.error("ไม่พบข้อมูลสินค้า");
       return;
@@ -381,10 +389,9 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       });
 
       if (response.data.code === 200) {
-
         const productData = response.data.data;
         const dataProduct = response.data.data.product;
-        const assemble = response.data.data.product.assemble_product
+        const assemble = response.data.data.product.assemble_product;
 
         let assemble_status = false;
 
@@ -412,8 +419,8 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               size: dataProduct?.size || [],
               meter: dataProduct?.meter || [],
               centimeter: dataProduct?.centimeter || [],
-            }
-          ]
+            },
+          ],
         };
 
         const outboundUrl = `http://192.168.195.75:5000/v1/product/outbound/outbound`;
@@ -427,59 +434,56 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
         if (outboundResponse.data.code === 201) {
           Swal.fire({
-            icon: 'success',
-            title: 'สำเร็จ',
-            text: 'ส่งออกสินค้าเรียบร้อย!',
+            icon: "success",
+            title: "สำเร็จ",
+            text: "ส่งออกสินค้าเรียบร้อย!",
           });
           onClose();
-
         } else {
           throw new Error(outboundResponse.data.message);
         }
-
       } else {
         throw new Error(response.data.message);
       }
-
     } catch (error) {
       console.error("Error exporting data:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาด',
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
         text: error.message,
       });
     }
   };
 
-
   const handleShowAlert = () => {
     setShowAlert(true);
     setPayment(1);
-  }
+  };
 
   const handlePreview = (id) => {
-
     if (vat === true) {
       navigate("/preorder", { state: { id } });
     } else if (vat === false) {
       navigate("/preorder-nvat", { state: { id } });
     }
-
   };
 
   const currentStatus = status.find((item) => item.id === itemId)?.status;
 
   return (
-
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-4 rounded-lg w-full max-w-4xl shadow-lg relative">
         <div className="relative flex items-center justify-center border-b pb-2">
           <h2 className="text-2xl font-semibold text-gray-800 text-center">
-            {currentStatus === 'reserve' ? 'จองสินค้า'
-              : currentStatus === 'late' ? 'เลยกำหนดคืนสินค้า'
-                : currentStatus === 'hire' ? 'ใบส่งของ'
-                  : currentStatus === 'continue' ? 'เช่าต่อ'
-                    : currentStatus}
+            {currentStatus === "reserve"
+              ? "จองสินค้า"
+              : currentStatus === "late"
+              ? "เลยกำหนดคืนสินค้า"
+              : currentStatus === "hire"
+              ? "ใบส่งของ"
+              : currentStatus === "continue"
+              ? "เช่าต่อ"
+              : currentStatus}
           </h2>
           <button
             onClick={onClose}
@@ -490,50 +494,111 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         </div>
 
         {isLoading ? (
-          <p className="mt-6 text-center text-gray-600">กำลังโหลด...</p>
+          <p className="mt-6 text-center text-gray-600">กำลังโหล</p>
         ) : error ? (
           <p className="mt-6 text-center text-red-500">{error}</p>
         ) : modalProductDetails ? (
-          <div className="mt-6 space-y-4 ">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="mt-6 space-y-4">
+            <div className="grid grid-cols-3 gap-4 bg-blue-50">
               <p>
-                <strong className="text-gray-700">สาขา : </strong>{" "}
-                {modalProductDetails.branch_name}
+                <strong className="text-gray-700 "> </strong>{" "}
               </p>
-              {currentStatus === 'hire' && (
-                <p>
-                  <strong className="text-gray-700">Po : </strong>{" "}
-                  <input
-                    type="text"
-                    placeholder="กรอก Po"
-                  ></input>
-                </p>
-              )}
+
+              {currentStatus === "hire" && <p></p>}
               <p>
-                <strong className="text-gray-700">นามลูกค้า/ชื่อบริษัท : </strong>{" "}
-                {modalProductDetails.customer_name}
+                <strong className="text-gray-700 bg-blue-50 absolute right-0 top-0 mt-20 -translate-x-7 ">
+                  เลขที่ : {modalProductDetails.export_number}
+                </strong>
+                <strong className="text-gray-700 "> </strong>{" "}
               </p>
+     
+              
+
+
+
+
+  
+  
+
+
+
+              <img src="/img/qr.nn.jpg" alt="ln" className="w-24 cover    " />
               <p>
-                <strong className="text-gray-700">เลขที่ใบเสร็จ : </strong>{" "}
-                {modalProductDetails.export_number}
+                <strong className="text-gray-700 absolute right-0 -translate-x-32">
+                  Po:{" "}
+                </strong>{" "}
+                <h1
+                  className="text-center text-2xl translate-y"
+                  style={{ textAlign: "center" }}
+                >
+                  ภัทรชัย แบบเหล็ก
+                </h1>
+                <h1
+                  className="text-center text-ellipsis text-ellipsis translate-"
+                  style={{ textAlign: "center" }}
+                >
+                  ผลิต-จำหน่าย-ให้เช่า เเบบเหล็ก นั่งร้าน
+                  <h1
+                    className="text-center -translate-x-10 "
+                    style={{ textAlign: "center", whiteSpace: "nowrap" }}
+                  >
+                    <i className="fa-solid fa-phone"></i> 085-3806974 ,
+                    095-5862149 <i className="fa-brands fa-facebook"></i>{" "}
+                    ภัทรชัย แบบเหล็ก
+                  </h1>
+                  <h1 className="bg-slate-100 flex items-center justify-center space-x-2 text-center -translate-x-0">
+                    <i class="fa-regular fa-circle -translate-x-1"></i> โรงงาน
+                    <i class="fa-regular fa-circle -translate-x-1"></i> โคกขาม
+                    <i class="fa-regular fa-circle -translate-x-1"></i> นพวงศ์
+                    <i class="fa-regular fa-circle -translate-x-1 "></i> ชลบุรี
+                  </h1>
+                </h1>
               </p>
+            </div>
+            <div class="mx-auto p-0 w-full bg-blue-200 border border-black rounded-lg shadow-lg">
+              <p class="text-center text-black">ใบส่งของ</p>
+            </div>
+            <div class="flex items-center space-x-4">
               <p>
                 <strong className="text-gray-700">วันที่ : </strong>{" "}
                 {formatDateModal(modalProductDetails.reserve_out)}
               </p>
+              <strong className="text-gray-700"> จำนวนวันที่เช่า :</strong>{" "}
+              {modalProductDetails.date +
+                " วัน " +
+                formatDateModal(modalProductDetails.reserve_out) +
+                " - " +
+                formatDateModal(
+                  new Date(
+                    new Date(modalProductDetails.reserve_out).getTime() +
+                      modalProductDetails.date * 24 * 60 * 60 * 1000
+                  )
+                )}
+            </div> 
+            <div class="flex items-center space-x-4">
               <p>
-                <strong className="text-gray-700">จำนวนวันที่เช่า : </strong>{" "}
-                {modalProductDetails.date + " วัน " + formatDateModal(modalProductDetails.reserve_out) + " - " + formatDateModal(new Date(new Date(modalProductDetails.reserve_out).getTime() + (modalProductDetails.date * 24 * 60 * 60 * 1000)))}
+                <strong className="text-gray-700"> นามลูกค้า : </strong>
+                {modalProductDetails.customer_name}
               </p>
             </div>
-
+            <div class="flex items-center space-x-4">
+              <p>
+                <strong className="text-gray-700"> ที่อยู่ : </strong>
+                {modalProductDetails.address}
+              </p>
+            </div>
             <div className="mt-4 ">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 รายการสินค้า
               </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border shadow-sm">
-                  <thead className="bg-blue-300 text-gray-700">
+              <div class="relative">
+  <div class="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
+  <div class="relative z-10">
+    
+    <h1>
+    <div className="              ">
+                <table className="w-full border-collapse border shadow-sm ">
+                  <thead className="bg-blue-300 text-gray-700 ">
                     <tr>
                       <th className="border p-2">จำนวน</th>
                       <th className="border p-2">ชื่อสินค้า</th>
@@ -549,7 +614,9 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                         <td className="border p-2 text-center">
                           {product.quantity} {product.unit}
                         </td>
-                        <td className="border p-2 text-center">{product.name}</td>
+                        <td className="border p-2 text-center">
+                          {product.name}
+                        </td>
                         <td className="border p-2 text-center">
                           {product.size}
                         </td>
@@ -558,21 +625,44 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                   </tbody>
                 </table>
               </div>
+    </h1>
+  </div>
+</div>
 
-              {currentStatus === 'hire' && (<div className="grid grid-cols-10 h-[70px] border-b-2 border-r-2 border-l-2 border-gray text-[9px] font-sarabun">
 
-                <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
-                  <p className="font-sarabun text-[11px] w-[400px] ml-14">ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้ส่งของ</p>
+              
+              
+              {currentStatus === "hire" && (
+                <div className="grid grid-cols-10 h-[70px] border-b-2 border-r-2 border-l-2 border-gray text-[9px] font-sarabun">
+                  <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
+                    <p className="font-sarabun text-[11px] w-[400px] ml-14">
+                      ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้ส่งของ
+                    </p>
+                  </div>
+
+                  <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px] ">
+                    <p className="font-sarabun text-[11px] w-[400px] ml-10 pt-">
+                      ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้รับของ
+                      
+                    </p>
+                    <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px] -ml-40 scroll-pt-96">
+                    <p className="font-sarabun text-[11px] w-[400px] ml-96 text-rose-800">
+                     **ได้รับสินค้าตามรายการข้างต้นไว้ถูกต้องเเล้ว**
+                      
+                    </p>
+
+                  </div>
+                  </div>
+                  
                 </div>
+              )}
+            
+            
 
-                <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
-                  <p className="font-sarabun text-[11px] w-[400px] ml-10">ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้รับของ</p>
-                </div>
-
-              </div>)}
-
-            </div>
-            {currentStatus === 'reserve' && (
+                  </div>
+            {currentStatus === "reserve" && (
               <div className="mt-4">
                 <input
                   type="radio"
@@ -592,7 +682,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
         )}
 
-        {currentStatus === 'reserve' && (
+        {currentStatus === "reserve" && (
           <div className="mt-4 flex justify-around">
             <button
               onClick={() => handlePreview(itemId)}
@@ -611,7 +701,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             </button>
           </div>
         )}
-
       </div>
     </div>
   );
