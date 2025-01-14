@@ -262,23 +262,23 @@ const StatusProduct = () => {
                       {item.type === "sell"
                         ? "ขาย"
                         : item.type === "hire"
-                        ? "เช่า"
-                        : item.type === "both"
-                        ? "ขาย/เช่า"
-                        : item.type}
+                          ? "เช่า"
+                          : item.type === "both"
+                            ? "ขาย/เช่า"
+                            : item.type}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {item.status === "reserve"
                         ? "จอง"
                         : item.status === "hire"
-                        ? "กำลังเช่า"
-                        : item.status === "late"
-                        ? "เลยกำหนด"
-                        : item.status === "continue"
-                        ? "เช่าต่อ"
-                        : item.status === "return"
-                        ? "ส่งคืนเเล้ว"
-                        : item.status}
+                          ? "กำลังเช่า"
+                          : item.status === "late"
+                            ? "เลยกำหนด"
+                            : item.status === "continue"
+                              ? "เช่าต่อ"
+                              : item.status === "return"
+                                ? "ส่งคืนเเล้ว"
+                                : item.status}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
@@ -370,6 +370,15 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   if (!isModalOpen) return null;
 
   const handleExportClick = async () => {
+    if (!showAlert) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาจ่ายเงินก่อน",
+        text: "กรุณากดปุ่ม 'จ่ายเงินแล้ว' ก่อนส่งออกสินค้า",
+      });
+      return;
+    }
+
     if (!modalProductDetails || !modalProductDetails.products) {
       console.error("ไม่พบข้อมูลสินค้า");
       return;
@@ -468,6 +477,15 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
     }
   };
 
+  const handleShippingCost = (id) => {
+    console.log(vat)
+    if (vat === true) {
+      navigate("/shipping-vat", { state: { id } });
+    } else if (vat === false) {
+      navigate("/shipping-nvat", { state: { id } });
+    }
+  };
+
   const currentStatus = status.find((item) => item.id === itemId)?.status;
 
   return (
@@ -478,12 +496,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             {currentStatus === "reserve"
               ? "จองสินค้า"
               : currentStatus === "late"
-              ? "เลยกำหนดคืนสินค้า"
-              : currentStatus === "hire"
-              ? "ใบส่งของ"
-              : currentStatus === "continue"
-              ? "เช่าต่อ"
-              : currentStatus}
+                ? "เลยกำหนดคืนสินค้า"
+                : currentStatus === "hire"
+                  ? "ใบส่งของ"
+                  : currentStatus === "continue"
+                    ? "เช่าต่อ"
+                    : currentStatus === "return"
+                      ? "ส่งคืนเเล้ว"
+                      : currentStatus}
           </h2>
           <button
             onClick={onClose}
@@ -499,71 +519,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <p className="mt-6 text-center text-red-500">{error}</p>
         ) : modalProductDetails ? (
           <div className="mt-6 space-y-4">
-            <div className="grid grid-cols-3 gap-4 bg-blue-50">
-              <p>
-                <strong className="text-gray-700 "> </strong>{" "}
-              </p>
-
-              {currentStatus === "hire" && <p></p>}
-              <p>
-                <strong className="text-gray-700 bg-blue-50 absolute right-0 top-0 mt-20 -translate-x-7 ">
-                  เลขที่ : {modalProductDetails.export_number}
-                </strong>
-                <strong className="text-gray-700 "> </strong>{" "}
-              </p>
-     
-              
-
-
-
-
-  
-  
-
-
-
-              <img src="/img/qr.nn.jpg" alt="ln" className="w-24 cover    " />
-              <p>
-                <strong className="text-gray-700 absolute right-0 -translate-x-32">
-                  Po:{" "}
-                </strong>{" "}
-                <h1
-                  className="text-center text-2xl translate-y"
-                  style={{ textAlign: "center" }}
-                >
-                  ภัทรชัย แบบเหล็ก
-                </h1>
-                <h1
-                  className="text-center text-ellipsis text-ellipsis translate-"
-                  style={{ textAlign: "center" }}
-                >
-                  ผลิต-จำหน่าย-ให้เช่า เเบบเหล็ก นั่งร้าน
-                  <h1
-                    className="text-center -translate-x-10 "
-                    style={{ textAlign: "center", whiteSpace: "nowrap" }}
-                  >
-                    <i className="fa-solid fa-phone"></i> 085-3806974 ,
-                    095-5862149 <i className="fa-brands fa-facebook"></i>{" "}
-                    ภัทรชัย แบบเหล็ก
-                  </h1>
-                  <h1 className="bg-slate-100 flex items-center justify-center space-x-2 text-center -translate-x-0">
-                    <i class="fa-regular fa-circle -translate-x-1"></i> โรงงาน
-                    <i class="fa-regular fa-circle -translate-x-1"></i> โคกขาม
-                    <i class="fa-regular fa-circle -translate-x-1"></i> นพวงศ์
-                    <i class="fa-regular fa-circle -translate-x-1 "></i> ชลบุรี
-                  </h1>
-                </h1>
-              </p>
-            </div>
-            <div class="mx-auto p-0 w-full bg-blue-200 border border-black rounded-lg shadow-lg">
-              <p class="text-center text-black">ใบส่งของ</p>
-            </div>
             <div class="flex items-center space-x-4">
               <p>
                 <strong className="text-gray-700">วันที่ : </strong>{" "}
                 {formatDateModal(modalProductDetails.reserve_out)}
               </p>
-              <strong className="text-gray-700"> จำนวนวันที่เช่า :</strong>{" "}
+              <strong className="text-gray-700"> จำนวนวันที่เช่า : </strong>{" "}
               {modalProductDetails.date +
                 " วัน " +
                 formatDateModal(modalProductDetails.reserve_out) +
@@ -571,10 +532,10 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 formatDateModal(
                   new Date(
                     new Date(modalProductDetails.reserve_out).getTime() +
-                      modalProductDetails.date * 24 * 60 * 60 * 1000
+                    modalProductDetails.date * 24 * 60 * 60 * 1000
                   )
                 )}
-            </div> 
+            </div>
             <div class="flex items-center space-x-4">
               <p>
                 <strong className="text-gray-700"> นามลูกค้า : </strong>
@@ -592,76 +553,44 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 รายการสินค้า
               </h3>
               <div class="relative">
-  <div class="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
-  <div class="relative z-10">
-    
-    <h1>
-    <div className="              ">
-                <table className="w-full border-collapse border shadow-sm ">
-                  <thead className="bg-blue-300 text-gray-700 ">
-                    <tr>
-                      <th className="border p-2">จำนวน</th>
-                      <th className="border p-2">ชื่อสินค้า</th>
-                      <th className="border p-2">ขนาด</th>
-                    </tr>
-                  </thead>
-                  <tbody className="overflow-y-auto max-h-64">
-                    {modalProductDetails.products.map((product) => (
-                      <tr
-                        key={product.product_id}
-                        className="hover:bg-gray-50 transition duration-200"
-                      >
-                        <td className="border p-2 text-center">
-                          {product.quantity} {product.unit}
-                        </td>
-                        <td className="border p-2 text-center">
-                          {product.name}
-                        </td>
-                        <td className="border p-2 text-center">
-                          {product.size}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-    </h1>
-  </div>
-</div>
+                <div class="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
+                <div class="relative z-10">
 
-
-              
-              
-              {currentStatus === "hire" && (
-                <div className="grid grid-cols-10 h-[70px] border-b-2 border-r-2 border-l-2 border-gray text-[9px] font-sarabun">
-                  <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px]">
-                    <p className="font-sarabun text-[11px] w-[400px] ml-14">
-                      ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้ส่งของ
-                    </p>
-                  </div>
-
-                  <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px] ">
-                    <p className="font-sarabun text-[11px] w-[400px] ml-10 pt-">
-                      ลงชื่อ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ผู้รับของ
-                      
-                    </p>
-                    <div className=" col-span-5 flex flex-col p-4 justify-around h-[60px] items-center h-[70px] -ml-40 scroll-pt-96">
-                    <p className="font-sarabun text-[11px] w-[400px] ml-96 text-rose-800">
-                     **ได้รับสินค้าตามรายการข้างต้นไว้ถูกต้องเเล้ว**
-                      
-                    </p>
-
-                  </div>
-                  </div>
-                  
+                  <h1>
+                    <div className="">
+                      <table className="w-full border-collapse border shadow-sm ">
+                        <thead className="bg-blue-300 text-gray-700 ">
+                          <tr>
+                            <th className="border p-2">จำนวน</th>
+                            <th className="border p-2">ชื่อสินค้า</th>
+                            <th className="border p-2">ขนาด</th>
+                          </tr>
+                        </thead>
+                        <tbody className="overflow-y-auto max-h-64">
+                          {modalProductDetails.products.map((product) => (
+                            <tr
+                              key={product.product_id}
+                              className="hover:bg-gray-50 transition duration-200"
+                            >
+                              <td className="border p-2 text-center">
+                                {product.quantity} {product.unit}
+                              </td>
+                              <td className="border p-2 text-center">
+                                {product.name}
+                              </td>
+                              <td className="border p-2 text-center">
+                                {product.size}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </h1>
                 </div>
-              )}
-            
-            
-
-                  </div>
+              </div>
+              
+            </div>
             {currentStatus === "reserve" && (
               <div className="mt-4">
                 <input
@@ -686,7 +615,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <div className="mt-4 flex justify-around">
             <button
               onClick={() => handlePreview(itemId)}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-gray-700 transition duration-200"
             >
               <span className="fa-solid fa-print"></span>
               <span> ดูใบเสนอราคา</span>
@@ -694,10 +623,22 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
             <button
               onClick={handleExportClick}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-blue-700 transition duration-200"
             >
               <span className="fa-solid fa-file-export"></span>
               <span> ส่งออกสินค้า</span>
+            </button>
+          </div>
+        )}
+
+        {currentStatus === "hire" && (
+          <div className="mt-12 flex justify-around">
+            <button
+              onClick={() => handleShippingCost(itemId)}
+              className="bg-green-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-green-700 transition duration-200"
+            >
+              <span className="fa-solid fa-print"></span>
+              <span> พิมพ์ใบส่งของ</span>
             </button>
           </div>
         )}
