@@ -187,7 +187,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C8:F10');
     const customer_nameValue = worksheet.getCell('C8');
-    customer_nameValue.value = `${data.customer_name ? data.customer_name : "-"}`;
+    customer_nameValue.value = `${data.customer_name ? data.customer_name : 0}`;
     customer_nameValue.font = { size: 13, name: 'Angsana New' };
     customer_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -199,7 +199,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C11:J13');
     const company_nameValue = worksheet.getCell('C11');
-    company_nameValue.value = `${data.company_name ? data.company_name : "-"}`;
+    company_nameValue.value = `${data.company_name ? data.company_name : 0}`;
     company_nameValue.font = { size: 13, name: 'Angsana New' };
     company_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -211,7 +211,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C14:J16');
     const addressValue = worksheet.getCell('C14');
-    addressValue.value = `${data.address ? data.address : "-"}`;
+    addressValue.value = `${data.address ? data.address : 0}`;
     addressValue.font = { size: 13, name: 'Angsana New' };
     addressValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -220,7 +220,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C17:J19');
     const placeValue = worksheet.getCell('C17');
-    placeValue.value = `หน้างาน - ${data.place_name ? data.place_name : "-"}`;
+    placeValue.value = `หน้างาน - ${data.place_name ? data.place_name : 0}`;
     placeValue.font = { size: 13, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     placeValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -232,7 +232,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C20:E22');
     const phoneValue = worksheet.getCell('C20:E22');
-    phoneValue.value = `${data.customer_tel ? data.customer_tel : "-"}`;
+    phoneValue.value = `${data.customer_tel ? data.customer_tel : 0}`;
     phoneValue.font = { size: 13, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -311,7 +311,7 @@ export default function Quotation() {
     const indexNumber = worksheet.getCell('A27');
     indexNumber.value = 'ลำดับที่';
     indexNumber.font = { size: 14, bold: true, name: 'Angsana New' };
-    indexNumber.alignment = { vertical: 'middle', horizontal: 'center' };
+    indexNumber.alignment = { vertical: 'middle', horizontal: 'left' };
 
     products.forEach((product, index) => {
       const rowNumber = 28 + index;
@@ -462,7 +462,7 @@ export default function Quotation() {
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M57');
-    guaranteePriceValue.value = `${formatNumber(data.guarantee_price ? data.guarantee_price : "-")} `;
+    guaranteePriceValue.value = `${formatNumber(data.guarantee_price ? data.guarantee_price : 0)} `;
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -472,7 +472,7 @@ export default function Quotation() {
     vat.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const vatValue = worksheet.getCell('M56');
-    vatValue.value = `${formatNumber(total_Price_Discount * 0.07) ? formatNumber(total_Price_Discount * 0.07) : "-"} `;
+    vatValue.value = `${formatNumber(total_Price_Discount * 0.07)} `;
     vatValue.font = { size: 13, name: 'Angsana New' };
     vatValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -492,7 +492,7 @@ export default function Quotation() {
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const discountValue = worksheet.getCell('M54');
-    discountValue.value = `${formatNumber(data.discount ? data.discount : "-")} `;
+    discountValue.value = `${formatNumber(data.discount ? data.discount : 0)} `;
     discountValue.font = { size: 13, name: 'Angsana New' };
     discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -502,7 +502,7 @@ export default function Quotation() {
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const movePriceValue = worksheet.getCell('M53');
-    movePriceValue.value = `${formatNumber(data.move_price ? data.move_price : "-")} `;
+    movePriceValue.value = `${formatNumber(data.move_price ? data.move_price : 0)} `;
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -512,7 +512,7 @@ export default function Quotation() {
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M52');
-    shippingCostValue.value = `${formatNumber(data.shipping_cost ? data.shipping_cost : "-")} `;
+    shippingCostValue.value = `${formatNumber(data.shipping_cost ? data.shipping_cost : 0)} `;
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -644,7 +644,7 @@ export default function Quotation() {
     const totalNewPrice = (totalPrice - (data.discount ? data.discount : 0)) - newPrice;
 
     const payment51 = worksheet.getCell('F39');
-    payment51.value = formatNumber(totalPrice - (data.discount ? data.discount : "-"));
+    payment51.value = formatNumber(totalPrice - (data.discount ? data.discount : 0));
     payment51.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment51.alignment = { vertical: 'middle', horizontal: 'right' };
     payment51.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -735,7 +735,7 @@ export default function Quotation() {
     payment82.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment83 = worksheet.getCell('H42');
-    payment83.value = formatNumber(data.guarantee_price ? data.guarantee_price : "-");
+    payment83.value = formatNumber(data.guarantee_price);
     payment83.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment83.alignment = { vertical: 'middle', horizontal: 'right' };
     payment83.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
