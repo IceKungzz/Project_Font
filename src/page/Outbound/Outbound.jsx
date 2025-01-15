@@ -57,36 +57,40 @@ export function Outbound() {
 
 
 
-
   useEffect(() => {
-    const savedData = localStorage.getItem("outboundFormData");
+    console.log("Loading data from localStorage...");
+    const savedData = JSON.parse(localStorage.getItem("outboundFormData"));
     if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      setBranch(parsedData.branch);
-      setProducts(parsedData.products);
-      setName(parsedData.name);
-      setComName(parsedData.comName);
-      setAddress(parsedData.address);
-      setPhone(parsedData.phone);
-      setWorkside(parsedData.workside);
-      setSell_date(parsedData.sell_date);
-      setDay_Length(parsedData.day_length);
-      setcustomer_tel(parsedData.customer_tel)
-      setItems(parsedData.items);
-      setNetPrice(parsedData.netPrice);
-      setConfirmitem(parsedData.confirmitem);
-      setConfirmitemASM(parsedData.confirmitemASM);
-      setConfirmItem_Create(parsedData.confirmitem_create);
-      setHasVat(parsedData.hasVat);
-      setHasVat1(parsedData.hasVat1);
-      setItem_sendto_database(parsedData.Item_sendto_database);
-      setValidateModalInput(parsedData.validateModalInput);
-      setAlldata_default(parsedData.alldata_default);
-
-      setFormData(parsedData.formData);
-      setQuantitySum(parsedData.quantitySum);
+      console.log("Loaded Data:", savedData);
+      setBranch(savedData.branch || "");
+      setProducts(savedData.products || []);
+      setName(savedData.name || "");
+      setComName(savedData.comName || "");
+      setAddress(savedData.address || "");
+      setPhone(savedData.phone || "");
+      setcustomer_tel(savedData.customer_tel || "");
+      setWorkside(savedData.workside || "");
+      setSell_date(savedData.sell_date || "");
+      setDay_Length(savedData.day_length || "");
+      setItems(savedData.items || []);
+      setNetPrice(savedData.netPrice || 0);
+      setConfirmitem(savedData.confirmitem || []);
+      setConfirmitemASM(savedData.confirmitemASM || []);
+      setConfirmItem_Create(savedData.confirmitem_create || []);
+      setHasVat(savedData.hasVat || true);
+      setHasVat1(savedData.hasVat1 || true);
+      setItem_sendto_database(savedData.Item_sendto_database || []);
+      setValidateModalInput(savedData.validateModalInput || false);
+      setAlldata_default(savedData.alldata_default || [{}]);
+      setFormData(savedData.formData || {});
+      setQuantitySum(savedData.quantitySum || 0);
+    } else {
+      console.log("No data found in localStorage.");
     }
   }, []);
+  
+  
+  
 
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
@@ -417,7 +421,7 @@ export function Outbound() {
     } finally {
       setIsLoading(false); // ปิดสถานะกำลังโหลด
     }
-  
+
     setItem_sendto_database((predata) => [...predata, newOrder]);
   };
   useEffect(() => {
@@ -451,6 +455,13 @@ export function Outbound() {
   }, [inputs]);
 
   const handlePreview = () => {
+    if (hasVat === true) {
+      navigate("/preoutbound-vat");
+    } else {
+      navigate("/preoutbound-nvat");
+    }
+  };
+  const saveToLocalStorage = () => {
     const reserveData = {
       code: [],
       product_id: [],
@@ -466,21 +477,16 @@ export function Outbound() {
       assemble_service_price: [],
     };
 
-    // รวมข้อมูลจาก combinedItems
     combinedItems.forEach(item => {
       if (item.isAssemble) {
-        // สำหรับสินค้า ASM
-        reserveData.assemble.push(item.id_asm || "");
+        reserveData.assemble.push(String(item.id_asm || ""));
         reserveData.assemble_quantity.push(String(item.amountASM || 0));
         reserveData.assemble_price.push(String(item.assemble_price || 0));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
       } else {
-        // สำหรับสินค้าปกติ
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
-        reserveData.price.push(
-          String(item.type === "ขาย" ? item.price || 0 : item.price3D || 0)
-        );
+        reserveData.price.push(String(item.type === "ขาย" ? item.price || 0 : item.price3D || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");
         reserveData.centimeter.push(item.centimeter || "");
@@ -488,7 +494,6 @@ export function Outbound() {
         reserveData.type.push(item.type === "ขาย" ? "1" : "2");
       }
     });
-
 
     const outboundData = {
       customer_name: name,
@@ -502,22 +507,13 @@ export function Outbound() {
       guarantee_price: formData.guarantee_price || 0,
       company_name: comName,
       phone,
-      customer_tel: phone,
-      reserve: [reserveData], // ใช้ข้อมูล reserve ที่สร้างจาก combinedItems
+      customer_tel,
+      reserve: [reserveData],
     };
 
-    console.log("Preview Data:", outboundData);
-
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
 
-
-    console.log("Preview Data:", outboundData);
-
-    localStorage.setItem("outboundData", JSON.stringify(outboundData));
-
-
-
-    localStorage.setItem("outboundFormData", JSON.stringify({
+    const formDataToSave = {
       branch,
       products,
       name,
@@ -527,6 +523,7 @@ export function Outbound() {
       workside,
       sell_date,
       day_length,
+      customer_tel,
       items,
       netPrice,
       confirmitem,
@@ -537,18 +534,47 @@ export function Outbound() {
       Item_sendto_database,
       validateModalInput,
       alldata_default,
-
       formData,
-      quantitySum
-    }));
+      quantitySum,
+      reserve: [reserveData],
+    };
 
-    if (hasVat === true) {
-      navigate("/preoutbound-vat");
-    } else {
-      navigate("/preoutbound-nvat");
-    }
-
+    localStorage.setItem("outboundFormData", JSON.stringify(formDataToSave));
+    console.log("Auto-saved to localStorage:", formDataToSave);
   };
+  useEffect(() => {
+    if (name || comName || address || confirmitem.length > 0) {
+      console.log("Auto-saving data...");
+      saveToLocalStorage();
+    }
+  }, [
+    branch,
+    products,
+    name,
+    comName,
+    address,
+    phone,
+    workside,
+    sell_date,
+    day_length,
+    customer_tel,
+    items,
+    netPrice,
+    confirmitem,
+    confirmitemASM,
+    confirmitem_create,
+    hasVat,
+    hasVat1,
+    Item_sendto_database,
+    validateModalInput,
+    alldata_default,
+    formData,
+    quantitySum,
+    combinedItems,
+  ]);
+  
+
+
   const calculateTotalPrice = () => {
     return combinedItems.reduce((total, item) => {
       // เลือกใช้ราคาที่เหมาะสมสำหรับสินค้าปกติ
@@ -599,12 +625,13 @@ export function Outbound() {
     setItem_sendto_database([]);
     setValidateModalInput(false);
     setAlldata_default([{}]);
-
     setFormData({});
     setQuantitySum(0);
-    localStorage.removeItem("outboundFormData");
-  };
 
+    // Clear localStorage
+    localStorage.removeItem("outboundFormData");
+    localStorage.removeItem("outboundData");
+  };
   const formatNumber = (value) => {
     if (isNaN(Number(value)) || value === null || value === undefined) {
       return 'Invalid input';
