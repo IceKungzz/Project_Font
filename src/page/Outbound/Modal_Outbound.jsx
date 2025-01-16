@@ -65,13 +65,6 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
   
     confirm(confirm_items);
     close(itemsToConfirm.length);
-  
-    Swal.fire({
-      icon: "success",
-      title: "เพิ่มข้อมูลสำเร็จ",
-      text: "ข้อมูลสินค้าของคุณถูกเพิ่มเรียบร้อยแล้ว",
-      confirmButtonText: "ตกลง",
-    });
   };
   
 

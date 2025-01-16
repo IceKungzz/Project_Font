@@ -88,9 +88,9 @@ export function Outbound() {
       console.log("No data found in localStorage.");
     }
   }, []);
-  
-  
-  
+
+
+
 
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
@@ -238,11 +238,32 @@ export function Outbound() {
     setValidateModalInput(false)
   };
 
-  const handleModelChange = (index, value) => {
-    const updatedConfirmItem = [...confirmitem];
-    updatedConfirmItem[index].type = value;
-    setConfirmitem(updatedConfirmItem);
+  const handleModelChange = (id, value, isAssemble = false) => {
+    if (isAssemble) {
+      // สำหรับสินค้าประกอบ (confirmitemASM)
+      const index = confirmitemASM.findIndex((item) => item.id_asm === id);
+      if (index !== -1) {
+        const updatedConfirmItemASM = [...confirmitemASM];
+        updatedConfirmItemASM[index] = {
+          ...updatedConfirmItemASM[index],
+          type: value, // อัปเดตค่า type
+        };
+        setConfirmitemASM(updatedConfirmItemASM);
+      }
+    } else {
+      // สำหรับสินค้าปกติ (confirmitem)
+      const index = confirmitem.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        const updatedConfirmItem = [...confirmitem];
+        updatedConfirmItem[index] = {
+          ...updatedConfirmItem[index],
+          type: value, // อัปเดตค่า type
+        };
+        setConfirmitem(updatedConfirmItem);
+      }
+    }
   };
+
 
   const handleAmountChange = (id, value, isAssemble = false) => {
     const parsedValue = parseInt(value, 10) || 0; // แปลงค่า input เป็นจำนวนเต็ม
@@ -363,6 +384,7 @@ export function Outbound() {
           assemble_price: [],
           assemble_service_price: [],
           type: [],
+          typeASM: [],
         }
       ),
     ];
@@ -376,6 +398,7 @@ export function Outbound() {
       phone: phone,
       address,
       date: day_length,
+      date_sell: sell_date,
       customer_tel: customer_tel, // เพิ่ม customer_tel เพื่อให้ตรงกับ API
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
@@ -464,6 +487,7 @@ export function Outbound() {
   const saveToLocalStorage = () => {
     const reserveData = {
       code: [],
+      product_name: [],
       product_id: [],
       price: [],
       quantity: [],
@@ -472,20 +496,25 @@ export function Outbound() {
       meter: [],
       type: [],
       assemble: [],
+      assemble_name: [],
       assemble_quantity: [],
       assemble_price: [],
+      description: [],
       assemble_service_price: [],
     };
 
     combinedItems.forEach(item => {
       if (item.isAssemble) {
         reserveData.assemble.push(String(item.id_asm || ""));
+        reserveData.assemble_name.push(String(item.assemble_name || ""));
         reserveData.assemble_quantity.push(String(item.amountASM || 0));
         reserveData.assemble_price.push(String(item.assemble_price || 0));
+        reserveData.description.push(String(item.description || ""));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
       } else {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
+        reserveData.product_name.push(String(item.name || ""));
         reserveData.price.push(String(item.type === "ขาย" ? item.price || 0 : item.price3D || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");
@@ -494,10 +523,29 @@ export function Outbound() {
         reserveData.type.push(item.type === "ขาย" ? "1" : "2");
       }
     });
+ 
+    const totalPrice = calculateTotalPrice(); // คำนวณราคารวม
+    const vat = calculateVAT(totalPrice);    // คำนวณ VAT
+    const netPrice = totalPrice + vat;
+    
+    // ตรวจสอบค่าก่อนคำนวณ
+    const shippingCost = parseFloat(formData.shipping_cost || 0);
+    const movePrice = parseFloat(formData.move_price || 0);
+    const guaranteePrice = parseFloat(formData.guarantee_price || 0);
+    const discount = parseFloat(formData.discount || 0);
+    
+    // คำนวณราคาสุทธิหลังรวมค่าขนส่ง ส่วนลด และค่าบริการ
+    const PriceAfterShipOrDiscount = netPrice + shippingCost + movePrice + guaranteePrice - discount;
+    
+    // คำนวณราคาสุดท้ายตามระยะเวลาเช่า
+    const rentalDays = parseFloat(day_length || 0); // ตรวจสอบว่า day_length เป็นตัวเลข
+    const FinalPrice = netPrice * rentalDays;
 
     const outboundData = {
+      
       customer_name: name,
       place_name: workside,
+      branch: branch,
       address,
       date: day_length,
       vat: hasVat ? "vat" : "nvat",
@@ -508,6 +556,12 @@ export function Outbound() {
       company_name: comName,
       phone,
       customer_tel,
+      sell_date: sell_date,
+      total_price: totalPrice, // เพิ่มราคารวม
+      vat_amount: vat,         // เพิ่ม VAT
+      net_price: netPrice,
+      finalPrice:FinalPrice,
+      totalPriceMain: PriceAfterShipOrDiscount,
       reserve: [reserveData],
     };
 
@@ -536,6 +590,9 @@ export function Outbound() {
       alldata_default,
       formData,
       quantitySum,
+      total_price: totalPrice, // เพิ่มราคารวม
+      vat_amount: vat,         // เพิ่ม VAT
+      net_price: netPrice,     // เพิ่มราคาสุทธิ
       reserve: [reserveData],
     };
 
@@ -572,7 +629,7 @@ export function Outbound() {
     quantitySum,
     combinedItems,
   ]);
-  
+
 
 
   const calculateTotalPrice = () => {
@@ -849,7 +906,7 @@ export function Outbound() {
                                 name="model"
                                 className="px-4 py-2 text-center"
                                 value={item.type || ""}
-                                onChange={(e) => handleModelChange(index, e.target.value)}
+                                onChange={(e) => handleModelChange(item.isAssemble ? item.id_asm : item.id, e.target.value, item.isAssemble)}
                               >
                                 <option value="เช่า">เช่า</option>
                                 <option value="ขาย">ขาย</option>
