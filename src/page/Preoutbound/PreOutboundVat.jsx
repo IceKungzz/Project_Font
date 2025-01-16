@@ -18,12 +18,18 @@ export default function Quotation() {
 
   useEffect(() => {
     const storedOutboundData = JSON.parse(localStorage.getItem("outboundData"));
+    console.log(storedOutboundData);
+    
     if (storedOutboundData) {
+      console.log("SS",storedOutboundData);
+      
       setOutboundData(storedOutboundData);
-      setData(storedOutboundData.data);
-      setProducts(storedOutboundData.data.products);
+      setData(storedOutboundData);
+      setProducts(storedOutboundData.reserve);
+      
       setExpiryDate(storedOutboundData.expiryDate);
-
+    
+      
       if (storedOutboundData.sell_date) {
         setOutboundData(prevState => ({
           ...prevState,
@@ -42,32 +48,32 @@ export default function Quotation() {
     return thaiBahtText(Number(value));
   };
 
-  const calculateTotalPrice = () => {
-    return products.reduce((total, product) => {
-      const price = product.price || product.price3D || 0;
-      return total + (price * (product.amount || 0) * (outboundData.day_length || 1));
-    }, 0).toFixed(2);
-  };
+  // const calculateTotalPrice = () => {
+  //   return products.reduce((total, product) => {
+  //     const price = product.price || product.price3D || 0;
+  //     return total + (price * (product.amount || 0) * (outboundData.day_length || 1));
+  //   }, 0).toFixed(2);
+  // };
 
-  const calculateFinalPrice = () => {
-    const totalPrice = parseFloat(calculateTotalPrice());
-    const shippingCost = parseFloat(data.shipping_cost || 0);
-    const movePrice = parseFloat(data.move_price || 0);
-    const discount = parseFloat(data.discount || 0);
-    return (totalPrice + shippingCost + movePrice - discount).toFixed(2);
-  };
+  // const calculateFinalPrice = () => {
+  //   const totalPrice = parseFloat(calculateTotalPrice());
+  //   const shippingCost = parseFloat(data.shipping_cost || 0);
+  //   const movePrice = parseFloat(data.move_price || 0);
+  //   const discount = parseFloat(data.discount || 0);
+  //   return (totalPrice + shippingCost + movePrice - discount).toFixed(2);
+  // };
 
-  const calculateVAT = () => {
-    const finalPrice = parseFloat(calculateFinalPrice());
-    return ((finalPrice / 100) * 7).toFixed(2);
-  };
+  // const calculateVAT = () => {
+  //   const finalPrice = parseFloat(calculateFinalPrice());
+  //   return ((finalPrice / 100) * 7).toFixed(2);
+  // };
 
-  const calculateFinalPriceWithVat = () => {
-    const totalPriceDiscount = parseFloat(calculateFinalPrice());
-    const vat = data.vat === 'vat' ? parseFloat(calculateVAT()) : 0;
-    const guaranteePrice = parseFloat(data.guarantee_price || 0);
-    return (totalPriceDiscount + vat + guaranteePrice).toFixed(2);
-  };
+  // const calculateFinalPriceWithVat = () => {
+  //   const totalPriceDiscount = parseFloat(calculateFinalPrice());
+  //   const vat = data.vat === 'vat' ? parseFloat(calculateVAT()) : 0;
+  //   const guaranteePrice = parseFloat(data.guarantee_price || 0);
+  //   return (totalPriceDiscount + vat + guaranteePrice).toFixed(2);
+  // };
 
   const formatNumber = (value) => {
     if (isNaN(Number(value)) || value === null || value === undefined) {
@@ -167,27 +173,27 @@ export default function Quotation() {
         {/* หัวตาราง */}
         <div className=" h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
           <span className=" border-b-2 border-t-2 border-black font-bold font-sarabun">ลำดับ</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className="font-sarabun">{index + 1}</span>
-          ))}
+          ))} */}
         </div>
         <div className=" h-full w-full col-span-4 row-span-11 border-r-2 border-black flex flex-col ">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">รายการ</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className="ml-2 font-sarabun">{product.name}  <span className='ml-10 font-sarabun'>{product.size}</span></span>
-          ))}
+          ))} */}
         </div>
         <div className=" h-full w-full  row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black font-bold font-sarabun">จำนวน</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className="font-sarabun">{product.amount} {product.unit}</span>
-          ))}
+          ))} */}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center ">
           <span className="  border-b-2 border-t-2 border-black font-bold font-sarabun">ราคาเช่า/วัน</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{(formatNumber(product.price) || formatNumber(product.price3D))}</span>
-          ))}
+          ))} */}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black  text-center font-bold font-sarabun">จำนวนวัน</span>
@@ -195,15 +201,15 @@ export default function Quotation() {
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col text-center">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">ค่าปรับสินค้า/ชิ้น</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{"0.00"}</span>
-          ))}
+          ))} */}
         </div>
         <div className=" h-full w-full row-span-11 border-r-2 border-black flex flex-col ">
           <span className="  border-b-2 border-t-2 border-black text-center font-bold font-sarabun">จำนวนเงินรวม</span>
-          {products.map((product, index) => (
+          {/* {products.map((product, index) => (
             <span key={index} className='mr-2 text-end print:text-[10px] font-sarabun'>{formatNumber(product.total * outboundData.day_length)}</span>
-          ))}
+          ))} */}
         </div>
         {/* ข้อมูลในตาราง */}
 
@@ -237,7 +243,7 @@ export default function Quotation() {
         <div className="border-r-2 col-span-1 row-span-7 border-black"></div>
         <div className="border-r-2 col-span-1 row-span-7 border-black"></div>
         <span className="col-span-2 row-span-1 border-t-2 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมเงิน</span>
-        <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{calculateTotalPrice()}</span>
+        {/* <span className="border-t-2 border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{calculateTotalPrice()}</span> */}
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าขนส่งสินค้าไป-กลับ</span>
         <span className="border-b-2 border-r-2 border-black flex items-center justify-end print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.shipping_cost ? data.shipping_cost : 0)}</span>
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าบริการเคลื่อนย้ายสินค้า</span>
@@ -257,19 +263,19 @@ export default function Quotation() {
         </div>
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">รวมหลังหักส่วนลด</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPrice()}</span>
+        {/* <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPrice()}</span> */}
 
         <span className="col-span-2 row-span-1 border-r-2 border-b-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ภาษีมูลค่าเพิ่ม / vat7%</span>
-        <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateVAT()}</span>
+        {/* <span className="col-span-1 row-span-1 border-b-2 border-r-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateVAT()}</span> */}
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center pl-1 print:text-[10px] font-sarabun">ค่าประกันสินค้า</span>
         <span className="col-span-1 row-span-1 border-b-2 border-r-2  border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{formatNumber(data.guarantee_price ? data.guarantee_price : 0)}</span>
 
         <span className="col-span-2 row-span-1 border-b-2 border-r-2 border-black flex items-center p-1 print:text-[10px] font-sarabun">ยอดรวมที่ต้องชำระ</span>
-        <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPriceWithVat()}</span>
+        {/* <span className="col-span-1 row-span-1 border-r-2 border-b-2 border-black flex justify-end items-center print:text-[10px] pr-0.5 font-sarabun">{calculateFinalPriceWithVat()}</span> */}
 
         <div className="col-span-11 row-span-2 flex justify-center items-center font-bold border-r-2 border-b-2 border-l-2 border-black print:text-[12px] font-sarabun">
-          {formatThaiBahtText(calculateFinalPriceWithVat())}
+          {/* {formatThaiBahtText(calculateFinalPriceWithVat())} */}
         </div>
 
       </div>

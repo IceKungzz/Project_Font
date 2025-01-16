@@ -189,12 +189,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
     console.log("confirm modal = ", filteredItemsASM);
     confirm(filteredItemsASM);
     close(filteredItemsASM.length);
-
-    Swal.fire({
-      icon: "success",
-      text: "เพิ่มข้อมูลสำเร็จ",
-      confirmButtonText: "ตกลง",
-    });
   };
 
   return (
