@@ -17,6 +17,8 @@ import { StockItem } from "../page/Stock/stock";
 import { ListItems } from "../page/allptc/listProduct"; 
 import ShippingVat from "../page/ShippingCost/ShippingVat";
 import ShippingNVat from "../page/ShippingCost/ShippingNvat";
+import RentalcontractVat from "../page/Rentalcontract/RentalcontractVat";
+import RentalcontractNVat from "../page/Rentalcontract/RentalcontractNVat";
 
 
 const router = createBrowserRouter([
@@ -43,6 +45,8 @@ const router = createBrowserRouter([
       { path: "preoutbound-vat", element: <PreOutboundVat /> },
       { path: "shipping-vat", element: <ShippingVat /> },
       { path: "shipping-nvat", element: <ShippingNVat /> },
+      { path: "rentalcontract-vat", element: <RentalcontractVat /> },
+      { path: "rentalcontract-nvat", element: <RentalcontractNVat /> },
     ],
   },
   { path: "/login", element: <Login /> },

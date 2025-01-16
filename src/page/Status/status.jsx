@@ -4,8 +4,8 @@ import { format } from "date-fns";
 import { da, th } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { data } from "autoprefixer";
-import Item from "antd/es/list/Item";
+// import { data } from "autoprefixer";
+// import Item from "antd/es/list/Item";
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
@@ -309,22 +309,17 @@ const StatusProduct = () => {
 const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [modalProductDetails, setModalProductDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [itemData, setItemData] = useState(null);
   const [error, setError] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
-  const [vatPaid, setVatPaid] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [payMent, setPayment] = useState(0);
+  const [showAlertShipping, setShowAlertShipping] = useState(false);
   const [vat, setVat] = useState(false);
-  const [lesseeName, setLesseeName] = useState("");
-  const [lessorName, setLessorName] = useState("");
-  const [lesseeNameOne, setLesseeNameOne] = useState("");
-  const [lessorNameTwo, setLessorNameTwo] = useState("");
 
   const formatDateModal = (dateString) => {
     const date = new Date(dateString);
-    return format(date, "dd MMM yy", { locale: th });
+    const buddhistYear = date.getFullYear() + 543;
+    return format(date, "d MMMM yyyy", { locale: th }).replace(/[\d]{4}/, buddhistYear);
   };
 
   useEffect(() => {
@@ -347,7 +342,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
-
             if (response.data.data.vat === "vat") {
               setVat(true);
             } else if (response.data.data.vat === "nvat") {
@@ -469,6 +463,10 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
     setPayment(1);
   };
 
+  const handleShowAlertShipping = () => {
+    setShowAlertShipping(true);
+  };
+
   const handlePreview = (id) => {
     if (vat === true) {
       navigate("/preorder", { state: { id } });
@@ -478,11 +476,27 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   };
 
   const handleShippingCost = (id) => {
-    console.log(vat)
     if (vat === true) {
       navigate("/shipping-vat", { state: { id } });
     } else if (vat === false) {
       navigate("/shipping-nvat", { state: { id } });
+    }
+  };
+
+  const handleExportToExcelShippingCost = (id) => {
+    if (!showAlertShipping) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาส่งสินค้าก่อน",
+        text: "กรุณากดปุ่ม 'ส่งสินค้าแล้ว' ก่อนพิมพ์ใบสัญญาเช่า",
+      });
+      return;
+    }
+
+    if (vat === true) {
+      navigate("/rentalcontract-vat", { state: { id } });
+    } else if (vat === false) {
+      navigate("/rentalcontract-nvat", { state: { id } });
     }
   };
 
@@ -518,36 +532,88 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         ) : error ? (
           <p className="mt-6 text-center text-red-500">{error}</p>
         ) : modalProductDetails ? (
-          <div className="mt-6 space-y-4">
-            <div class="flex items-center space-x-4">
-              <p>
-                <strong className="text-gray-700">วันที่ : </strong>{" "}
-                {formatDateModal(modalProductDetails.reserve_out)}
+
+          <div className="mt-6 space-y-2">
+
+            <div className="flex justify-end space-y-1">
+              <p className="">
+                <strong className="text-gray-700">เลขที่ Po : </strong>{" "}
+                {modalProductDetails.reserve_number}
               </p>
-              <strong className="text-gray-700"> จำนวนวันที่เช่า : </strong>{" "}
-              {modalProductDetails.date +
-                " วัน " +
-                formatDateModal(modalProductDetails.reserve_out) +
-                " - " +
-                formatDateModal(
-                  new Date(
-                    new Date(modalProductDetails.reserve_out).getTime() +
-                    modalProductDetails.date * 24 * 60 * 60 * 1000
+            </div>
+
+            {currentStatus != 'reserve' && (
+              <p className="text-right mb-2">
+                <strong className="text-gray-700">เลขที่สัญญาเช่า : </strong>{" "}
+                {modalProductDetails.export_number}
+              </p>
+            )}
+
+            <div className="w-1/2 mt-4">
+
+              {currentStatus === 'reserve' && (
+                <p className="mb-2">
+                  <strong className="text-gray-700">วันที่จองสินค้า : </strong>{" "}
+                  {formatDateModal(modalProductDetails.reserve_out)}
+                </p>
+              )}
+
+              {currentStatus === 'hire' && (
+                <p className="mb-2">
+                  <strong className="text-gray-700">วันที่ส่งสินค้า : </strong>{" "}
+                  {formatDateModal(modalProductDetails.reserve_out)}
+                </p>
+              )}
+
+              {currentStatus === 'return' && (
+                <p className="mb-2">
+                  <strong className="text-gray-700">วันที่ครบกำหนดคืนสินค้า: </strong>{" "}
+                  {formatDateModal(new Date(
+                    (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
                   )
-                )}
+                  )}
+                </p>
+              )}
+
+              {currentStatus === 'continue' && (
+                <p className="mb-2">
+                  <strong className="text-gray-700">วันที่เช่าต่อสินค้า : </strong>{" "}
+                  {formatDateModal(modalProductDetails.reserve_out)}
+                </p>
+              )}
+
+              <div className="flex items-center space-x-4 mb-2">
+                <strong className="text-gray-700"> จำนวนวันที่เช่า : </strong>{" "}
+                {modalProductDetails.date + " วัน " + "(" + formatDateModal(new Date(new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000)) + " - " +
+                  formatDateModal(
+                    new Date(
+                      (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
+                    )
+                  ) + ")"}
+              </div>
+
+              <div className="flex items-center space-x-4 mb-2">
+                <p>
+                  <strong className="text-gray-700"> ชื่อผู้ติดต่อ : </strong>
+                  {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
+                </p>
+              </div>
+              <div className="flex items-center space-x-4 mb-2">
+                <p>
+                  <strong className="text-gray-700"> ชื่อบริษัท : </strong>
+                  {modalProductDetails.company_name ? modalProductDetails.company_name : "-"}
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <p>
+                  <strong className="text-gray-700"> ที่อยู่ : </strong>
+                  {modalProductDetails.address ? modalProductDetails.address : "-"}
+                </p>
+              </div>
+
             </div>
-            <div class="flex items-center space-x-4">
-              <p>
-                <strong className="text-gray-700"> นามลูกค้า : </strong>
-                {modalProductDetails.customer_name}
-              </p>
-            </div>
-            <div class="flex items-center space-x-4">
-              <p>
-                <strong className="text-gray-700"> ที่อยู่ : </strong>
-                {modalProductDetails.address}
-              </p>
-            </div>
+
+
             <div className="mt-4 ">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 รายการสินค้า
@@ -589,7 +655,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                   </h1>
                 </div>
               </div>
-              
+
             </div>
             {currentStatus === "reserve" && (
               <div className="mt-4">
@@ -611,6 +677,22 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
         )}
 
+        {currentStatus === "hire" && (
+          <div className="mt-4">
+            <input
+              type="radio"
+              name="shipping"
+              value="true"
+              className="mr-2"
+              checked={showAlertShipping}
+              onChange={handleShowAlertShipping}
+            />
+            <label htmlFor="vat" className="text-gray-700">
+              ส่งสินค้าเเล้ว
+            </label>
+          </div>
+        )}
+
         {currentStatus === "reserve" && (
           <div className="mt-4 flex justify-around">
             <button
@@ -618,7 +700,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-gray-700 transition duration-200"
             >
               <span className="fa-solid fa-print"></span>
-              <span> ดูใบเสนอราคา</span>
+              <span> พิมพ์ใบเสนอราคา</span>
             </button>
 
             <button
@@ -639,6 +721,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             >
               <span className="fa-solid fa-print"></span>
               <span> พิมพ์ใบส่งของ</span>
+            </button>
+            <button
+              onClick={() => handleExportToExcelShippingCost(itemId)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-blue-700 transition duration-200"
+            >
+              <span className="fa-solid fa-print"></span>
+              <span> พิมพ์ใบสัญญาเช่า</span>
             </button>
           </div>
         )}

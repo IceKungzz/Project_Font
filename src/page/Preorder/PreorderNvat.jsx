@@ -253,7 +253,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('K10:K14');
     const taxNumber = worksheet.getCell('K10');
-    taxNumber.value = 'เลขที่ :';
+    taxNumber.value = ' เลขที่ Po :';
     taxNumber.font = { size: 13, bold: true, name: 'Angsana New' };
     taxNumber.alignment = { vertical: 'middle', horizontal: 'center' };
 
@@ -265,7 +265,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('K15:L18');
     const date = worksheet.getCell('K15');
-    date.value = '  วันที่เสนอ :';
+    date.value = ' วันที่เสนอ :';
     date.font = { size: 13, bold: true, name: 'Angsana New' };
     date.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -283,25 +283,19 @@ export default function Quotation() {
 
     worksheet.mergeCells('K19:L22');
     const expDate = worksheet.getCell('K19');
-    expDate.value = '  วันที่หมดอายุ :';
+    expDate.value = ' วันที่หมดอายุ :';
     expDate.font = { size: 13, bold: true, name: 'Angsana New' };
     expDate.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M19:M22');
     const expDateValue = worksheet.getCell('M19');
-    expDateValue.value = `${expiryDate
-      ? new Date(expiryDate).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;
+    expDateValue.value = '-';
     expDateValue.font = { size: 13, name: 'Angsana New' };
     expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K23:L26');
     const condition = worksheet.getCell('K23');
-    condition.value = '  เงื่อนไขการชำระเงิน :';
+    condition.value = ' เงื่อนไขการชำระเงิน :';
     condition.font = { size: 13, bold: true, name: 'Angsana New' };
     condition.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -654,17 +648,6 @@ export default function Quotation() {
     namePle1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePle1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
-    const currentDate = new Date();
-    const day = currentDate.getDate();
-    const monthNames = [
-      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
-    ];
-    const month = monthNames[currentDate.getMonth()];
-    const year = (currentDate.getFullYear() + 543).toString().slice(-2);
-
-    const formattedDate = `${day} ${month} ${year}`;
-
     worksheet.mergeCells('H64:I64');
     const namePleDate = worksheet.getCell('H64');
     namePleDate.value = 'ลงวันที่ :';
@@ -672,7 +655,13 @@ export default function Quotation() {
     namePleDate.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePleDate1 = worksheet.getCell('J64');
-    namePleDate1.value = formattedDate;
+    namePleDate1.value = `${data.reserve_out
+      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
+        day: '2-digit',
+        month: 'short',
+        year: '2-digit'
+      })
+      : ''}`;
     namePleDate1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePleDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
 

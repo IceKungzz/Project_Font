@@ -173,7 +173,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('K5:M8');
     const cell = worksheet.getCell('K5');
-    cell.value = "ใบส่งของ";
+    cell.value = "ใบส่งสินค้าเช่า";
     cell.alignment = { vertical: 'middle', horizontal: 'center' };
     cell.font = { size: 36, bold: true, name: 'Angsana New' };
     cell.fill = {
@@ -251,17 +251,17 @@ export default function Quotation() {
     phoneValue.font = { size: 13, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    worksheet.mergeCells('K10:K13');
+    worksheet.mergeCells('K10:L13');
     const taxNumber = worksheet.getCell('K10');
-    taxNumber.value = 'เลขที่ :';
+    taxNumber.value = '  เลขที่ใบส่งสินค้า :';
     taxNumber.font = { size: 13, bold: true, name: 'Angsana New' };
-    taxNumber.alignment = { vertical: 'middle', horizontal: 'center' };
+    taxNumber.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M10:M13');
     const taxNumberValue = worksheet.getCell('M10');
     taxNumberValue.value = `${data.export_number}`;
     taxNumberValue.font = { size: 13, name: 'Angsana New' };
-    taxNumberValue.alignment = { vertical: 'middle', horizontal: 'center' };
+    taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K14:L16');
     const date = worksheet.getCell('K14');
@@ -279,7 +279,7 @@ export default function Quotation() {
       })
       : ''}`;
     dateValue.font = { size: 13, name: 'Angsana New' };
-    dateValue.alignment = { vertical: 'middle', horizontal: 'center' };
+    dateValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K17:L19');
     const expDate = worksheet.getCell('K17');
@@ -301,7 +301,7 @@ export default function Quotation() {
       expDateValue.value = '';
     }
     expDateValue.font = { size: 13, name: 'Angsana New' };
-    expDateValue.alignment = { vertical: 'middle', horizontal: 'center' };
+    expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K20:L22');
     const condition = worksheet.getCell('K20');
@@ -325,21 +325,21 @@ export default function Quotation() {
       conditionValue.value = '';
     }
     conditionValue.font = { size: 13, name: 'Angsana New', bold: true };
-    conditionValue.alignment = { vertical: 'middle', horizontal: 'center' };
+    conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
     conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
 
     worksheet.mergeCells('K23:L26');
     const lefPast = worksheet.getCell('K23');
-    lefPast.value = '  อ้างอิงสัญญาเช่าเดิม :';
+    lefPast.value = '  อ้างอิงเลขที่ Po :';
     lefPast.font = { size: 13, bold: true, name: 'Angsana New' };
     lefPast.alignment = { vertical: 'middle', horizontal: 'left' };
     lefPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
 
     worksheet.mergeCells('M23:M26');
     const lefPastValue = worksheet.getCell('M23');
-    lefPastValue.value = '-';
+    lefPastValue.value = data.reserve_number;
     lefPastValue.font = { size: 13, name: 'Angsana New', bold: true };
-    lefPastValue.alignment = { vertical: 'middle', horizontal: 'center' };
+    lefPastValue.alignment = { vertical: 'middle', horizontal: 'left' };
     lefPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
 
     const indexNumber = worksheet.getCell('A29');
@@ -629,39 +629,6 @@ export default function Quotation() {
     note11.value = ' 8. ผู้เช่าต้องเป็นผู้ดำเนินการเคลื่อนย้ายสินค้าเองทุกครั้ง หากไม่เคลื่อนย้ายสินค้าเอง ผู้เช่าจะต้องจ่ายค่าบริการเคลื่อนย้ายสินค้าให้แก่ผู้ให้เช่า';
     note11.font = { size: 10, bold: true, name: 'Angsana New', underline: true };
     note11.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    worksheet.mergeCells('C43:F43');
-    const payment1 = worksheet.getCell('C43');
-    payment1.value = '  ช่องทางชำระเงิน: ธ.ทหารไทยธนชาต (ttb)';
-    payment1.font = { size: 12, bold: true, name: 'Angsana New', color: { argb: 'F0070C0' }, underline: true };
-    payment1.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    worksheet.mergeCells('C44:G44');
-    const payment2 = worksheet.getCell('C44');
-    payment2.value = '  เลขที่บัญชี: 192-2-594344 / นางสาวกรวรรณ กองจันทึก';
-    payment2.font = { size: 12, bold: true, name: 'Angsana New', color: { argb: 'F0070C0' }, underline: true };
-    payment2.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    worksheet.mergeCells('C45:D45');
-    const payment3 = worksheet.getCell('C45');
-    payment3.value = '  ยอดค่าเช่าเฉลี่ย / วัน :';
-    payment3.font = { size: 12, bold: true, name: 'Angsana New' };
-    payment3.alignment = { vertical: 'middle', horizontal: 'left' };
-    payment3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
-
-    const average = (totalPrice - (data.discount ? data.discount : 0)) / data.date;
-
-    const payment3Value = worksheet.getCell('E45');
-    payment3Value.value = "-";
-    payment3Value.font = { size: 12, bold: true, name: 'Angsana New'};
-    payment3Value.alignment = { vertical: 'middle', horizontal: 'center' };
-    payment3Value.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
-
-    const payment3ValueThb = worksheet.getCell('F45');
-    payment3ValueThb.value = '  บาท';
-    payment3ValueThb.font = { size: 12, bold: true, name: 'Angsana New' };
-    payment3ValueThb.alignment = { vertical: 'middle', horizontal: 'left' };
-    payment3ValueThb.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
 
     worksheet.mergeCells('A63:B63');
     const nameCustomer = worksheet.getCell('A63');

@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal_Outbound } from "./Modal_Outbound";
 import { Modal_Assemble } from "./Modal_Assemble";
-
 import { ModalDiscount } from "./Modal_Discount";
 import { Modal_Create_Products } from "./Modal_Create_Products";
 import axios from "axios";
