@@ -22,7 +22,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   const toggleEditASM = (id) => {
     setSelectedASMId(id);
     setShowEditASM(!showEditASM);
-};
+  };
   const handleDelete = (id) => {
     console.log(`กำลังลบรายการที่มี ID: ${id}`);
     const token = localStorage.getItem("token");
@@ -209,7 +209,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
               type="text"
               placeholder="ชื่อสินค้า"
               className="w-full border border-gray-300 rounded-md p-2"
-              value={keysearchItem} // ใช้ `keysearchItem` เพื่อเก็บค่าที่ผู้ใช้กรอก
+              value={keysearchItem}
               onChange={(e) => handleSearchByCode(e.target.value)}
             />
 
@@ -231,7 +231,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? ( // ตรวจสอบสถานะ isLoading
+              {isLoading ? (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
                     <div className="flex justify-center items-center">
@@ -241,7 +241,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
                   </td>
                 </tr>
               ) : (products_search.length > 0 ? products_search : ASMproducts).map((item, key) => (
-                <tr key={key} className="border-b border-blue-500">
+                <tr key={key} className="border-t border-blue-500">
                   <td className="px-4 py-2">{item.assemble_name}</td>
                   <td className="px-4 py-2">{item.description}</td>
                   <td className="px-4 py-2 text-red-500">{item.assemble_price}</td>
@@ -279,7 +279,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           </table>
         </div>
 
-
         <div className="flex justify-center p-4 border-t w-3/4">
           <button className="me-4 px-4 py-2 bg-green-500 text-white rounded-md w-1/4 hover:bg-green-400 transaction durantion-150 " onClick={confirm_itemASM}>
             ยืนยัน
@@ -291,11 +290,11 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             สร้างสินค้าประกอบใหม่
           </button>
         </div>
-        </div>
-          {showCreateASM && <CreateASM close={toggleCreateASM} />}
-          {showEditASM && (
-              <Modal_EditAssemble id={selectedASMId} close={toggleEditASM} />
-          )}
       </div>
+      {showCreateASM && <CreateASM close={toggleCreateASM} />}
+      {showEditASM && (
+        <Modal_EditAssemble id={selectedASMId} close={toggleEditASM} />
+      )}
+    </div>
   );
 }

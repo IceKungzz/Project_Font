@@ -602,21 +602,21 @@ export default function Quotation() {
     worksheet.mergeCells('A41:C41');
     const payment1 = worksheet.getCell('A41');
     payment1.value = '  ช่องทางชำระเงิน:';
-    payment1.font = { size: 10, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
+    payment1.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
     payment1.alignment = { vertical: 'middle', horizontal: 'left' };
     payment1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } };
 
     worksheet.mergeCells('A42:C42');
     const payment2 = worksheet.getCell('A42');
     payment2.value = '  ธ.กสิกรไทย / หจก.ภัทรชัย เเบบเหล็ก';
-    payment2.font = { size: 10, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
+    payment2.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
     payment2.alignment = { vertical: 'middle', horizontal: 'left' };
     payment2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } };
 
     worksheet.mergeCells('A43:C43');
     const payment3 = worksheet.getCell('A43');
     payment3.value = '  เลขที่บัญชี: 125-8-29096-4';
-    payment3.font = { size: 10, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
+    payment3.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FF0000FF' } };
     payment3.alignment = { vertical: 'middle', horizontal: 'left' };
     payment3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } };
 
