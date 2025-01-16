@@ -7,7 +7,6 @@ import { ModalDiscount } from "./Modal_Discount";
 import { Modal_Create_Products } from "./Modal_Create_Products";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { fr } from "date-fns/locale";
 
 export function Outbound() {
   const [branch, setBranch] = useState("");
@@ -31,8 +30,8 @@ export function Outbound() {
   const [showmodal_create_product, setShowmodal_create_product] = useState(false);
   const [confirmitem, setConfirmitem] = useState([]);
   const [confirmitem_create, setConfirmItem_Create] = useState([]);
+  const [withHolDing, setWithHolDing] = useState(true);
   const [hasVat, setHasVat] = useState(true);
-  const [hasVat1, setHasVat1] = useState(true);
   const [Item_sendto_database, setItem_sendto_database] = useState([]);
   const [validateModalInput, setValidateModalInput] = useState(false)
   const [alldata_default, setAlldata_default] = useState([{}]);
@@ -47,14 +46,10 @@ export function Outbound() {
     })),
     ...confirmitemASM.map((item) => ({
       ...item,
-      id_asm: item.id_asm, // ใช้ id_asm แทน id
+      id_asm: item.id_asm,
       isAssemble: true,
     })),
   ];
-
-
-
-
 
   useEffect(() => {
     console.log("Loading data from localStorage...");
@@ -77,7 +72,7 @@ export function Outbound() {
       setConfirmitemASM(savedData.confirmitemASM || []);
       setConfirmItem_Create(savedData.confirmitem_create || []);
       setHasVat(savedData.hasVat || true);
-      setHasVat1(savedData.hasVat1 || true);
+      setWithHolDing(savedData.withHolDing || true);
       setItem_sendto_database(savedData.Item_sendto_database || []);
       setValidateModalInput(savedData.validateModalInput || false);
       setAlldata_default(savedData.alldata_default || [{}]);
@@ -88,17 +83,14 @@ export function Outbound() {
     }
   }, []);
 
-
-
-
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
     { title: "ชื่อบริษัท :", type: "text" },
     { title: "ชื่อไซต์งาน :", type: "text" },
     { title: "ที่อยู่ลูกค้า :", type: "text" },
     { title: "วันที่เสนอ :", type: "date" },
+    { title: "เบอร์สำนักงาน :", type: "text" },
     { title: "เบอร์โทรศัพท์ :", type: "text" },
-    { title: "เบอร์ลูกค้า :", type: "text" }, // เพิ่มฟิลด์นี้
 
   ];
 
@@ -108,11 +100,10 @@ export function Outbound() {
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
-    console.log(hasVat)
   };
 
-  const handleVatChange1 = (e) => {
-    setHasVat(e.target.value === "true");
+  const handleWithHolDingChange = (e) => {
+    setWithHolDing(e.target.value === "true");
   };
 
   useEffect(() => {
@@ -407,9 +398,6 @@ export function Outbound() {
       average_price: 0,
     };
 
-    console.log("Sending new order1:", formData);
-    console.log("Sending new order:", newOrder);
-
     const token = localStorage.getItem("token");
 
 
@@ -483,6 +471,7 @@ export function Outbound() {
       navigate("/preoutbound-nvat");
     }
   };
+
   const saveToLocalStorage = () => {
     const reserveData = {
       code: [],
@@ -522,26 +511,26 @@ export function Outbound() {
         reserveData.type.push(item.type === "ขาย" ? "1" : "2");
       }
     });
- 
+
     const totalPrice = calculateTotalPrice(); // คำนวณราคารวม
     const vat = calculateVAT(totalPrice);    // คำนวณ VAT
     const netPrice = totalPrice + vat;
-    
+
     // ตรวจสอบค่าก่อนคำนวณ
     const shippingCost = parseFloat(formData.shipping_cost || 0);
     const movePrice = parseFloat(formData.move_price || 0);
     const guaranteePrice = parseFloat(formData.guarantee_price || 0);
     const discount = parseFloat(formData.discount || 0);
-    
+
     // คำนวณราคาสุทธิหลังรวมค่าขนส่ง ส่วนลด และค่าบริการ
     const PriceAfterShipOrDiscount = netPrice + shippingCost + movePrice + guaranteePrice - discount;
-    
+
     // คำนวณราคาสุดท้ายตามระยะเวลาเช่า
     const rentalDays = parseFloat(day_length || 0); // ตรวจสอบว่า day_length เป็นตัวเลข
     const FinalPrice = netPrice * rentalDays;
 
     const outboundData = {
-      
+
       customer_name: name,
       place_name: workside,
       branch: branch,
@@ -559,7 +548,7 @@ export function Outbound() {
       total_price: totalPrice, // เพิ่มราคารวม
       vat_amount: vat,         // เพิ่ม VAT
       net_price: netPrice,
-      finalPrice:FinalPrice,
+      finalPrice: FinalPrice,
       totalPriceMain: PriceAfterShipOrDiscount,
       reserve: [reserveData],
     };
@@ -583,7 +572,7 @@ export function Outbound() {
       confirmitemASM,
       confirmitem_create,
       hasVat,
-      hasVat1,
+      withHolDing,
       Item_sendto_database,
       validateModalInput,
       alldata_default,
@@ -620,7 +609,7 @@ export function Outbound() {
     confirmitemASM,
     confirmitem_create,
     hasVat,
-    hasVat1,
+    withHolDing,
     Item_sendto_database,
     validateModalInput,
     alldata_default,
@@ -628,8 +617,6 @@ export function Outbound() {
     quantitySum,
     combinedItems,
   ]);
-
-
 
   const calculateTotalPrice = () => {
     return combinedItems.reduce((total, item) => {
@@ -657,7 +644,6 @@ export function Outbound() {
     return total + vat; // ราคาสุทธิ = ราคารวม + VAT
   };
 
-
   const resetForm = () => {
     setProducts([]);
     setName("");
@@ -677,7 +663,7 @@ export function Outbound() {
     setConfirmitemASM([]);
     setConfirmItem_Create([]);
     setHasVat(true);
-    setHasVat1(true);
+    setWithHolDing(true);
     setItem_sendto_database([]);
     setValidateModalInput(false);
     setAlldata_default([{}]);
@@ -768,9 +754,9 @@ export function Outbound() {
                             ? (e) => setWorkside(e.target.value)
                             : item.title === "ที่อยู่ลูกค้า :"
                               ? (e) => setAddress(e.target.value)
-                              : item.title === "เบอร์โทรศัพท์ :"
+                              : item.title === "เบอร์สำนักงาน :"
                                 ? (e) => setPhone(e.target.value)
-                                : item.title === "เบอร์ลูกค้า :"
+                                : item.title === "เบอร์โทรศัพท์ :"
                                   ? (e) => setcustomer_tel(e.target.value)
                                   : null
                   }
@@ -785,9 +771,9 @@ export function Outbound() {
                             ? workside
                             : item.title === "ที่อยู่ลูกค้า :"
                               ? address
-                              : item.title === "เบอร์โทรศัพท์ :"
+                              : item.title === "เบอร์สำนักงาน :"
                                 ? phone
-                                : item.title === "เบอร์ลูกค้า :"
+                                : item.title === "เบอร์โทรศัพท์ :"
                                   ? customer_tel
                                   : ""
                   }
@@ -1027,15 +1013,6 @@ export function Outbound() {
               />
               ไม่มีภาษีมูลค่าเพิ่ม
 
-              <input
-                type="radio"
-                name="ovat"
-                value="false"
-                className="ml-3 mr-2"
-                checked={!hasVat1}
-                onChange={handleVatChange1}
-              />
-              หัก ณ ที่จ่าย
             </div>
 
             <div className="row-span-1 items-center justify-end grid grid-cols-3 text-white mt-5 w-full ml-auto">
